@@ -164,7 +164,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="getXmlFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -174,7 +174,7 @@
 		</operation>
 		
 		<operation name="getFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -184,7 +184,7 @@
 		</operation>
 		
 		<operation name="createFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -194,7 +194,7 @@
 		</operation>
 		
 		<operation name="deleteFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -204,7 +204,7 @@
 		</operation>
 		
 		<operation name="getFiches">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -214,7 +214,7 @@
 		</operation>
 		
 		<operation name="rechercheFiches">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -224,7 +224,7 @@
 		</operation>
 		
 		<operation name="sauvegardeFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -234,7 +234,7 @@
 		</operation>
 		
 		<operation name="setPublicationFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -244,7 +244,7 @@
 		</operation>
 		
 		<operation name="getFicheByRefExterne">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -258,7 +258,7 @@
 	<service name="TourismSystemWebServiceFiche">
 		<documentation>Webservices fiche de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/fiche.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>fiche.php"/>
 		</port>
 	</service>
 

@@ -42,7 +42,7 @@
 	<binding name="wsBinding" type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="identification">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/identification.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/identification.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -55,7 +55,7 @@
 	<service name="TourismSystemWebServiceidentification">
 		<documentation>Webservices d'identification de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/identification.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>identification.php"/>
 		</port>
 	</service>
 

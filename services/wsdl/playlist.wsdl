@@ -112,7 +112,7 @@
 		
 		
 		<operation name="getPlaylists">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -122,7 +122,7 @@
 		</operation>
 		
 		<operation name="getPlaylist">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -132,7 +132,7 @@
 		</operation>
 		
 		<operation name="createPlaylist">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -142,7 +142,7 @@
 		</operation>
 		
 		<operation name="updatePlaylist">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -152,7 +152,7 @@
 		</operation>
 		
 		<operation name="deletePlaylist">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -166,7 +166,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices playlist de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/playlist.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>playlist.php"/>
 		</port>
 	</service>
 

@@ -37,12 +37,12 @@
 	       	
 	       	<complexType name="commune">
 			    <all>
-				<element name="libelle" type="xsd:string"/>
+					<element name="libelle" type="xsd:string"/>
 			     	<element name="codeInsee" type="xsd:string"/>
 			     	<element name="codePostal" type="xsd:int"/>
 			     	<element name="gpsLat" type="xsd:float"/>
 			     	<element name="gpsLng" type="xsd:float"/>
-				<element name="prive" type="xsd:string" nillable="true"/>
+					<element name="prive" type="xsd:string" nillable="true"/>
 			    </all>			      
 			</complexType>
 			
@@ -142,17 +142,6 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
-	<message name="setCommuneTerritoirePriveRequest">
-		<part name="sessionId" type="xsd:string"/>
-		<part name="idTerritoire" type="xsd:int"/>
-		<part name="codeInsee" type="xsd:string"/>
-		<part name="prive" type="xsd:boolean"/>
-	</message>
-	<message name="setCommuneTerritoirePriveResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="reponse" type="xs:anyType" nillable="true" />
-	</message>
-	
 	<message name="deleteCommuneTerritoireRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idTerritoire" type="xsd:int"/>
@@ -195,10 +184,6 @@
 			<input  message="addCommuneTerritoireRequest"/>
 			<output message="addCommuneTerritoireResponse"/>
 		</operation>
-		<operation name="setCommuneTerritoirePrive">
-			<input  message="setCommuneTerritoirePriveRequest"/>
-			<output message="setCommuneTerritoirePriveResponse"/>
-		</operation>
 		<operation name="deleteCommuneTerritoire">
 			<input  message="deleteCommuneTerritoireRequest"/>
 			<output message="deleteCommuneTerritoireResponse"/>
@@ -217,7 +202,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="getTerritoires">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -226,7 +211,7 @@
 			</output>
 		</operation>
 		<operation name="getCommunesByTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -235,7 +220,7 @@
 			</output>
 		</operation>
 		<operation name="getThesaurusByTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -244,7 +229,7 @@
 			</output>
 		</operation>
 		<operation name="createTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -253,7 +238,7 @@
 			</output>
 		</operation>
 		<operation name="updateTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -262,7 +247,7 @@
 			</output>
 		</operation>
 		<operation name="deleteTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -271,16 +256,7 @@
 			</output>
 		</operation>
 		<operation name="addCommuneTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
-			<input>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</input>
-			<output>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</output>
-		</operation>
-		<operation name="setCommuneTerritoirePrive">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -289,7 +265,7 @@
 			</output>
 		</operation>
 		<operation name="deleteCommuneTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -298,7 +274,7 @@
 			</output>
 		</operation>
 		<operation name="addThesaurusTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -307,7 +283,7 @@
 			</output>
 		</operation>
 		<operation name="deleteThesaurusTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -320,7 +296,7 @@
 	<service name="TourismSystemWebServiceTerritoires">
 		<documentation>Webservices territoires de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/territoires.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>territoires.php"/>
 		</port>
 	</service>
 

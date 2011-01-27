@@ -1,0 +1,4 @@
+RewriteEngine Off
+
+AddType application/x-httpd-php .wsdl
+Options +Indexes

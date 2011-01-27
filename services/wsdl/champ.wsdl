@@ -144,7 +144,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -153,7 +153,7 @@
 			</output>
 		</operation>
 		<operation name="deleteChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -162,7 +162,7 @@
 			</output>
 		</operation>
 		<operation name="updateChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -171,7 +171,7 @@
 			</output>
 		</operation>
 		<operation name="getChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -180,7 +180,7 @@
 			</output>
 		</operation>
 		<operation name="getChampByIdentifiant">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -189,7 +189,7 @@
 			</output>
 		</operation>
 		<operation name="getChamps">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -202,7 +202,7 @@
 	<service name="TourismSystemWebServiceChamp">
 		<documentation>Webservices champ de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/champ.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>champ.php"/>
 		</port>
 	</service>
 
