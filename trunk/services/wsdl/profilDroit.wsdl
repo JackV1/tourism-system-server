@@ -197,7 +197,7 @@
 	<binding name="wsBinding" type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createProfil">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -207,7 +207,7 @@
 		</operation>
 		
 		<operation name="updateProfil">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -217,7 +217,7 @@
 		</operation>
 		
 		<operation name="deleteProfil">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -227,7 +227,7 @@
 		</operation>
 		
 		<operation name="setProfilDroitChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -237,7 +237,7 @@
 		</operation>
 		
 		<operation name="deleteProfilDroitChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -247,7 +247,7 @@
 		</operation>
 		
 		<operation name="getProfils">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -257,7 +257,7 @@
 		</operation>
 		
 		<operation name="getProfilDroits">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -267,7 +267,7 @@
 		</operation>
 		
 		<operation name="getProfilDroitChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -280,7 +280,7 @@
 	<service name="TourismSystemWebServiceProfilDroit">
 		<documentation>Webservice de profilDroit de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/profilDroit.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>profilDroit.php"/>
 		</port>
 	</service>
 

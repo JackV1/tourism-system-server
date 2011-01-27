@@ -114,7 +114,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="addFicheFichier">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheFichier.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheFichier.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -124,7 +124,7 @@
 		</operation>
 		
 		<operation name="deleteFicheFichier">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheFichier.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheFichier.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -134,7 +134,7 @@
 		</operation>
 		
 		<operation name="getFicheFichiers">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheFichier.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheFichier.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -144,7 +144,7 @@
 		</operation>
 		
 		<operation name="getFicheFichier">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheFichier.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheFichier.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -158,7 +158,7 @@
 	<service name="TourismSystemWebServiceFicheFichier">
 		<documentation>Webservices ficheFichier de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/ficheFichier.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>ficheFichier.php"/>
 		</port>
 	</service>
 

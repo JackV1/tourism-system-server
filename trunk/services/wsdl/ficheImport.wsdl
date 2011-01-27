@@ -47,7 +47,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="importFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheImport.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheImport.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -61,7 +61,7 @@
 	<service name="TourismSystemWebServiceFicheExport">
 		<documentation>Webservices ficheImport de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/ficheImport.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>ficheImport.php"/>
 		</port>
 	</service>
 

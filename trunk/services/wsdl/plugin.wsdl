@@ -137,7 +137,7 @@
 		
 		
 		<operation name="getAllPlugins">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -147,7 +147,7 @@
 		</operation>
 		
 		<operation name="getPlugins">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -157,7 +157,7 @@
 		</operation>
 		
 		<operation name="enablePlugin">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -167,7 +167,7 @@
 		</operation>
 		
 		<operation name="disablePlugin">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -177,7 +177,7 @@
 		</operation>
 		
 		<operation name="installPlugin">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -187,7 +187,7 @@
 		</operation>
 		
 		<operation name="uninstallPlugin">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -197,7 +197,7 @@
 		</operation>
 		
 		<operation name="updatePlugin">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/plugin.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/plugin.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -211,7 +211,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices plugin de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/plugin.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>plugin.php"/>
 		</port>
 	</service>
 

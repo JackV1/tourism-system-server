@@ -269,7 +269,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createUtilisateur">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -279,7 +279,7 @@
 		</operation>
 		
 		<operation name="deleteUtilisateur">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -289,7 +289,7 @@
 		</operation>
 		
 		<operation name="changePassword">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -299,7 +299,7 @@
 		</operation>
 		
 		<operation name="sendPassword">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -309,7 +309,7 @@
 		</operation>
 		
 		<operation name="getUtilisateur">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -319,7 +319,7 @@
 		</operation>
 		
 		<operation name="getUtilisateurs">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -329,7 +329,7 @@
 		</operation>
 		
 		<operation name="getSessionsUtilisateur">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -339,7 +339,7 @@
 		</operation>
 		
 		<operation name="getDroitsUtilisateur">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -353,7 +353,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices utilisateur de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/utilisateur.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>utilisateur.php"/>
 		</port>
 	</service>
 

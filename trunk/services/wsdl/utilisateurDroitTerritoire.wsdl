@@ -228,7 +228,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="setDroitTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -238,7 +238,7 @@
 		</operation>
 		
 		<operation name="setDroitTerritoireChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -248,7 +248,7 @@
 		</operation>
 		
 		<operation name="getDroitsTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -258,7 +258,7 @@
 		</operation>
 		
 		<operation name="getDroitTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -268,7 +268,7 @@
 		</operation>
 		
 		<operation name="getDroitTerritoireChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -278,7 +278,7 @@
 		</operation>
 		
 		<operation name="deleteDroitTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -288,7 +288,7 @@
 		</operation>
 		
 		<operation name="deleteDroitTerritoireChamp">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -298,7 +298,7 @@
 		</operation>
 		
 		<operation name="setDroitTerritoireProfil">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -312,7 +312,7 @@
 	<service name="TourismSystemWebServiceUtilisateurDroitTerritoire">
 		<documentation>Webservices utilisateurDroitTerritoire de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/utilisateurDroitTerritoire.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>utilisateurDroitTerritoire.php"/>
 		</port>
 	</service>
 

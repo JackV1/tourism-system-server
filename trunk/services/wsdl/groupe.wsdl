@@ -215,7 +215,7 @@
 		
 		
 		<operation name="createGroupe">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -225,7 +225,7 @@
 		</operation>
 		
 		<operation name="deleteGroupe">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -235,7 +235,7 @@
 		</operation>
 		
 		<operation name="setSuperAdminGroupe">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -245,7 +245,7 @@
 		</operation>
 		
 		<operation name="getGroupes">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -255,7 +255,7 @@
 		</operation>
 		
 		<operation name="getGroupeTerritoires">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -265,7 +265,7 @@
 		</operation>
 		
 		<operation name="getUtilisateursGroupe">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -275,7 +275,7 @@
 		</operation>
 		
 		<operation name="addGroupeTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -285,7 +285,7 @@
 		</operation>
 		
 		<operation name="deleteGroupeTerritoire">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -295,7 +295,7 @@
 		</operation>
 		
 		<operation name="updateGroupe">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -308,7 +308,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices groupe de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/groupe.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>groupe.php"/>
 		</port>
 	</service>
 

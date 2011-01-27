@@ -140,7 +140,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="getFichesAValider">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheValidation.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheValidation.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -150,7 +150,7 @@
 		</operation>
 		
 		<operation name="getChampsFicheAValider">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheValidation.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheValidation.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -160,7 +160,7 @@
 		</operation>
 		
 		<operation name="accepteChampFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheValidation.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheValidation.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -170,7 +170,7 @@
 		</operation>
 		
 		<operation name="refuseChampFiche">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/services/wsdl/ficheValidation.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/ficheValidation.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -184,7 +184,7 @@
 	<service name="TourismSystemWebServiceFicheValidation">
 		<documentation>Webservices ficheValidation de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/ficheValidation.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>ficheValidation.php"/>
 		</port>
 	</service>
 
