@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -19,6 +19,7 @@
 		const SQL_CREATE_UTILISATEUR = "INSERT INTO sitUtilisateur (login, pass, typeUtilisateur, idGroupe) VALUES('%s', '%s', '%s', '%d')";
 		const SQL_DELETE_UTILISATEUR = "DELETE FROM sitUtilisateur WHERE idUtilisateur='%d'";
 		const SQL_IS_UTILISATEUR = "SELECT idUtilisateur FROM sitUtilisateur WHERE login='%s'";
+		const SQL_IS_SUPERADMIN = "SELECT idGroupe FROM sitGroupe WHERE idSuperAdmin='%d'";
 		const SQL_GET_PASSWORD = "SELECT pass FROM sitUtilisateur WHERE idUtilisateur='%d'";
 		const SQL_CHANGE_PASSWORD = "UPDATE sitUtilisateur SET pass='%s' WHERE idUtilisateur='%d'";
 		const SQL_SESSIONS_UTILISATEUR = "SELECT sessionId, sessionStart, sessionEnd, ip FROM sitSessions WHERE idUtilisateur='%d'";
@@ -31,12 +32,16 @@
 				throw new ApplicationException("L'identifiant d'utilisateur n'est pas numérique");
 			}
 			$result = tsDatabase::getRow(self::SQL_UTILISATEUR, array($idUtilisateur), DB_FAIL_ON_ERROR);
+			if ($result['typeUtilisateur'] == 'admin')
+			{
+				$result['typeUtilisateur'] = self::isSuperAdmin($result['idUtilisateur']) === false ? $result['typeUtilisateur'] : 'superadmin';
+			}
 			$oUtilisateur = new utilisateurModele();
 			$oUtilisateur -> setIdUtilisateur($result['idUtilisateur']);
 			$oUtilisateur -> setIdGroupe($result['idGroupe']);
 			$oUtilisateur -> setTypeUtilisateur($result['typeUtilisateur']);
 			$oUtilisateur -> setEmail($result['login']);
-			if (tsDroits::isRoot() === true)
+			if (tsDroits::isRoot() === true || tsDroits::getTypeUtilisateur() == 'superadmin')
 			{
 				$oUtilisateur -> setPassword($result['pass']);
 			}
@@ -121,12 +126,12 @@
 		}
 		
 		
-		public static function sendPassword(utilisateurModele $oUtilisateur)
+		/*public static function sendPassword(utilisateurModele $oUtilisateur)
 		{
 			$password = tsDatabase::getRecord(self::SQL_GET_PASSWORD, array($oUtilisateur -> idUtilisateur));
 			mail($oUtilisateur -> email, 'Votre mot de passe Tourism System', $password);
 			return true;
-		}
+		}*/
 		
 		
 		
@@ -135,6 +140,10 @@
 			return (count(tsDatabase::getRecords(self::SQL_IS_UTILISATEUR, array($email))) >= 1);
 		}
 		
+		private static function isSuperAdmin($idUtilisateur)
+		{
+			return (count(tsDatabase::getRecords(self::SQL_IS_SUPERADMIN, array($idUtilisateur))) >= 1);
+		}
 		
 		private static function isEmail($email)
 		{

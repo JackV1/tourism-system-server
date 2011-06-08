@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -34,7 +34,7 @@
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$droitFiche = utilisateurDroitFicheDb::getDroitsFiche($oUtilisateur);
+			$droitsFiche = utilisateurDroitFicheDb::getDroitsFiche($oUtilisateur);
 			return array('droitsFiche' => $droitsFiche);
 		}
 		
@@ -70,7 +70,7 @@
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
-			$oDroit = baseModele::getInstance($stdDroit, 'droitFicheModele');
+			$oDroit = baseModele::getInstance($droit, 'droitFicheModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
 			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
@@ -94,7 +94,7 @@
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
 			$oChamp = champDb::getChamp($idChamp);
-			$oDroit = baseModele::getInstance($stdDroit, 'droitChampModele');
+			$oDroit = baseModele::getInstance($droit, 'droitChampModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
 			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);

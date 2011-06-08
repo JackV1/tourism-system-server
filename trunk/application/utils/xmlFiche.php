@@ -1,7 +1,7 @@
 <?php
 	
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -44,18 +44,23 @@
 		public function getValue($xpathQuery)
 		{
 			$nodes = $this -> xpath -> query($xpathQuery);
-			if (count($nodes) == 1)
+			
+			if ($nodes -> length == 1)
 			{
-				return $nodes[0] -> nodeValue;
+				return $nodes -> item(0) -> nodeValue;
 			}
 			
-			$retour = array();
-			foreach($nodes as $node)
+			if ($nodes -> length > 1)
 			{
-				$retour[] = $node -> nodeValue;				
+				$retour = array();
+				for($i=0 ; $i < $nodes -> length ; $i++)
+				{
+					$retour[] = $nodes -> item($i) -> nodeValue;				
+				}
+				return $retour;
 			}
 			
-			return $retour;
+			return null;
 		}
 		
 		

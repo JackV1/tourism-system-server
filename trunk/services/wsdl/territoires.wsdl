@@ -37,12 +37,12 @@
 	       	
 	       	<complexType name="commune">
 			    <all>
-					<element name="libelle" type="xsd:string"/>
+				<element name="libelle" type="xsd:string"/>
 			     	<element name="codeInsee" type="xsd:string"/>
 			     	<element name="codePostal" type="xsd:int"/>
 			     	<element name="gpsLat" type="xsd:float"/>
 			     	<element name="gpsLng" type="xsd:float"/>
-					<element name="prive" type="xsd:string" nillable="true"/>
+				<element name="prive" type="xsd:string" nillable="true"/>
 			    </all>			      
 			</complexType>
 			
@@ -142,6 +142,17 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
+	<message name="setCommuneTerritoirePriveRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idTerritoire" type="xsd:int"/>
+		<part name="codeInsee" type="xsd:string"/>
+		<part name="prive" type="xsd:boolean"/>
+	</message>
+	<message name="setCommuneTerritoirePriveResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
 	<message name="deleteCommuneTerritoireRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idTerritoire" type="xsd:int"/>
@@ -183,6 +194,10 @@
 		<operation name="addCommuneTerritoire">
 			<input  message="addCommuneTerritoireRequest"/>
 			<output message="addCommuneTerritoireResponse"/>
+		</operation>
+		<operation name="setCommuneTerritoirePrive">
+			<input  message="setCommuneTerritoirePriveRequest"/>
+			<output message="setCommuneTerritoirePriveResponse"/>
 		</operation>
 		<operation name="deleteCommuneTerritoire">
 			<input  message="deleteCommuneTerritoireRequest"/>
@@ -256,6 +271,15 @@
 			</output>
 		</operation>
 		<operation name="addCommuneTerritoire">
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		<operation name="setCommuneTerritoirePrive">
 			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>

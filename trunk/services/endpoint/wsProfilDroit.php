@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -39,13 +39,13 @@
 			
 			if (is_null($idGroupe))
 			{
-                $idProfil = profilDroitDb::createProfil($libelle);
+				$idProfil = profilDroitDb::createProfil($libelle);
 			}
 			else
 			{
-                $oGroupe = groupeDb::getGroupe($idGroupe);
-                $idProfil = profilDroitDb::createProfilGroupe($libelle, $oGroupe);
-            }
+				$oGroupe = groupeDb::getGroupe($idGroupe);
+				$idProfil = profilDroitDb::createProfilGroupe($libelle, $oGroupe);
+			}
 			return array('idProfil' => $idProfil);
 		}
 		

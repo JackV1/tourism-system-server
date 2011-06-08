@@ -37,6 +37,7 @@
 	<message name="getFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
+		<part name="idFicheVersion" type="xsd:int" nillable="true"/>
 	</message>
 	<message name="getFicheResponse">
 		<part name="status" type="tns:WSstatus"/>
@@ -110,6 +111,35 @@
 		<part name="fiche" type="xs:anyType"/>
 	</message>
 	
+	<message name="getFicheVersionsRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idFiche" type="xsd:int"/>
+	</message>
+	<message name="getFicheVersionsResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="versions" type="xs:anyType"/>
+	</message>
+	
+	<message name="deleteFicheVersionRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idFiche" type="xsd:int"/>
+		<part name="idFicheVersion" type="xsd:int"/>
+	</message>
+	<message name="deleteFicheVersionResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="restoreFicheVersionRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idFiche" type="xsd:int"/>
+		<part name="idFicheVersion" type="xsd:int"/>
+	</message>
+	<message name="restoreFicheVersionResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
 	
 	<portType name="CspPorts">
 		<operation name="getXmlFiche">
@@ -155,6 +185,21 @@
 		<operation name="getFicheByRefExterne">
 			<input  message="tns:getFicheByRefExterneRequest"/>
 			<output message="tns:getFicheByRefExterneResponse"/>
+		</operation>
+		
+		<operation name="getFicheVersions">
+			<input  message="tns:getFicheVersionsRequest"/>
+			<output message="tns:getFicheVersionsResponse"/>
+		</operation>
+		
+		<operation name="deleteFicheVersion">
+			<input  message="tns:deleteFicheVersionRequest"/>
+			<output message="tns:deleteFicheVersionResponse"/>
+		</operation>
+		
+		<operation name="restoreFicheVersion">
+			<input  message="tns:restoreFicheVersionRequest"/>
+			<output message="tns:restoreFicheVersionResponse"/>
 		</operation>
 		
 
@@ -244,6 +289,36 @@
 		</operation>
 		
 		<operation name="getFicheByRefExterne">
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="getFicheVersions">
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="deleteFicheVersion">
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="restoreFicheVersion">
 			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>

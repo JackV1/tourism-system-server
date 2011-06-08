@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -15,6 +15,7 @@
 		private static $instance;
 		private static $userType;
 		private static $idUtilisateur;
+		private static $idSession;
 		
 		
 		const SQL_USERTYPE = "SELECT typeUtilisateur FROM sitUtilisateur WHERE idUtilisateur='%d'";
@@ -50,13 +51,13 @@
 		
 
 		public static function load()
-	    {
-	        if (isset(self::$instance) === false)
+ 		{
+ 			if (isset(self::$instance) === false)
 			{
-	            $c = __CLASS__;
-	            self::$instance = new $c();
-	        }
-	    }
+				$c = __CLASS__;
+				self::$instance = new $c();
+ 			}
+ 		}
 		
 		
 		public static function connect($login, $pass)
@@ -86,6 +87,7 @@
 		{
 			self::$idUtilisateur = ($idSession == tsConfig::get('TS_ROOT_SESSIONID')) ?
 								0 : tsSession::getIdUtilisateur($idSession);
+			self::$idSession = $idSession;
 		}
 		
 		
@@ -143,7 +145,12 @@
 		
 		public static function getIdUtilisateur()
 		{
-            return self::$idUtilisateur;
+			return self::$idUtilisateur;
+		}
+
+		public static function getIdSession()
+		{
+			return self::$idSession;
 		}
 
 		public static function getTypeUtilisateur()

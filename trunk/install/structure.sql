@@ -1,5 +1,4 @@
-﻿
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+﻿SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 
 
@@ -14,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `sitChamp` (
   `idChampParent` mediumint(3) unsigned DEFAULT NULL,
   `libelle` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `xpath` text COLLATE utf8_unicode_ci,
-  `bordereau` set('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','ITI','VIL','ORG','PRD') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bordereau` set('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','VIL','ORG') COLLATE utf8_unicode_ci DEFAULT NULL,
   `groupe` enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   `codification` enum('type','code','lib_jour') COLLATE utf8_unicode_ci DEFAULT NULL,
   `liste` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -125,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `sitFiche` (
   `idFiche` int(4) unsigned NOT NULL AUTO_INCREMENT,
   `codeTIF` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `codeInsee` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
-  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','ITI','VIL','ORG','PRD') COLLATE utf8_unicode_ci NOT NULL,
+  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','VIL','ORG') COLLATE utf8_unicode_ci NOT NULL,
   `raisonSociale` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gpsLat` double(14,12) DEFAULT NULL,
   `gpsLng` double(14,12) DEFAULT NULL,
@@ -197,7 +196,6 @@ CREATE TABLE IF NOT EXISTS `sitFicheVersion` (
   `idUtilisateur` int(6) unsigned DEFAULT NULL,
   `etat` enum('brouillon','a_valider','accepte','refuse') COLLATE utf8_unicode_ci NOT NULL,
   `dateValidation` datetime DEFAULT NULL,
-  `xmlTIF` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`idFicheVersion`,`idFiche`),
   KEY `idUtilisateur` (`idUtilisateur`),
   KEY `idFiche` (`idFiche`),
@@ -441,7 +439,7 @@ CREATE TABLE IF NOT EXISTS `sitUtilisateurDroitFicheChamp` (
 
 CREATE TABLE IF NOT EXISTS `sitUtilisateurDroitTerritoire` (
   `idUtilisateur` int(6) unsigned NOT NULL,
-  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','ITI','VIL','ORG','PRD') COLLATE utf8_unicode_ci NOT NULL,
+  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','VIL','ORG') COLLATE utf8_unicode_ci NOT NULL,
   `idTerritoire` mediumint(3) unsigned NOT NULL,
   `idProfil` mediumint(3) unsigned DEFAULT NULL,
   `droit` mediumint(3) unsigned DEFAULT NULL,
@@ -458,7 +456,7 @@ CREATE TABLE IF NOT EXISTS `sitUtilisateurDroitTerritoire` (
 
 CREATE TABLE IF NOT EXISTS `sitUtilisateurDroitTerritoireChamp` (
   `idUtilisateur` int(6) unsigned NOT NULL,
-  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','ITI','VIL','ORG','PRD') COLLATE utf8_unicode_ci NOT NULL,
+  `bordereau` enum('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','VIL','ORG') COLLATE utf8_unicode_ci NOT NULL,
   `idTerritoire` mediumint(3) unsigned NOT NULL,
   `idChamp` mediumint(3) unsigned NOT NULL DEFAULT '0',
   `droit` mediumint(3) unsigned NOT NULL,

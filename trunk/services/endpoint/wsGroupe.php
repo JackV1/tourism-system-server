@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -51,17 +51,25 @@
 		/**
 		 * Définit l'utilisateur administrateur d'un groupe
 		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
-		 * @param int $idUtilisateur : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
+		 * @param int $idUtilisateur [optional] : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
+		 * 		si vide, on supprime le super admin du groupe
 		 * @access root
 		 */
-		protected function _setSuperAdminGroupe($idGroupe, $idUtilisateur)
+		protected function _setSuperAdminGroupe($idGroupe, $idUtilisateur = null)
 		{
 			$this -> restrictAccess('root');
 			$oGroupe = groupeDb::getGroupe($idGroupe);
-			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
-			$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
-			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			groupeDb::setSuperAdminGroupe($oGroupe, $oUtilisateur);
+			if (is_null($idUtilisateur) === false)
+			{
+				$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
+				$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
+				$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
+				groupeDb::setSuperAdminGroupe($oGroupe, $oUtilisateur);
+			}
+			else
+			{
+				groupeDb::unsetSuperAdminGroupe($oGroupe);
+			}
 			return array();
 		}
 		
@@ -81,11 +89,11 @@
 		 * Retourne la liste des utilisateurs d'un groupe
 		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
 		 * @return array utilisateurs : tableau de sitUtilisateur.idUtilisateur
-		 * @access root superadmin admin
+		 * @access root
 		 */
 		protected function _getUtilisateursGroupe($idGroupe)
 		{
-			$this -> restrictAccess('root', 'superadmin', 'admin');
+			$this -> restrictAccess('root');
 			$oGroupe = groupeDb::getGroupe($idGroupe);
 			$this -> checkDroitGroupe($oGroupe, DROIT_GET);
 			$utilisateurs = groupeDb::getUtilisateursGroupe($oGroupe);

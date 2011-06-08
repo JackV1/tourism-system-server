@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -23,11 +23,6 @@
 		const SQL_ADD_ENTREE_THESAURUS = "INSERT INTO sitEntreesThesaurus (codeThesaurus, cle, liste, lang, libelle) VALUES ('%s', '%s', '%s', '%s', '%s')";
 		//const SQL_LISTE_FROM_CLE = "SELECT liste FROM sitEntreesThesaurus WHERE cle='%s' AND codeThesaurus='MTH.NAT.TIFV30' AND lang='fr'";
 		const SQL_LISTE_FROM_CLE = "SELECT liste FROM sitEntreesThesaurus WHERE cle='%s' AND lang='fr'";
-		/*const SQL_NUMERO_TIF = "
-		SELECT IF (MAX(SUBSTRING_INDEX(cle, '.', -1) + 1) < 10,
-						CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', '0', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)), 
-						CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)))
-				AS codeTIF FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND liste='%s'";*/
 		const SQL_NUMERO_TIF = "
 		SELECT IF (MAX(SUBSTRING_INDEX(cle, '.', -1) + 1) < 10,
 						CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', '0', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)), 
@@ -51,12 +46,8 @@
 		
 		public static function getThesaurus($codeThesaurus)
 		{
-			$result = tsDatabase::getRow(self::SQL_THESAURUS, array($codeThesaurus), DB_FAIL_ON_ERROR);
-			$oThesaurus = new thesaurusModele();
-			$oThesaurus -> setCodeThesaurus($result['codeThesaurus']);
-			$oThesaurus -> setLibelle($result['libelle']);
-			$oThesaurus -> setPrefixe($result['prefixe']);
-			$oThesaurus -> setIdThesaurus($result['idThesaurus']);
+			$result = tsDatabase::getObject(self::SQL_THESAURUS, array($codeThesaurus, DB_FAIL_ON_ERROR));
+			$oThesaurus = thesaurusModele::getInstance($result, 'thesaurusModele');
 			return $oThesaurus;
 		}
 		
@@ -225,57 +216,7 @@
 			return $result;
 		}
 		
-		/* public static function getArbreThesaurus($cle, $pop)
-		{
-			$cle = str_replace('.*', '', $cle);
-			
-			if ($cle == '')
-			{
-				throw new ApplicationException("Code TIF invalide");
-			}
-			
-			self::$pop = ($pop != '' ? explode(',', $pop) : array());
-			
-			$idGroupe = tsDroits::getGroupeUtilisateur();
-			$oGroupe = groupeDb::getGroupe($idGroupe);
-			$oTerritoires = groupeDb::getGroupeTerritoires($oGroupe);
-			
-			$thesaurii = array('MTH.NAT.TIFV30');
-			foreach ($oTerritoires as $oTerritoire)
-			{
-				$oThesaurii = territoireDb::getThesaurusByTerritoire($oTerritoire);
-				foreach ($oThesaurii as $oThesaurus)
-				{
-					$thesaurii[] = $oThesaurus -> codeThesaurus;
-				}
-			}
-			$thesaurii = array_unique($thesaurii);
-			
-			$result = self::getEntreesRecursive($cle, $thesaurii);
-			
-			return $result;
-		}
 		
-		private static function getEntreesRecursive($cle, $thesaurii)
-		{
-			$result = array();
-			foreach ($thesaurii as $thesaurus)
-			{
-				$resultTmp = tsDatabase::getRows(self::SQL_ARBRE_THESAURUS, array($cle, $thesaurus), DB_FAIL_ON_ERROR);
-				$resultTmp = array_filter($resultTmp, array('self', 'popListeThesaurus'));
-				foreach ($resultTmp as &$row)
-				{
-					$children = self::getEntreesRecursive($row['cle'], $thesaurii);
-					if (count($children) > 0)
-					{
-						$row['children'] = $children;
-					}
-				}
-				$result = array_merge($result, $resultTmp);
-			}
-			
-			return $result;
-		} */
 		
 		public static function getArbreThesaurus($cle, $pop)
 		{
@@ -316,6 +257,7 @@
 			return $result;
 		}
 		
+		
 		private static function getEntreesRecursive($cle)
 		{
 			$result = array();
@@ -330,19 +272,17 @@
 					{
 						$resultTmp['children'] = $children;
 					}
-					
 					$result[] = $resultTmp;
 				}
 			}
-			
 			return $result;
 		}
+		
 		
 		private static function popListeThesaurus($item)
 		{
 			return !in_array($item['cle'], self::$pop);
 		}
-		
 		
 		
 		private static function getNextPrefixeThesaurus()
@@ -363,6 +303,7 @@
 			// @TODO : à déplacer dans un futur proche
 			return in_array($codeLangue, array('fr', 'en', 'de', 'es', 'nl', 'it'));
 		}
+		
 		
 		private static function getThesaurusByKey($cle)
 		{

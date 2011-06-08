@@ -1,7 +1,7 @@
 <?php
 	
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -27,6 +27,7 @@
 	require_once('application/exception/CacheException.php');
 	require_once('application/exception/ConfigException.php');
 	require_once('application/exception/DatabaseException.php');
+	require_once('application/exception/ImportException.php');
 	require_once('application/exception/SessionException.php');
 	
 	require_once('application/database/tsDatabase.php');
@@ -40,8 +41,6 @@
 	
 	require_once('services/endpoint/wsEndpoint.php');
 	require_once('services/endpoint/wsStatus.php');
-	
-	require_once('services/implementation/wsImplementation.php');
 	
 	require_once('application/modele/WSDLable.php');
 	
@@ -57,7 +56,7 @@
 	
 	require_once('application/hook/tsHook.php');
 	
-	//ob_clean();
+	ob_clean();
 	
 	
 	
@@ -65,17 +64,17 @@
 	$isPlugin = (file_exists('plugins/'.$_REQUEST['service'] . '/'));
 	
 	ini_set("soap.wsdl_cache_enabled", "0");
-  
+
 	try
 	{
 		$servicePath = '';
 		$path = $isPlugin ? 'plugins/' . $_REQUEST['service'] . '/' : 'services/endpoint/';
-        require_once($path . 'ws' . ucfirst($_REQUEST['service']) . '.php');
+		require_once($path . 'ws' . ucfirst($_REQUEST['service']) . '.php');
  		$t_soapServerOptions = array
-        (
-            'trace' => 1, 
-            'soap_version' => SOAP_1_1
-        );
+		(
+			'trace' => 1, 
+			'soap_version' => SOAP_1_1
+		);
 		$arrPath = explode('/', $_SERVER['SCRIPT_NAME']);
 		array_pop($arrPath);
 		$basePath = implode('/', $arrPath);
@@ -87,13 +86,14 @@
 	catch (Exception $e)
 	{
 		Logger::file($e -> getMessage());
-	    echo $e -> getMessage();
+		echo $e -> getMessage();
 		print_r($e);
 	}
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	{
- 	    $server -> handle();
+		ob_clean();
+		$server -> handle();
 	}
 	
 	

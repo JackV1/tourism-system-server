@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -73,7 +73,7 @@
 			$oBordereau = baseModele::getInstance($bordereau, 'bordereauModele');
 			$oBordereau -> setBordereau($bordereau);
 			$oTerritoire = territoireDb::getTerritoire($idTerritoire);
-			$oDroit = baseModele::getInstance($stdDroit, 'droitTerritoireModele');
+			$oDroit = baseModele::getInstance($droit, 'droitTerritoireModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
 			$this -> checkDroitBordereauTerritoire($oBordereau, $oTerritoire, DROIT_ADMIN);
@@ -99,7 +99,7 @@
 			$oBordereau -> setBordereau($bordereau);
 			$oTerritoire = territoireDb::getTerritoire($idTerritoire);
 			$oChamp = champDb::getChamp($idChamp);
-			$oDroit = baseModele::getInstance($stdDroit, 'droitChampModele');
+			$oDroit = baseModele::getInstance($droit, 'droitChampModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
 			$this -> checkDroitBordereauTerritoire($oBordereau, $oTerritoire, DROIT_ADMIN);

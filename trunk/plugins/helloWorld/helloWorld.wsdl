@@ -48,7 +48,7 @@
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		
 		<operation name="sayHi">
-			<soap:operation soapAction="http://dev.tourism-system.fr/serveur/plugins/helloWorld/helloWorld.wsdl" style="rpc"/>
+			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/plugins/helloWorld/helloWorld.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -63,7 +63,7 @@
 	<service name="TourismSystemWebServiceHelloWorld">
 		<documentation>Webservices Hello World de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://dev.tourism-system.fr/serveur/helloWorld.php"/>
+			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>/helloWorld.php"/>
 		</port>
 	</service>
 

@@ -19,7 +19,6 @@
 					<element name="errorCode" type="xsd:int" nillable="true"/>
 			    </all>
 			</complexType>
-
 		</xsd:schema>
 	</wsdl:types>
 	
@@ -29,17 +28,15 @@
 		<part name="xmlTif" type="xsd:string"/>
 	</message>
 	<message name="importFicheResponse">
-		<!--part name="status" type="tns:WSstatus"/>
-		<part name="idFiche" type="xsd:int"/-->
-		<part name="response" type="xs:anyType"/>
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
 	
 	<portType name="CspPorts">
 		<operation name="importFiche">
 			<input  message="tns:importFicheRequest"/>
-			<!--output message="tns:importFicheResponse"/-->
-			<output message="tns:importFicheRequest"/>
+			<output message="tns:importFicheResponse"/>
 		</operation>
 	</portType>
 

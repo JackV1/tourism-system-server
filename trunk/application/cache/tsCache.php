@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -80,19 +80,19 @@
 		
 		public static function set($varName, $value, $timeOut = null)
 		{
-			return self::$instance -> set($varName, $value, $timeOut);
+			return self::$instance -> set(tsConfig::get('TS_CACHE_PREFIXE') . $varName, $value, $timeOut);
 		}
 		
 		
 		public static function get($varName)
 		{	
-			return self::$instance -> get($varName);
+			return self::$instance -> get(tsConfig::get('TS_CACHE_PREFIXE') . $varName);
 		}
 		
 		
 		public static function delete($varName)
 		{
-			self::$instance -> delete($varName);
+			self::$instance -> delete(tsConfig::get('TS_CACHE_PREFIXE') . $varName);
 		}
 		
 

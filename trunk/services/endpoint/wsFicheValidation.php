@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -20,7 +20,7 @@
 	{
 		
 		/**
-		 * Fiches � valider par l'utilisateur courant
+		 * Fiches à valider par l'utilisateur courant
 		 * Accessible aux utilisateurs root, superadmin, admin
 		 * @return array fiches : ficheSimpleCollection collection de ficheSimpleModele
 		 */
