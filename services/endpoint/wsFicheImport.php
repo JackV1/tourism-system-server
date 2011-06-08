@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -28,61 +28,60 @@
 		protected function _importFiche($xmlTif)
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
-		
-			$doc = new DOMDocument();
-			$doc -> loadXml($xmlTif);
-			$xpath = new DOMXPath($doc);
 			
-			$result = $xpath -> query('//tif:DublinCore/dc:identifier');
-			$dcIdentifier = $result -> item(0) -> nodeValue;
+			$xmlFiche = new xmlFiche($xmlTif);
 			
+			$dcIdentifier = $xmlFiche -> getValue('//tif:DublinCore/dc:identifier');
 			
-			if(empty($dcIdentifier))
+			if (empty($dcIdentifier))
 			{
-				throw new Exception("Aucun dcIdentifier");
+				throw new ImportException("Aucun dcIdentifier");
 			}
-			elseif(is_array($dcIdentifier))
+			elseif (is_array($dcIdentifier))
 			{
-				throw new Exception("Plusieurs dcIdentifier");
+				$dcIdentifier = $dcIdentifier[0];
 			}
+			
+			/*if (preg_match('/^[A-Z0-9]+$/', $dcIdentifier) == 0)
+			{
+				throw new ImportException("Le dcIdentifier n'est pas un Code TIF");
+			}*/
 			
 			$idFiche = ficheDb::getIdFicheByRefExterne($dcIdentifier);
 			
+			$raisonSociale = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:RaisonSociale');
+			
+			if (empty($raisonSociale))
+			{
+				throw new ImportException("Aucune raison sociale", $idFiche);
+			}
+			
+			$dcTitle = $xmlFiche -> getValue('//tif:DublinCore/dc:title');
+			
+			if (empty($dcTitle))
+			{
+				throw new ImportException("Aucun dcTitle", $idFiche);
+			}
+			
+			$newFiche = false;
+			
 			if(empty($idFiche))
-			{	
-				//$classification = $xmlFiche -> getValue('//tif:DublinCore/tif:Classification/@code');
-				$result = $xpath -> query('//tif:DublinCore/tif:Classification/@code');
-				$classification = $result -> item(0) -> nodeValue;
-				
+			{
+				$classification = $xmlFiche -> getValue('//tif:DublinCore/tif:Classification/@code');
 				$bordereau = tifTools::getBordereau($classification);
 				
-				
-				//$codeInsee = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[@type="04.03.13"]//tif:Commune/@code');
-				$result = $xpath -> query('//tif:Contacts/tif:DetailContact[@type="04.03.13"]/tif:Adresses/tif:DetailAdresse/tif:Commune/@code');
-				$codeInsee = $result -> item(0) -> nodeValue;
+				$codeInsee = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[@type="04.03.13"]//tif:Commune/@code');
 				
 				$idFiche = ficheDb::createFiche($bordereau, $codeInsee, $dcIdentifier);
-				
+				$newFiche = true;
 			}
 
 			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
 			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
 			
-			//$raisonSociale = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[@type="04.03.13"]//tif:RaisonSociale');
-			$result = $xpath -> query('//tif:Contacts/tif:DetailContact[@type="04.03.13"]/tif:RaisonSociale');
-			$raisonSociale = $result -> item(0) -> nodeValue;
+			ficheDb::createFicheVersion($idFiche, $xmlTif);
 			
-			$queryGps = 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.02"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.11"]/tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/';
-			
-			$result = $xpath -> query($queryGps . 'tif:Latitude');
-			$gpsLat = ($result -> nodelist -> length > 0) ? $result -> item(0) -> nodeValue : false;
-			$result = $xpath -> query($queryGps . 'tif:Longitude');
-			$gpsLng = ($result -> nodelist -> length > 0) ? $result -> item(0) -> nodeValue : false;
-			
-
-			ficheDb::sauvegardeFicheXml($idFiche, $xmlTif, $raisonSociale, $gpsLat, $gpsLng);
-			
-			return array('idFiche' => $idFiche);
+			return array('idFiche' => $idFiche, 'newFiche' => $newFiche);
 		}
 		
 		

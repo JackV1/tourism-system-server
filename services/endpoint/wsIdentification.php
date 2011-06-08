@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		1.0 alpha-test - 2011-01-27
+ * @version		2.0 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt

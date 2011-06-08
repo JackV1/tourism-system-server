@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -18,8 +18,9 @@
 		const SQL_CREATE_GROUPE = "INSERT INTO sitGroupe (nomGroupe) VALUES('%s')";
 		const SQL_UPDATE_GROUPE = "UPDATE sitGroupe SET nomGroupe='%s' WHERE idGroupe='%d'";
 		const SQL_DELETE_GROUPE = "DELETE FROM sitGroupe WHERE idGroupe='%d'";
-		const SQL_SUPER_ADMIN_GROUPE = "UPDATE sitGroupe SET idSuperAdmin='%d' WHERE idGroupe='%d'";
-		const SQL_UTILISATEURS_GROUPE = "SELECT idUtilisateur, login FROM sitUtilisateur WHERE idGroupe='%d'";
+		const SQL_SET_SUPER_ADMIN_GROUPE = "UPDATE sitGroupe SET idSuperAdmin='%d' WHERE idGroupe='%d'";
+		const SQL_UNSET_SUPER_ADMIN_GROUPE = "UPDATE sitGroupe SET idSuperAdmin=NULL WHERE idGroupe='%d'";
+		const SQL_UTILISATEURS_GROUPE = "SELECT idUtilisateur, login, pass FROM sitUtilisateur WHERE idGroupe='%d'";
 		const SQL_ADD_GROUPE_TERRITOIRE = "INSERT INTO sitGroupeTerritoire (idGroupe, idTerritoire) VALUES ('%d', '%d')";
 		const SQL_DELETE_GROUPE_TERRITOIRE = "DELETE FROM sitGroupeTerritoire WHERE idGroupe='%d' AND idTerritoire='%d'";
 		const SQL_GROUPE_TERRITOIRES = "SELECT idTerritoire FROM sitGroupeTerritoire WHERE idGroupe='%d'";
@@ -67,7 +68,13 @@
 			{
 				throw new SecuriteException("Seuls les utilisateurs de type admin peuvent devenir administrateur du groupe");
 			}
-			return tsDatabase::query(self::SQL_SUPER_ADMIN_GROUPE, array($oUtilisateur -> idUtilisateur, $oGroupe -> idGroupe));
+			
+			return tsDatabase::query(self::SQL_SET_SUPER_ADMIN_GROUPE, array($oUtilisateur -> idUtilisateur, $oGroupe -> idGroupe));
+		}
+		
+		public static function unsetSuperAdminGroupe(groupeModele $oGroupe)
+		{
+			return tsDatabase::query(self::SQL_UNSET_SUPER_ADMIN_GROUPE, array($oGroupe -> idGroupe));;
 		}
 		
 		

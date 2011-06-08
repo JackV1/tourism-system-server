@@ -1,7 +1,7 @@
 <?php
 	
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -57,23 +57,23 @@
 			{
 				$this -> index = $offset + 1;
 			}
-        	$this -> collection[$offset] = $value;
-	    }
+			$this -> collection[$offset] = $value;
+		}
 		
-	    public function offsetExists($offset)
+		public function offsetExists($offset)
 		{
-	        return isset($this -> collection[$offset]);
-	    }
+			return isset($this -> collection[$offset]);
+		}
 		
-	    public function offsetUnset($offset)
+	 	public function offsetUnset($offset)
 		{
-	        unset($this -> collection[$offset]);
-	    }
+			unset($this -> collection[$offset]);
+		}
 		
-	    public function offsetGet($offset)
+		public function offsetGet($offset)
 		{
-	        return isset($this -> collection[$offset]) ? $this -> collection[$offset] : null;
-	    }
+			return isset($this -> collection[$offset]) ? $this -> collection[$offset] : null;
+		}
 		
 		
 		public function getCollection()

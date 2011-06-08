@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -20,6 +20,16 @@
 		
 		
 
+		/**
+		 * Chargement des utilisateurs administrables 
+		 */
+		protected function loadUtilisateursAdministrables()
+		{
+			$sql = constant(get_class($this) . '::SQL_UTILISATEURS');
+			$this -> utilisateursAdministrables = tsDatabase::getRecords($sql,  array($this -> idUtilisateur));
+		}
+		
+		
 		public function getDroitGroupe(groupeModele $oGroupe)
 		{
 			if ($oGroupe -> idGroupe != $this -> idGroupe)
@@ -38,8 +48,10 @@
 		
 		public function getDroitFiche(ficheModele $oFiche)
 		{
-			$idFiche = $oFiche -> getIdFiche();
-			//assert('in_array($idFiche, $this -> fichesAdministrables)');
+			if (in_array($oFiche -> idFiche, $this -> fichesAdministrables) === false)
+			{
+				throw new SecuriteException("Vous n'avez pas accès à cette fiche.");
+			}
 			$droit = new droitFicheModele();
 			$droit -> setVisualisation(true);
 			$droit -> setModification(true);
@@ -51,8 +63,6 @@
 		
 		public function getDroitFicheChamp(ficheModele $oFiche, champModele $oChamp)
 		{
-			$idFiche = $oFiche -> getIdFiche();
-			//assert('in_array($idFiche, $this -> fichesAdministrables)');
 			$droit = new droitChampModele();
 			$droit -> setVisualisation(true);
 			$droit -> setModification(true);

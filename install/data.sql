@@ -1,17 +1,11 @@
-﻿
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
---
--- Base de données: `tourismSystemDemo`
---
+﻿SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Contenu de la table `sitChamp`
 --
 
 INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordereau`, `groupe`, `codification`, `liste`, `identifiant`, `systeme`) VALUES
-(3, NULL, 'Raison sociale', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:RaisonSociale', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'raison_sociale', 'Y'),
+(3, NULL, 'Raison sociale', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:RaisonSociale', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'raison_sociale', 'Y'),
 (5, NULL, 'Siret', 'tif:InformationsLegales/tif:SIRET', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'siret', 'N'),
 (9, NULL, 'APE / NAF', 'tif:InformationsLegales/tif:APE_NAF', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'ape_naf', 'N'),
 (36, NULL, 'Type d''établissement', 'tif:DublinCore/tif:ControlledVocabulary', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'type_etablissement', 'N'),
@@ -28,13 +22,13 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (50, NULL, 'Site web', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:Adresses/tif:DetailAdresse/tif:Personnes/tif:DetailPersonne[attribute::type="04.04.05"]/tif:MoyensCommunications/tif:DetailMoyenCom[attribute::type="04.02.05"]/tif:Coord', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'site_web', 'N'),
 (51, NULL, 'Email', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:Adresses/tif:DetailAdresse/tif:Personnes/tif:DetailPersonne[attribute::type="04.04.05"]/tif:MoyensCommunications/tif:DetailMoyenCom[attribute::type="04.02.04"]/tif:Coord', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'email', 'N'),
 (52, NULL, 'RCS', 'tif:InformationsLegales/tif:RCS', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'rcs', 'N'),
-(53, NULL, 'Description commerciale FR', 'tif:DublinCore/dc:description[attribute::xml:lang="fr"][1]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_fr', 'N'),
-(54, NULL, 'Description commerciale EN', 'tif:DublinCore/dc:description[attribute::xml:lang="en"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_en', 'N'),
-(55, NULL, 'Description commerciale DE', 'tif:DublinCore/dc:description[attribute::xml:lang="de"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_de', 'N'),
-(56, NULL, 'Description commerciale ES', 'tif:DublinCore/dc:description[attribute::xml:lang="es"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_es', 'N'),
-(57, NULL, 'Description commerciale NL', 'tif:DublinCore/dc:description[attribute::xml:lang="nl"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_nl', 'N'),
-(58, NULL, 'Description commerciale IT', 'tif:DublinCore/dc:description[attribute::xml:lang="it"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'description_commerciale_it', 'N'),
-(59, NULL, 'Slogan FR', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="16.01.04"]/tif:Description[attribute::type="16.02.01" and attribute::xml:lang="fr"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'slogan_fr', 'N'),
+(53, NULL, 'Description commerciale FR', 'tif:DublinCore/dc:description[attribute::xml:lang="fr"][1]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_fr', 'N'),
+(54, NULL, 'Description commerciale EN', 'tif:DublinCore/dc:description[attribute::xml:lang="en"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_en', 'N'),
+(55, NULL, 'Description commerciale DE', 'tif:DublinCore/dc:description[attribute::xml:lang="de"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_de', 'N'),
+(56, NULL, 'Description commerciale ES', 'tif:DublinCore/dc:description[attribute::xml:lang="es"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_es', 'N'),
+(57, NULL, 'Description commerciale NL', 'tif:DublinCore/dc:description[attribute::xml:lang="nl"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_nl', 'N'),
+(58, NULL, 'Description commerciale IT', 'tif:DublinCore/dc:description[attribute::xml:lang="it"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'description_commerciale_it', 'N'),
+(59, NULL, 'Slogan FR', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="16.01.04"]/tif:Description[attribute::type="16.02.01" and attribute::xml:lang="fr"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'slogan_fr', 'N'),
 (60, NULL, 'Slogan EN', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="16.01.04"]/tif:Description[attribute::type="16.02.01" and attribute::xml:lang="en"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'slogan_en', 'N'),
 (61, NULL, 'Slogan DE', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="16.01.04"]/tif:Description[attribute::type="16.02.01" and attribute::xml:lang="de"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'slogan_de', 'N'),
 (62, NULL, 'Slogan ES', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="16.01.04"]/tif:Description[attribute::type="16.02.01" and attribute::xml:lang="es"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'slogan_es', 'N'),
@@ -102,8 +96,6 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (124, NULL, 'Capacité totale (nombre de personnes)', 'tif:Capacites/tif:CapacitesGlobales[attribute::type="14.01.04"]/tif:Capacite[attribute::unite="01.03.01.09" and attribute::classee="O"]', 'HPA,LOI', 'N', NULL, '', 'capacite_personne', 'N'),
 (125, NULL, 'Nombre d''emplacements "Loisir"', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="14.03.02.15"]/tif:NbUnites', 'HPA', 'N', NULL, '', 'capacite_loisir', 'N'),
 (126, NULL, 'Nombre d''emplacements "Tourisme"', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="14.03.02.16"]/tif:NbUnites', 'HPA', 'N', NULL, '', 'capacite_tourisme', 'N'),
-(127, NULL, 'Nombre de chalets', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="99.14.03.02.02"]/tif:NbUnites', 'HPA', 'N', NULL, '', 'capacite_chalet', 'N'),
-(128, NULL, 'Nombre de mobil homes', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="99.14.03.02.03"]/tif:NbUnites', 'HPA', 'N', NULL, '', 'capacite_mobilhome', 'N'),
 (130, NULL, 'Superficie totale  (m2)', 'tif:Capacites/tif:CapacitesGlobales[attribute::type="14.01.04"]/tif:Superficie[attribute::unite="01.03.04.01" and attribute::classee="N"]', 'HPA,LOI', 'N', NULL, '', 'capacite_superficie', 'N'),
 (132, NULL, 'Evénements', 'tif:DublinCore/tif:ControlledVocabulary[contains(attribute::code, "02.01.03.02")]', 'FMA', 'N', NULL, '', 'fma_evenements', 'N'),
 (133, NULL, 'Types', 'tif:DublinCore/tif:ControlledVocabulary[contains(attribute::code, "02.01.03.04")]', 'FMA', 'N', NULL, '', 'fma_types', 'N'),
@@ -138,32 +130,11 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (175, 117, 'Unite', 'tif:Distance/@unite', NULL, 'N', NULL, 'LS_Unite', 'unite', 'N'),
 (176, 104, 'Equipement', 'tif:Prestation/@type', NULL, 'N', NULL, 'LS_Prestation', 'cle', 'N'),
 (177, 106, 'Service', 'tif:Prestation/@type', NULL, 'N', NULL, 'LS_Prestation', 'cle', 'N'),
-(178, NULL, 'Itinéraire', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="99.16.01.01"]/tif:Description[attribute::type="99.16.02.02"]', 'ITI', 'N', NULL, '', 'itineraire', 'N'),
-(179, NULL, 'Itinéraire KML', 'tif:DescriptionsComplementaires/tif:DetailDescriptionComplementaire[attribute::type="99.16.01.01"]/tif:Description[attribute::type="99.16.02.01"]', 'ITI', 'N', NULL, '', 'itineraire_tabPoints', 'N'),
-(180, NULL, 'Itinéraire libellé départ', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.04"]/tif:Nom', 'ITI', 'N', NULL, '', 'itineraire_dep_nom', 'N'),
-(181, NULL, 'Itineraire latitude depart ', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.04"]/tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Latitude', 'ITI', 'N', NULL, '', 'itineraire_dep_lat', 'N'),
-(182, NULL, 'Itineraire longitude depart', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.04"]/tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Longitude', 'ITI', 'N', NULL, '', 'itineraire_dep_lng', 'N'),
-(183, NULL, 'Itineraire libellé arrivée', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.02"]/tif:Nom', 'ITI', 'N', NULL, '', 'itineraire_arr_nom', 'N'),
-(184, NULL, 'Itineraire latitude arrivée', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.02"]/tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Latitude', 'ITI', 'N', NULL, '', 'itineraire_arr_lat', 'N'),
-(185, NULL, 'Itinéraire longitude arrivée', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.02"]/tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Longitude', 'ITI', 'N', NULL, '', 'itineraire_arr_lng', 'N'),
-(186, NULL, 'Itinéraire distance parcours', 'tif:Itineraires/tif:DetailItineraire[attribute::type="18.02.01"]/tif:Distance[attribute::unite="01.03.02.02"]', 'ITI', 'N', NULL, '', 'itineraire_length', 'N'),
-(187, NULL, 'Itineraire type locomotion', 'tif:Itineraires/tif:DetailItineraire[attribute::type="18.02.01"]', 'ITI', 'N', NULL, '', 'itineraire_typeLocomotion', 'N'),
-(188, NULL, 'Itineraire POI', 'tif:Geolocalisations/tif:DetailGeolocalisation[attribute::type="08.01.03"]/tif:Zone[attribute::type="08.02.07.02"]/tif:Points/tif:DetailPoint[attribute::type="08.02.05.06"]', 'ITI', 'N', NULL, '', 'itineraire_poi', 'N'),
-(190, 188, 'Nom', 'tif:Nom', NULL, 'N', NULL, '', 'name', 'N'),
-(191, 188, 'Latitude', 'tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Latitude', NULL, 'N', NULL, '', 'gpsLat', 'N'),
-(192, 188, 'Longitude', 'tif:Coordonnees/tif:DetailCoordonnees[attribute::type="08.02.02.03"]/tif:Longitude', NULL, 'N', NULL, '', 'gpsLng', 'N'),
-(193, 188, 'Type de POI', 'tif:Multimedia/tif:DetailMultimedia/@type', NULL, 'N', NULL, '', 'type_poi', 'N'),
-(194, 187, 'Duree', 'tif:Duree[attribute::type="01.03.03.02"]', NULL, 'N', NULL, '', 'duree', 'N'),
-(195, 187, 'Itineraire difficulté', 'tif:DescriptionItineraire', NULL, 'N', NULL, '', 'difficulte', 'N'),
-(196, 187, 'Locomotion', 'tif:DescriptionItineraire/@id', NULL, 'N', NULL, '', 'locomotion', 'N'),
-(197, 188, 'Description', 'tif:Multimedia/tif:DetailMultimedia[attribute::type="03.01.02"]/tif:ObservationMultimedia', NULL, 'N', NULL, '', 'description', 'N'),
-(198, 188, 'Url', 'tif:Multimedia/tif:DetailMultimedia/tif:URL', NULL, 'N', NULL, '', 'url', 'N'),
 (199, NULL, 'itineraire publication', 'tif:DublinCore/dcterms:available', NULL, 'N', NULL, '', 'itineraire_publication', 'N'),
-(200, NULL, 'Niveau de contrat', 'tif:ChampsSpecifiques/tif:ChampSpecifiqueSelect[attribute::type="20.02.01"]/tif:ChampSpecifiqueValeur/@type', 'HOT,HPA,HLO,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, 'LS_ChampSpecifiqueValeur', 'cs_contrat', 'N'),
 (201, NULL, 'Photos / Fichiers', 'tif:Multimedia/tif:DetailMultimedia[attribute::type="03.01.01"]', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'photos_fichiers', 'N'),
 (202, 201, 'Url', 'tif:URL', NULL, 'N', NULL, '', 'url_fichier', 'N'),
 (203, 201, 'Nom', 'tif:Nom', NULL, 'N', NULL, '', 'nom_fichier', 'N'),
-(204, NULL, 'Code Insee', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:Adresses/tif:DetailAdresse/tif:Commune/@code', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,ITI,VIL,ORG', 'N', NULL, '', 'code_insee', 'N'),
+(204, NULL, 'Code Insee', 'tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:Adresses/tif:DetailAdresse/tif:Commune/@code', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL,ORG', 'N', NULL, '', 'code_insee', 'N'),
 (205, NULL, 'Labels', 'tif:Classements/tif:DetailClassement[contains(attribute::type, "06.06")]', 'HOT,HPA,HLO,RES,VIL', 'N', NULL, '', 'label', 'N'),
 (206, NULL, 'Chaines', 'tif:Classements/tif:DetailClassement[contains(attribute::type, "06.02")]', 'HOT,HPA,VIL', 'N', NULL, '', 'chaine', 'N'),
 (207, NULL, 'Mode de paiement', 'tif:Tarifs/tif:ModesPaiement/tif:ModePaiement', 'HOT,HPA,HLO,FMA,PCU,PNA,RES,DEG,LOI,ASC,VIL', 'N', NULL, '', 'mode_paiement', 'N'),
@@ -176,7 +147,6 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (220, 205, 'Label simple', '@type', NULL, 'N', NULL, 'LS_TypeClassement', 'cle', 'N'),
 (221, 206, 'Chaine', '@type', NULL, 'N', NULL, 'LS_TypeClassement', 'cle', 'N'),
 (222, 157, 'Agrément', '@type', NULL, 'N', NULL, 'LS_Classement', 'cle', 'N'),
-(228, NULL, 'URL Réservation', 'tif:ChampsSpecifiques/tif:ChampSpecifiqueTexte[attribute::type="113.20.01.01"]', 'HOT,HPA,HLO,VIL', 'N', NULL, '', 'cs_urlresa', 'N'),
 (231, NULL, 'Bienvenue à la Ferme', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.01.01"]/tif:Classement/@type', 'HPA', 'N', NULL, 'LS_Classement', 'bienvenue_a_la_ferme', 'N'),
 (232, NULL, 'Logis de France', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.03.01"]/tif:Classement/@type', 'HOT', 'N', NULL, 'LS_Classement', 'logis_de_france', 'N'),
 (233, NULL, 'Camping Qualité France', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.01.02"]/tif:Classement/@type', 'HPA', 'N', NULL, 'LS_Classement', 'camping_qualité_france', 'N'),
@@ -184,10 +154,6 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (235, NULL, 'Locations CléVacances', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.02.02"]/tif:Classement/@type', 'HLO', 'N', NULL, 'LS_Classement', 'locations_clevacances', 'N'),
 (236, NULL, 'Tables et auberges de France', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.04.03"]/tif:Classement/@type', 'RES', 'N', NULL, 'LS_Classement', 'tables_et_auberges_de_france', 'N'),
 (237, NULL, 'Loisirs de France', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.05.01"]/tif:Classement/@type', 'VIL', 'N', NULL, 'LS_Classement', 'loisirs_de_france', 'N'),
-(238, NULL, 'EcoLabel Européen', 'tif:Classements/tif:DetailClassement[attribute::type="100.06.03.02.01"]/tif:Classement/@type', 'HLO', 'N', NULL, 'LS_Classement', 'ecolabel_europeen', 'N'),
-(239, NULL, 'Clef verte', 'tif:Classements/tif:DetailClassement[attribute::type="100.06.03.02.02"]/tif:Classement/@type', 'HLO', 'N', NULL, 'LS_Classement', 'clef_verte', 'N'),
-(243, NULL, 'Logis', 'tif:Classements/tif:DetailClassement[attribute::type="100.06.03.04.03"]/tif:Classement/@type', 'RES', 'N', NULL, 'LS_Classement', 'logis', 'N'),
-(244, NULL, 'FUAJ', 'tif:Classements/tif:DetailClassement[attribute::type="100.06.03.05.02"]/tif:Classement/@type', 'VIL', 'N', NULL, 'LS_Classement', 'fuaj', 'N'),
 (245, NULL, 'Michelin', 'tif:Classements/tif:DetailClassement[attribute::type="06.03.06.12"]/tif:Classement/@type', 'HOT,RES', 'N', NULL, 'Ls_Classement', 'michelin', 'N'),
 (246, 73, 'Commune', 'tif:Adresses/tif:DetailAdresse/tif:Commune', NULL, 'N', NULL, '', 'commune', 'N'),
 (248, 65, 'Langue', '@lang', NULL, 'N', NULL, 'LS_Langues', 'langue', 'N'),
@@ -253,13 +219,6 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (309, 304, 'Code', '@code\n', NULL, 'N', NULL, 'LS_ControlledVocabulary', 'cle', 'N'),
 (310, 305, 'Code', '@code\n', NULL, 'N', NULL, 'LS_ControlledVocabulary', 'cle', 'N'),
 (311, 258, 'Date fin', 'tif:DetailPeriode[attribute::type="09.01.07"]/tif:Dates/tif:DetailDate/tif:DateFin', NULL, 'N', NULL, '', 'datefin', 'N'),
-(312, NULL, 'Chambre simple', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.36"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_simple', 'N'),
-(313, NULL, 'Chambre double', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.37"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_double', 'N'),
-(314, NULL, 'Chambre triple et plus', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.38"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_triple', 'N'),
-(315, NULL, 'Chambre avec bain', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.05"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_bain', 'N'),
-(316, NULL, 'Chambre avec douche', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.06"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_douche', 'N'),
-(317, NULL, 'Chambre non fumeur', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.09"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_non_fumeur', 'N'),
-(318, NULL, 'Chambre pour personne à mobilité réduite', 'tif:Capacites/tif:CapacitesUnites/tif:DetailCapaciteUnite[attribute::type="100.14.03.02.10"]/tif:NbUnites', 'HOT', 'N', NULL, '', 'chambre_handicap', 'N'),
 (319, NULL, 'Début de manifestation', 'tif:Periodes/tif:DetailPeriode[attribute::type="09.01.05"]/tif:Dates/tif:DetailDates/tif:DateDebut', 'FMA', 'N', NULL, '', 'debut_manifestation', 'N'),
 (320, NULL, 'Fin de manifestation', 'tif:Periodes/tif:DetailPeriode[attribute::type="09.01.05"]/tif:Dates/tif:DetailDates/tif:DateFin', 'FMA', 'N', NULL, '', 'fin_manifestation', 'N'),
 (321, NULL, 'Date de validité', 'tif:DublinCore/dcterms:valid', 'FMA', 'N', NULL, '', 'valid', 'N'),
@@ -271,9 +230,6 @@ INSERT INTO `sitChamp` (`idChamp`, `idChampParent`, `libelle`, `xpath`, `bordere
 (327, 156, 'Nom', 'tif:Nom[attribute::xml:lang="fr"]', NULL, 'N', NULL, '', 'nom', 'N'),
 (328, 156, 'Nombre de personnes (min)', 'tif:Dispositions/tif:DetailDisposition[attribute::type="14.03.03.05"]/tif:CapaciteMini', NULL, 'N', NULL, '', 'personnesmin', 'N'),
 (329, 156, 'Nombre de personnes (max)', 'tif:Dispositions/tif:DetailDisposition[attribute::type="14.03.03.05"]/tif:CapaciteMaxi', NULL, 'N', NULL, '', 'personnesmax', 'N'),
-(330, NULL, 'Cuvées préférées', 'tif:ChampsSpecifiques/tif:ChampSpecifiqueTexteArea[attribute::type="114.20.01.01"]', 'DEG', 'N', NULL, '', 'cs_cuvees_preferees', 'N'),
-(331, NULL, 'Appellations dénominations', 'tif:ChampsSpecifiques/tif:ChampSpecifiqueTexteArea[attribute::type="114.20.01.02"]', 'DEG', 'N', NULL, '', 'cs_appellations_denominations', 'N'),
-(332, NULL, 'Prix obtenus', 'tif:ChampsSpecifiques/tif:ChampSpecifiqueTexteArea[attribute::type="114.20.01.03"]', 'DEG', 'N', NULL, '', 'cs_prix_obtenus', 'N'),
 (333, 107, 'Description FR', 'tif:DescriptionTarif[attribute::xml:lang="fr"]', NULL, 'N', NULL, '', 'description_fr', 'N'),
 (334, 107, 'Description EN', 'tif:DescriptionTarif[attribute::xml:lang="en"]', NULL, 'N', NULL, '', 'description_en', 'N'),
 (335, 107, 'Description ES', 'tif:DescriptionTarif[attribute::xml:lang="es"]', NULL, 'N', NULL, '', 'description_es', 'N'),
@@ -37014,26 +36970,6 @@ INSERT INTO `sitCommune` (`codeInsee`, `codePostal`, `libelle`, `gpsLat`, `gpsLn
 ('97424', '97413', 'Cilaos', -21.100000, 55.599998);
 
 --
--- Contenu de la table `sitCriteresBool`
---
-
-
---
--- Contenu de la table `sitCriteresDates`
---
-
-
---
--- Contenu de la table `sitCriteresInt`
---
-
-
---
--- Contenu de la table `sitCriteresString`
---
-
-
---
 -- Contenu de la table `sitEntreesThesaurus`
 --
 
@@ -37855,11 +37791,31 @@ INSERT INTO `sitEntreesThesaurus` (`cle`, `liste`, `lang`, `libelle`, `arboresce
 ('06.03.03.01.02', 'LS_Classement', 'fr', '2 cheminées (très bon confort)', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.03.01.03', 'LS_Classement', 'fr', '3 cheminées (grand confort)', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04', '', 'fr', 'Restaurants', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.01', 'LS_TypeClassement', 'fr', 'Cuisineries gourmandes', NULL, 'CGOUR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.02', 'LS_TypeClassement', 'fr', 'Restaurateurs de France', NULL, 'RFRAN', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04.03', 'LS_TypeClassement', 'fr', 'Tables et auberges de France', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04.03.01', 'LS_Classement', 'fr', 'Auberge de pays', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04.03.02', 'LS_Classement', 'fr', 'Table de terroir', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04.03.03', 'LS_Classement', 'fr', 'Table gastronomique', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.04.03.04', 'LS_Classement', 'fr', 'Table de prestige', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.04', 'LS_TypeClassement', 'fr', 'Association des maîtres cuisiniers de France', NULL, 'AMCDF', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.05', 'LS_TypeClassement', 'fr', 'Association des restaurateurs de métier des provinces françaises', NULL, 'ARMPF', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.06', 'LS_TypeClassement', 'fr', 'Club des bons restaurants de campagne', NULL, 'CDBRC', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.07', 'LS_TypeClassement', 'fr', 'Confrérie de la chaîne des rôtisseurs', NULL, 'CDCDR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.08', 'LS_TypeClassement', 'fr', 'Club des restaurateurs d''altitude', NULL, 'CDRAL', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.09', 'LS_TypeClassement', 'fr', 'Cuisine en Loir et Cher', NULL, 'CELEC', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.10', 'LS_TypeClassement', 'fr', 'Club international Prosper Montagné', NULL, 'CIPMO', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.11', 'LS_TypeClassement', 'fr', 'Eurotoques', NULL, 'ETOQU', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.12', 'LS_TypeClassement', 'fr', 'Jeunes restaurateurs Européens', NULL, 'JREU', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.13', 'LS_TypeClassement', 'fr', 'Table gourmande tarnaise', NULL, 'LGTAR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.14', 'LS_TypeClassement', 'fr', 'Les toques blanches du Comtat', NULL, 'LTBDC', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.15', 'LS_TypeClassement', 'fr', 'Les toques blanches lyonnaises', NULL, 'LTBLY', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.16', 'LS_TypeClassement', 'fr', 'Les toques normandes', NULL, 'LTNOR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.17', 'LS_TypeClassement', 'fr', 'Les toques vendéennes', NULL, 'LTVEN', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.18', 'LS_TypeClassement', 'fr', 'Tables et saveurs de Bretagne', NULL, 'TESDB', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.19', 'LS_TypeClassement', 'fr', 'Tables gourmandes d''Anjou', NULL, 'TGDAN', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.20', 'LS_TypeClassement', 'fr', 'Tables gourmandes du Berry', NULL, 'TGDBE', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.04.21', 'LS_TypeClassement', 'fr', 'Touraine gourmande en Val de Loire', NULL, 'TGVDL', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.05', '', 'fr', 'Hébergement d''accueil collectif', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.05.01', 'LS_TypeClassement', 'fr', 'Loisirs de France', NULL, 'LFRAN', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.05.01.01', 'LS_Classement', 'fr', '1 Lutin bleu (simple)', NULL, 'BLEU1', 'MTH.NAT.TIFV30', 'Y'),
@@ -37873,10 +37829,26 @@ INSERT INTO `sitEntreesThesaurus` (`cle`, `liste`, `lang`, `libelle`, `arboresce
 ('06.03.05.01.09', 'LS_Classement', 'fr', '3 Lutins rouges (très bon et complets)', NULL, 'ROUG3', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.05.01.10', 'LS_Classement', 'fr', 'En cours de classement', NULL, 'ENC', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.06', '', 'fr', 'Guides touristiques', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.01', 'LS_TypeClassement', 'fr', 'Bottin Gourmand', NULL, 'BOGOU', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.02', 'LS_TypeClassement', 'fr', 'Champerard', NULL, 'CHAMP', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.03', 'LS_TypeClassement', 'fr', 'Guide Deuzere', NULL, 'DEUZE', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.04', 'LS_TypeClassement', 'fr', 'Eurotoque', NULL, 'EUROT', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.05', 'LS_TypeClassement', 'fr', 'Gault Millau', NULL, 'GAULT', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.07', 'LS_TypeClassement', 'fr', 'Guide des Relais Routiers', NULL, 'GUDRR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.08', 'LS_TypeClassement', 'fr', 'Guide des Sentiers Gourmands', NULL, 'GUDSG', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.09', 'LS_TypeClassement', 'fr', 'Guide de l''Auto-Journal', NULL, 'GULAJ', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.10', 'LS_TypeClassement', 'fr', 'Hachette', NULL, 'HACHE', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.11', 'LS_TypeClassement', 'fr', 'Le petit futé', NULL, 'LPEFU', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.06.12', 'LS_TypeClassement', 'fr', 'Michelin', NULL, 'MICHE', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.06.12.01', 'LS_Classement', 'fr', '1 étoile', NULL, 'CAT1', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.06.12.02', 'LS_Classement', 'fr', '2 étoiles', NULL, 'CAT2', 'MTH.NAT.TIFV30', 'Y'),
 ('06.03.06.12.03', 'LS_Classement', 'fr', '3 étoiles', NULL, 'CAT3', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.13', 'LS_TypeClassement', 'fr', 'Numéro 1', NULL, 'NUME1', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.14', 'LS_TypeClassement', 'fr', 'Pudowski', NULL, 'PUDOW', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.15', 'LS_TypeClassement', 'fr', 'Restaurateurs de France', NULL, 'RESFR', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.16', 'LS_TypeClassement', 'fr', 'Le Routard Hôtels et Restos de France', NULL, 'RHERF', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.17', 'LS_TypeClassement', 'fr', 'Le Routard Tables et Chambres à la campagne', NULL, 'RTECC', 'MTH.NAT.TIFV30', 'Y'),
+('06.03.06.18', 'LS_TypeClassement', 'fr', 'Sentiers gourmands', NULL, 'SENGO', 'MTH.NAT.TIFV30', 'Y'),
 ('06.04', '', 'fr', 'Officiels', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.04.01', 'LS_TypeClassement', 'fr', 'Préfectoral', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('06.04.01.01', 'LS_TypeClassement', 'fr', 'OTSI', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
@@ -37941,42 +37913,6 @@ INSERT INTO `sitEntreesThesaurus` (`cle`, `liste`, `lang`, `libelle`, `arboresce
 ('06.05.02', 'LS_Classement', 'fr', 'Handicap mental', NULL, 'MEN', 'MTH.NAT.TIFV30', 'Y'),
 ('06.05.03', 'LS_Classement', 'fr', 'Handicap moteur', NULL, 'MOT', 'MTH.NAT.TIFV30', 'Y'),
 ('06.05.04', 'LS_Classement', 'fr', 'Handicap visuel', NULL, 'VIS', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.01', 'LS_TypeClassement', 'fr', 'Cuisineries gourmandes', NULL, 'CGOUR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.02', 'LS_TypeClassement', 'fr', 'Restaurateurs de France', NULL, 'RFRAN', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.04', 'LS_TypeClassement', 'fr', 'Association des maîtres cuisiniers de France', NULL, 'AMCDF', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.05', 'LS_TypeClassement', 'fr', 'Association des restaurateurs de métier des provinces françaises', NULL, 'ARMPF', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.06', 'LS_TypeClassement', 'fr', 'Club des bons restaurants de campagne', NULL, 'CDBRC', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.07', 'LS_TypeClassement', 'fr', 'Confrérie de la chaîne des rôtisseurs', NULL, 'CDCDR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.08', 'LS_TypeClassement', 'fr', 'Club des restaurateurs d''altitude', NULL, 'CDRAL', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.09', 'LS_TypeClassement', 'fr', 'Cuisine en Loir et Cher', NULL, 'CELEC', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.10', 'LS_TypeClassement', 'fr', 'Club international Prosper Montagné', NULL, 'CIPMO', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.11', 'LS_TypeClassement', 'fr', 'Eurotoques', NULL, 'ETOQU', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.12', 'LS_TypeClassement', 'fr', 'Jeunes restaurateurs Européens', NULL, 'JREU', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.13', 'LS_TypeClassement', 'fr', 'Table gourmande tarnaise', NULL, 'LGTAR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.14', 'LS_TypeClassement', 'fr', 'Les toques blanches du Comtat', NULL, 'LTBDC', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.15', 'LS_TypeClassement', 'fr', 'Les toques blanches lyonnaises', NULL, 'LTBLY', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.16', 'LS_TypeClassement', 'fr', 'Les toques normandes', NULL, 'LTNOR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.17', 'LS_TypeClassement', 'fr', 'Les toques vendéennes', NULL, 'LTVEN', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.18', 'LS_TypeClassement', 'fr', 'Tables et saveurs de Bretagne', NULL, 'TESDB', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.19', 'LS_TypeClassement', 'fr', 'Tables gourmandes d''Anjou', NULL, 'TGDAN', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.20', 'LS_TypeClassement', 'fr', 'Tables gourmandes du Berry', NULL, 'TGDBE', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.04.21', 'LS_TypeClassement', 'fr', 'Touraine gourmande en Val de Loire', NULL, 'TGVDL', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.01', 'LS_TypeClassement', 'fr', 'Bottin Gourmand', NULL, 'BOGOU', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.02', 'LS_TypeClassement', 'fr', 'Champerard', NULL, 'CHAMP', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.03', 'LS_TypeClassement', 'fr', 'Guide Deuzere', NULL, 'DEUZE', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.04', 'LS_TypeClassement', 'fr', 'Eurotoque', NULL, 'EUROT', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.05', 'LS_TypeClassement', 'fr', 'Gault Millau', NULL, 'GAULT', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.07', 'LS_TypeClassement', 'fr', 'Guide des Relais Routiers', NULL, 'GUDRR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.08', 'LS_TypeClassement', 'fr', 'Guide des Sentiers Gourmands', NULL, 'GUDSG', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.09', 'LS_TypeClassement', 'fr', 'Guide de l''Auto-Journal', NULL, 'GULAJ', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.10', 'LS_TypeClassement', 'fr', 'Hachette', NULL, 'HACHE', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.11', 'LS_TypeClassement', 'fr', 'Le petit futé', NULL, 'LPEFU', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.13', 'LS_TypeClassement', 'fr', 'Numéro 1', NULL, 'NUME1', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.14', 'LS_TypeClassement', 'fr', 'Pudowski', NULL, 'PUDOW', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.15', 'LS_TypeClassement', 'fr', 'Restaurateurs de France', NULL, 'RESFR', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.16', 'LS_TypeClassement', 'fr', 'Le Routard Hôtels et Restos de France', NULL, 'RHERF', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.17', 'LS_TypeClassement', 'fr', 'Le Routard Tables et Chambres à la campagne', NULL, 'RTECC', 'MTH.NAT.TIFV30', 'Y'),
-('06.06.06.18', 'LS_TypeClassement', 'fr', 'Sentiers gourmands', NULL, 'SENGO', 'MTH.NAT.TIFV30', 'Y'),
 ('06.60.06.06', 'LS_TypeClassement', 'fr', 'Guide des bonnes tables', NULL, 'GUDBT', 'MTH.NAT.TIFV30', 'Y'),
 ('07', '', 'fr', 'Prestations liées', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
 ('07.01', '', 'fr', 'Types', NULL, '', 'MTH.NAT.TIFV30', 'Y'),
@@ -39172,79 +39108,11 @@ INSERT INTO `sitEntreesThesaurus` (`cle`, `liste`, `lang`, `libelle`, `arboresce
 ('ZW', 'LS_Pays', 'fr', 'ZIMBABWE', NULL, '', 'MTH.NAT.TIFV30', 'Y');
 
 --
--- Contenu de la table `sitFiche`
---
-
-
---
--- Contenu de la table `sitFicheFichier`
---
-
-
---
--- Contenu de la table `sitFicheSupprime`
---
-
-
---
--- Contenu de la table `sitFicheVersion`
---
-
-
---
--- Contenu de la table `sitFicheVersionChamp`
---
-
-
---
--- Contenu de la table `sitGroupe`
---
-
-
---
--- Contenu de la table `sitGroupeTerritoire`
---
-
-
---
--- Contenu de la table `sitMapThesaurus`
---
-
-
---
 -- Contenu de la table `sitPlugin`
 --
 
-
---
--- Contenu de la table `sitProfilDroit`
---
-
-
---
--- Contenu de la table `sitProfilDroitChamp`
---
-
-
---
--- Contenu de la table `sitSessions`
---
-
-
---
--- Contenu de la table `sitTerritoire`
---
-
-
---
--- Contenu de la table `sitTerritoireCommune`
---
-
-
---
--- Contenu de la table `sitTerritoireThesaurus`
---
-
+INSERT INTO `sitPlugin` (`idPlugin`, `nomPlugin`, `version`, `actif`, `dateMaj`) VALUES
+(1, 'helloWorld', '1.0', 'N', '2011-02-28 15:36:25');
 
 --
 -- Contenu de la table `sitThesaurus`
@@ -39252,28 +39120,3 @@ INSERT INTO `sitEntreesThesaurus` (`cle`, `liste`, `lang`, `libelle`, `arboresce
 
 INSERT INTO `sitThesaurus` (`idThesaurus`, `prefixe`, `codeThesaurus`, `libelle`, `commentaires`) VALUES
 (1, NULL, 'MTH.NAT.TIFV30', 'Thesaurus national', NULL);
-
---
--- Contenu de la table `sitUtilisateur`
---
-
-
---
--- Contenu de la table `sitUtilisateurDroitFiche`
---
-
-
---
--- Contenu de la table `sitUtilisateurDroitFicheChamp`
---
-
-
---
--- Contenu de la table `sitUtilisateurDroitTerritoire`
---
-
-
---
--- Contenu de la table `sitUtilisateurDroitTerritoireChamp`
---
-

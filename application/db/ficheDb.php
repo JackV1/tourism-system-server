@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -10,50 +10,68 @@
 
 	require_once('application/modele/ficheModele.php');
 	require_once('application/modele/ficheSimpleModele.php');
+	require_once('application/modele/versionModele.php');
 	require_once('application/utils/tsDOMDocument.php');
-	require_once('application/utils/tifTools.php'); //#Anthony
+	require_once('application/utils/tifTools.php');
 	
 	final class ficheDb
 	{
-	
-		const SQL_FICHE_ID = "SELECT idFiche, raisonSociale, codeTIF, codeInsee, bordereau, gpsLat, gpsLng, publication, referenceExterne FROM sitFiche WHERE idFiche='%d'"; //#Anthony, publication
+		
+		const SQL_FICHE_ID = "SELECT idFiche, raisonSociale, codeTIF, codeInsee, bordereau, gpsLat, gpsLng, publication, referenceExterne FROM sitFiche WHERE idFiche='%d'";
 		const SQL_FICHE_CODETIF = "SELECT idFiche FROM sitFiche WHERE codeTIF='%s'";
-		const SQL_FICHE_REFEXTERNE = "SELECT idFiche FROM sitFiche WHERE referenceExterne='%s'"; //#Anthony
-		const SQL_FICHE_VERSION = "SELECT idFicheVersion, dateVersion, etat, xmlTIF FROM sitFicheVersion WHERE idFiche='%d' ORDER BY idFicheVersion DESC LIMIT 0,1";
-		const SQL_FICHE_VERSION_ETAT = " AND fv.etat='%s' ORDER BY idFicheVersion DESC LIMIT 0,1";
-		const SQL_FICHE_VERSION_IDVERSION = " AND fv.idFicheVersion='%d'";
+		const SQL_FICHE_REFEXTERNE = "SELECT idFiche FROM sitFiche WHERE referenceExterne='%s'";
+		
+		const SQL_CREATE_FICHE = "INSERT INTO sitFiche (codeInsee, bordereau, gpsLat, gpsLng) VALUES ('%s', '%s', '%s', '%s')";
+		const SQL_CREATE_FICHE_REFEXTERNE = "UPDATE sitFiche SET referenceExterne='%s' WHERE idFiche='%d'";
+		const SQL_CREATE_FICHE_CODETIF = "UPDATE sitFiche SET codeTIF='%s' WHERE idFiche='%d'";
+		const SQL_CREATE_FICHE_GROUPE = "UPDATE sitFiche SET idGroupe='%d' WHERE idFiche='%d'";
+		
+		const SQL_UPDATE_RAISON_SOCIALE = "UPDATE sitFiche SET raisonSociale='%s' WHERE idFiche='%d'";
+		const SQL_UPDATE_GPS = "UPDATE sitFiche SET gpsLat='%s', gpsLng='%s' WHERE idFiche='%d'";
+		const SQL_UPDATE_PUBLICATION = "UPDATE sitFiche SET publication='%s' WHERE idFiche='%d'";
+		
+		const SQL_DELETE_FICHE = "DELETE FROM sitFiche WHERE idFiche='%d'";
+		
+		const SQL_VERSIONS_FICHE = "SELECT idFicheVersion, dateVersion, idUtilisateur, etat, dateValidation FROM sitFicheVersion WHERE idFiche = '%d'";
+		
+		const SQL_FICHE_VERSION = "SELECT idFicheVersion, dateVersion, etat FROM sitFicheVersion WHERE idFiche='%d'";
+		const SQL_FICHE_VERSION_ETAT = " AND etat='%s'";
+		const SQL_FICHE_VERSION_IDVERSION = " AND idFicheVersion='%d'";
+		const SQL_FICHE_VERSION_LASTVERSION = " ORDER BY idFicheVersion DESC LIMIT 0,1";
+		
+		const SQL_UPDATE_FICHE_VERSION = "INSERT INTO sitFicheVersion (idFicheVersion, idFiche, dateVersion, etat, dateValidation) VALUES ('%d', '%d', NOW(), '%s', NOW())";
+		const SQL_UPDATE_FICHE_UTILISATEUR = "UPDATE sitFicheVersion SET idUtilisateur='%d' WHERE idFiche='%d' AND idFicheVersion='%d'";
+		
+		const SQL_DELETE_FICHE_VERSION = "DELETE FROM sitFicheVersion WHERE idFiche='%d' AND idFicheVersion = '%d'";
+		
 		// @todo : Récupération des champs spécifiques via droits champs sur bordereau
 		const SQL_FICHE_OBJET = "SELECT * FROM sitChamp WHERE FIND_IN_SET('%s', bordereau)>0";// AND xpath NOT LIKE '%%tif:ChampsSpecifiques%%'";
-		const SQL_CREATE_FICHE = "INSERT INTO sitFiche (codeInsee, bordereau, gpsLat, gpsLng) VALUES ('%s', '%s', '%s', '%s')";
-		const SQL_CREATE_FICHE_REFEXTERNE = "UPDATE sitFiche SET referenceExterne='%s' WHERE idFiche='%d'"; //#Anthony
-		const SQL_CREATE_FICHE_CODETIF = "UPDATE sitFiche SET codeTIF='%s' WHERE idFiche='%d'";
-		const SQL_DELETE_FICHE = "DELETE FROM sitFiche WHERE idFiche='%d'";
-		const SQL_UPDATE_FICHE_VERSION = "INSERT INTO sitFicheVersion (idFicheVersion, idFiche, dateVersion, etat, dateValidation, xmlTIF) VALUES ('%d', '%d', NOW(), '%s', NOW(), '%s')";
-		const SQL_UPDATE_FICHE_UTILISATEUR = "UPDATE sitFicheVersion SET idUtilisateur='%d' WHERE idFiche='%d' AND idFicheVersion='%d'";
-		const SQL_UPDATE_RAISON_SOCIALE = "UPDATE sitFiche SET raisonSociale='%s' WHERE idFiche='%d'";
-		const SQL_UPDATE_FICHE_GROUPE = "UPDATE sitFiche SET idGroupe='%d' WHERE idFiche='%d'";
-		const SQL_UPDATE_PUBLICATION = "UPDATE sitFiche SET publication='%s' WHERE idFiche='%d'"; //#Anthony
-		const SQL_UPDATE_GPS = "UPDATE sitFiche SET gpsLat='%s', gpsLng='%s' WHERE idFiche='%d'";
 		
 		
-		
-		
-		
-		public static function createFiche($bordereau, $codeInsee, $referenceExterne = null)//#Anthony
+		public static function createFiche($bordereau, $codeInsee, $referenceExterne = null)
 		{
 			$oCommune = communeDb::getCommune($codeInsee);
 			
+			if (is_null($oCommune))
+			{
+				throw new ApplicationException("Commune introuvable : " . $codeInsee);
+			}
+			
 			$idFiche = tsDatabase::insert(self::SQL_CREATE_FICHE, 
-								array($codeInsee, $bordereau, $oCommune -> gpsLat, $oCommune -> gpsLng));
+						array($codeInsee, $bordereau, $oCommune -> gpsLat, $oCommune -> gpsLng));
 			
 			if(is_null($referenceExterne) === false)
 			{
 				tsDatabase::query(self::SQL_CREATE_FICHE_REFEXTERNE, array($referenceExterne, $idFiche));
 			}
 			
-			
 			$codeTIF = self::getCodeTif($idFiche, $bordereau, $codeInsee);
 			tsDatabase::query(self::SQL_CREATE_FICHE_CODETIF, array($codeTIF, $idFiche));
+			
+			if (tsDroits::isRoot() === false)
+			{
+				tsDatabase::query(self::SQL_CREATE_FICHE_GROUPE, array(tsDroits::getGroupeUtilisateur(), $idFiche));
+			}
 			
 			// Création du xml
 			$strXml = file_get_contents(tsConfig::get('TS_PATH_EMPTYXML'));
@@ -67,44 +85,15 @@
 			$strXml = str_replace('{gpsLat}', $oCommune -> gpsLat, $strXml);
 			$strXml = str_replace('{gpsLng}', $oCommune -> gpsLng, $strXml);
 			
-			$infosBordereau = tifTools::getInfosBordereau($bordereau); //#Anthony
-			$strXml = str_replace('{cleClassification}', $infosBordereau['cle'], $strXml); //#Anthony
-			$strXml = str_replace('{libelleClassification}', $infosBordereau['libelle'], $strXml); //#Anthony
+			$infosBordereau = tifTools::getInfosBordereau($bordereau);
+			$strXml = str_replace('{cleClassification}', $infosBordereau['cle'], $strXml);
+			$strXml = str_replace('{libelleClassification}', $infosBordereau['libelle'], $strXml);
 			
-			tsDatabase::query(self::SQL_UPDATE_FICHE_VERSION, array('1', $idFiche, 'accepte', $strXml));
-			
-			if (tsDroits::isRoot() === false)
-			{
-				tsDatabase::query(self::SQL_UPDATE_FICHE_UTILISATEUR, array(tsDroits::getIdUtilisateur(), $idFiche, '1'));
-				tsDatabase::query(self::SQL_UPDATE_FICHE_GROUPE, array(tsDroits::getGroupeUtilisateur(), $idFiche));
-			}
+			self::createFicheVersion($idFiche, $strXml);
 			
 			return $idFiche;
 		}
-
 		
-		/**
-		 * 
-		 * @param object $codeTIF
-		 * @return 
-		 */
-		public static function getFicheByCodeTIF($codeTIF)
-		{
-			$idFiche = tsDatabase::getRecord(self::SQL_FICHE_CODETIF, array($codeTIF), DB_FAIL_ON_ERROR);
-			return self::getFicheByIdFiche($idFiche);
-		}
-		
-		public static function getIdFicheByRefExterne($refExterne) //#Anthony
-		{
-			$idFiche = tsDatabase::getRecord(self::SQL_FICHE_REFEXTERNE, array($refExterne), DB_FAIL_ON_ERROR);
-			return $idFiche;
-		}
-		
-		
-		public static function deleteFiche($oFiche)
-		{
-			return tsDatabase::query(self::SQL_DELETE_FICHE, array($oFiche -> idFiche));
-		}
 		
 		
 		public static function getFiches()
@@ -120,31 +109,21 @@
 		}
 		
 		
-		public static function getFicheByIdFiche($idFiche)
+		
+		public static function getFicheByIdFiche($idFiche, $idFicheVersion = null)
 		{
-			$fiche = tsDatabase::getRow(self::SQL_FICHE_ID, array($idFiche), DB_FAIL_ON_ERROR);
+			$fiche = tsDatabase::getObject(self::SQL_FICHE_ID, array($idFiche), DB_FAIL_ON_ERROR);
+			$oFiche = ficheModele::getInstance($fiche, 'ficheModele');
 			
-			$oFiche = new ficheModele();
-			
-			$oFiche -> setIdFiche($fiche['idFiche']);
-			$oFiche -> setRaisonSociale($fiche['raisonSociale']);
-			$oFiche -> setCodeTIF($fiche['codeTIF']);
-			$oFiche -> setCodeInsee($fiche['codeInsee']);
-			$oFiche -> setBordereau($fiche['bordereau']);
-			$oFiche -> setGpsLat($fiche['gpsLat']);
-			$oFiche -> setGpsLng($fiche['gpsLng']);
-			$oFiche -> setPublication($fiche['publication']); //#Anthony
-			
-			
-			$version = self::getFicheVersion($idFiche);
+			$version = self::getFicheVersion($idFiche, $idFicheVersion);
 			$oFiche -> setIdVersion($version['idFicheVersion']);
 			$oFiche -> setDateVersion($version['dateVersion']);
 			$oFiche -> setEtatVersion($version['etat']);
 			$oFiche -> setXml($version['xmlTIF']);
 			
 			// @hook getFiche
-		//	tsHook::hookObject('getFiche', $oFiche);
-
+			// tsHook::hookObject('getFiche', $oFiche);
+			
 			return $oFiche -> getObject();
 		}
 		
@@ -163,7 +142,7 @@
 			$oFiche -> setBordereau($fiche['bordereau']);
 			$oFiche -> setGpsLat($fiche['gpsLat']);
 			$oFiche -> setGpsLng($fiche['gpsLng']);	
-			$oFiche -> setPublication($fiche['publication']); //#Anthony
+			$oFiche -> setPublication($fiche['publication']);
 			$oFiche -> setReferenceExterne($fiche['referenceExterne']);
 			
 			$version = self::getFicheVersion($idFiche);
@@ -174,9 +153,54 @@
 		
 		
 		
+		public static function getFiche(ficheModele $oFiche, $droitFiche)
+		{
+			$champs = tsDatabase::getRows(self::SQL_FICHE_OBJET, array($oFiche -> bordereau));
+			
+			$oFiche -> editable = array();
+			$oFiche -> readable = array();
+			
+			$domFiche = new DOMDocument('1.0');
+			$domFiche -> loadXML($oFiche -> xml);
+			$domXpath = new DOMXpath($domFiche);
+			
+			foreach($champs as $champ)
+			{
+				$oChamp = champDb::getChamp($champ['idChamp']);
+				$droitChamp = tsDroits::getDroitFicheChamp($oFiche, $oChamp, $droitFiche);
+				
+				if ($droitChamp & DROIT_MODIFICATION)
+				{
+					$oFiche -> editable[$champ['identifiant']] = libXml::getXpathValue($domXpath, $oChamp);
+				}
+				elseif ($droitChamp & DROIT_VISUALISATION)
+				{
+					$oFiche -> readable[$champ['identifiant']] = libXml::getXpathValue($domXpath, $oChamp);
+				}
+			}
+			
+			return $oFiche;
+		}
+
+		
+		
+		public static function getIdFicheByCodeTIF($codeTIF)
+		{
+			return tsDatabase::getRecord(self::SQL_FICHE_CODETIF, array($codeTIF), DB_FAIL_ON_ERROR);
+		}
+		
+		
+		
+		public static function getIdFicheByRefExterne($refExterne)
+		{
+			return tsDatabase::getRecord(self::SQL_FICHE_REFEXTERNE, array($refExterne), DB_FAIL_ON_ERROR);
+		}
+		
+		
+		
 		public static function sauvegardeFicheBrouillon($oFiche, $stdFiche)
 		{
-			self::sauvegardeFiche($oFiche, $stdFiche, true);
+			return self::sauvegardeFiche($oFiche, $stdFiche, true);
 		}
 		
 		
@@ -237,72 +261,192 @@
 			}
 
 			$xml = $domFiche -> saveXML();
-
-			// A CHANGER
-			if (isset($stdFiche['raison_sociale']))
+			
+			return self::createFicheVersion($oFiche -> idFiche, $xml);
+		}
+		
+		
+		
+		public static function setPublicationFiche($oFiche, $publication)
+		{
+			$publicationYN = ($publication === true) ? 'Y' : 'N';
+			return tsDatabase::query(self::SQL_UPDATE_PUBLICATION, array($publicationYN, $oFiche -> idFiche));
+		}
+		
+		
+		
+		public static function deleteFiche($oFiche)
+		{
+			$path = self::getPathByIdFiche($oFiche -> idFiche);
+			$pathArchives = tsConfig::get('TS_PATH_ARCHIVES_XML');
+			
+			// Archivage
+			$lastVersion = self::getFicheVersion($oFiche -> idFiche);
+			$result = copy($path . $oFiche -> idFiche . '-' . $lastVersion['idFicheVersion'] . '.xml', $pathArchives . $oFiche -> idFiche . '.xml');
+			if ($result === false)
 			{
-				tsDatabase::query(self::SQL_UPDATE_RAISON_SOCIALE, array($stdFiche['raison_sociale'], $oFiche -> idFiche));
+				throw new Exception("Impossible d'archiver la fiche : " . $oFiche -> idFiche);
 			}
 			
-			if (isset($stdFiche['gps_lat']) && isset($stdFiche['gps_lat']))
+			$dir = opendir($path);
+			if ($dir !== false)
 			{
-				tsDatabase::query(self::SQL_UPDATE_GPS, array($stdFiche['gps_lat'], $stdFiche['gps_lng'], $oFiche -> idFiche));
+				while($entry = readdir($dir))
+				{
+					if (!is_dir($path.$entry) && $entry != '.' && $entry != '..')
+					{
+						unlink($path.$entry);
+					}
+				}
+				closedir($dir);
 			}
-			return tsDatabase::query(self::SQL_UPDATE_FICHE_VERSION, array(($oFiche -> idVersion) + 1, $oFiche -> idFiche, 'accepte', $xml));
+			rmdir($path);
+			
+			return tsDatabase::query(self::SQL_DELETE_FICHE, array($oFiche -> idFiche));
+		}
+		
+		
+		
+		public function createFicheVersion($idFiche, $xml)
+		{
+			$lastVersion = self::getFicheVersion($idFiche);
+			$newIdVersion = (is_null($lastVersion) === false ? $lastVersion['idFicheVersion'] + 1 : 1);
+			
+			// Ne pas sauvegarder si l'ancienne version est la même
+			if ($newIdVersion > 1 && $lastVersion['xmlTIF'] == $xml)
+			{
+				return true;
+			}
+			
+			$path = self::getPathByIdFiche($idFiche);
+			
+			$xmlFile = $path . $idFiche . '-' . $newIdVersion . '.xml';
+			$result = file_put_contents($xmlFile, $xml);
+			if ($result === false)
+			{
+				throw new Exception("Impossible de créer la nouvelle version de la fiche : $idFiche");
+			}
+			
+			$xmlFile = $path . $idFiche . '.xml';
+			$result = file_put_contents($xmlFile, $xml);
+			if ($result === false)
+			{
+				throw new Exception("Impossible de créer la nouvelle version de la fiche : $idFiche");
+			}
+			
+			$result = tsDatabase::query(self::SQL_UPDATE_FICHE_VERSION, array($newIdVersion, $idFiche, 'accepte'));
+			
+			if (tsDroits::isRoot() === false)
+			{
+				tsDatabase::query(self::SQL_UPDATE_FICHE_UTILISATEUR, array(tsDroits::getIdUtilisateur(), $idFiche, $newIdVersion));
+			}
+			
+			self::updateSitFiche($idFiche);
+			
+			return $result;
+		}
+		
+		
+		
+		public function getFicheVersions(ficheModele $oFiche)
+		{
+			$oVersionCollection = new versionCollection();
+			$versions = tsDatabase::getRows(self::SQL_VERSIONS_FICHE, array($oFiche -> idFiche));
+			foreach($versions as $version)
+			{
+				$oVersion = new versionModele();
+				$oVersion -> setIdFicheVersion($version['idFicheVersion']);
+				$oVersion -> setIdFiche($oFiche -> idFiche);
+				$oVersion -> setDateVersion($version['dateVersion']);
+				$oVersion -> setIdUtilisateur($version['idUtilisateur']);
+				$oVersion -> setEtat($version['etat']);
+				$oVersion -> setDateValidation($version['dateValidation']);
+				$oVersionCollection[] = $oVersion -> getObject();
+			}
+			return $oVersionCollection -> getCollection();
+		}
+		
+		
+		
+		public function deleteFicheVersion($oFiche, $idFicheVersion = null)
+		{
+			$path = self::getPathByIdFiche($oFiche -> idFiche);
+			
+			if (is_null($idFicheVersion))
+			{
+				$lastVersion = self::getFicheVersion($oFiche -> idFiche);
+				$idFicheVersion = $lastVersion['idFicheVersion'];
+			}
+			
+			$result = unlink($path . $oFiche -> idFiche . '-' . $idFicheVersion . '.xml');
+			if ($result === false)
+			{
+				throw new Exception("Impossible de supprimer la version de la fiche : " . $oFiche -> idFiche);
+			}
+			
+			$result = tsDatabase::query(self::SQL_DELETE_FICHE_VERSION, array($oFiche -> idFiche, $idFicheVersion));
+			
+			$lastVersion = self::getFicheVersion($oFiche -> idFiche);
+			
+			$result = file_put_contents($path . $oFiche -> idFiche . '.xml', $lastVersion['xmlTIF']);
+			if ($result === false)
+			{
+				throw new Exception("Impossible de mettre à jour la version de la fiche : " . $oFiche -> idFiche);
+			}
+			
+			self::updateSitFiche($oFiche -> idFiche);
 		}
 		
 		
 		
 		
-		public static function sauvegardeFicheXml($idFiche, $xmlTif, $raisonSociale = false, $gpsLat = false, $gpsLng = false) //#Anthony
+		private static function getFicheVersion($idFiche, $idFicheVersion = null)
 		{
-			$oFiche = self::getFicheByIdFiche($idFiche);
+			$sqlFicheVersion = self::SQL_FICHE_VERSION . (is_null($idFicheVersion) ?  self::SQL_FICHE_VERSION_LASTVERSION : self::SQL_FICHE_VERSION_IDVERSION);
+			$version = tsDatabase::getRow($sqlFicheVersion, array($idFiche, $idFicheVersion));
 			
-			if ($raisonSociale)
+			if (is_null($version) === false)
 			{
-				tsDatabase::query(self::SQL_UPDATE_RAISON_SOCIALE, array($raisonSociale, $oFiche -> idFiche));
-			}
-			
-			if ($gpsLat && $gpsLng)
-			{
-				tsDatabase::query(self::SQL_UPDATE_GPS, array($gpsLat, $gpsLng, $oFiche -> idFiche));
-			}
-			
-			return tsDatabase::query(self::SQL_UPDATE_FICHE_VERSION, array(($oFiche -> idVersion) + 1, $oFiche -> idFiche, 'accepte', $xmlTif));	
-		}
-		
-		
-		
-		
-		public static function getFiche(ficheModele $oFiche, $droitFiche)
-		{
-			$champs = tsDatabase::getRows(self::SQL_FICHE_OBJET, array($oFiche -> bordereau));
-			
-			$oFiche -> editable = array();
-			$oFiche -> readable = array();
-			
-			$domFiche = new DOMDocument('1.0');
-			$domFiche -> loadXML($oFiche -> xml);
-			$domXpath = new DOMXpath($domFiche);
-			
-			foreach($champs as $champ)
-			{
-				$oChamp = champDb::getChamp($champ['idChamp']);
-				$droitChamp = tsDroits::getDroitFicheChamp($oFiche, $oChamp, $droitFiche);
+				$path = self::getPathByIdFiche($idFiche);
+				$xmlFile = $path . $idFiche . '-' . (is_null($idFicheVersion) === false ? $idFicheVersion : $version['idFicheVersion']) . '.xml';
 				
-				if ($droitChamp & DROIT_MODIFICATION)
+				if (file_exists($xmlFile) === false)
 				{
-					$oFiche -> editable[$champ['identifiant']] = libXml::getXpathValue($domXpath, $oChamp);
+					throw new ApplicationException("Impossible de charger le fichier xml de la version demandée : $idFiche");
 				}
-				elseif ($droitChamp & DROIT_VISUALISATION)
-				{
-					$oFiche -> readable[$champ['identifiant']] = libXml::getXpathValue($domXpath, $oChamp);
-				}
+				
+				$version['xmlTIF'] = file_get_contents($xmlFile);
 			}
 			
-			return $oFiche;
+			return $version;
 		}
 		
+		
+		
+		private static function getFicheVersionByEtat($idFiche, $etat = 'accepte')
+		{
+			$version = tsDatabase::getRow(self::SQL_FICHE_VERSION . self::SQL_FICHE_VERSION_ETAT . self::SQL_FICHE_VERSION_LASTVERSION, array($idFiche, $etat));
+			
+			return self::getFicheVersion($idFiche, $version['idFicheVersion']);
+		}
+		
+		
+		
+		private static function updateSitFiche($idFiche)
+		{
+			$version = self::getFicheVersion($idFiche);
+			$oFicheSimple = ficheSimpleModele::loadByXml($version['xmlTIF']);
+			
+			if ($oFicheSimple -> raisonSociale)
+			{
+				tsDatabase::query(self::SQL_UPDATE_RAISON_SOCIALE, array($oFicheSimple -> raisonSociale, $idFiche));
+			}
+			
+			if ($oFicheSimple -> gpsLat && $oFicheSimple -> gpsLng)
+			{
+				tsDatabase::query(self::SQL_UPDATE_GPS, array($oFicheSimple -> gpsLat, $oFicheSimple -> gpsLng, $idFiche));
+			}
+		}
 		
 		
 		
@@ -311,22 +455,6 @@
 			// @todo
 		}
 		
-		public static function setPublicationFiche($oFiche, $publication)
-		{
-			$publicationYN = ($publication === true) ? 'Y' : 'N';
-			tsDatabase::query(self::SQL_UPDATE_PUBLICATION, array($publicationYN, $oFiche -> idFiche));
-		}
-		
-		
-		private static function getFicheVersionByEtat($idFiche, $etat = 'accepte')
-		{
-			$version = tsDatabase::getRow(self::SQL_FICHE_VERSION . self::SQL_FICHE_VERSION_ETAT, array($idFiche, $etat));
-			if ($version === false)
-			{
-				throw new ApplicationException("La version demandée de la fiche $idFiche n'existe pas");
-			}
-			return $version;
-		}
 		
 		
 		private static function getCodeTif($idFiche, $bordereau, $codeInsee)
@@ -337,12 +465,6 @@
 		}
 		
 		
-		private static function getFicheVersion($idFiche, $idVersion = null)
-		{
-			$sqlFicheVersion = (is_null($idVersion)) ? self::SQL_FICHE_VERSION : self::SQL_FICHE_VERSION . self::SQL_FICHE_VERSION_IDVERSION;
-			return(tsDatabase::getRow($sqlFicheVersion, array($idFiche, $idVersion)));
-		}
-		
 		
 		private static function checkDroitFiche($idFiche)
 		{
@@ -351,7 +473,31 @@
 				throw new ApplicationException("La fiche $idFiche n'est pas administrable");
 			}
 		}
-
+		
+		
+		
+		private function getPathByIdFiche($idFiche)
+		{
+			while (strlen($idFiche) < (tsConfig::get('TS_SUBFOLDERS_DEPTH_XML') * 2))
+			{
+				$idFiche = '0' . $idFiche;
+			}
+			
+			$pathXml = tsConfig::get('TS_PATH_XML');
+			$subFolders = str_split($idFiche, 2);
+			foreach ($subFolders as $subFolder)
+			{
+				$pathXml .= $subFolder . '/';
+				if (is_dir($pathXml) === false)
+				{
+					mkdir($pathXml);
+				}
+			}
+			
+			return $pathXml;
+		}
+		
+		
 	}
 	
 	

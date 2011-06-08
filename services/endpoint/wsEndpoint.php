@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -33,8 +33,8 @@
 				self::loadApplication();
 				
 				// Chargement des plugins
-                //tsPlugins::loadPlugins();
-                
+				//tsPlugins::loadPlugins();
+				
 				// Vérification et renouvellement de la session, load des droits
 				tsDroits::restore($arguments[0]);
 				tsDroits::load();
@@ -94,6 +94,16 @@
 				$errors = $e -> getMessage();
 				$errorLevel = 4;
 				$errorCode = null;
+				
+				Logger::file($e -> getMessage());
+			}
+			catch(ImportException $e)
+			{
+				$success = false;
+				$errors = $e -> getMessage();
+				$errorLevel = 4;
+				$errorCode = 511;
+				$retour = array('idFiche' => $e -> getIdFiche());
 				
 				Logger::file($e -> getMessage());
 			}
@@ -160,6 +170,7 @@
 		protected function restrictAccess()
 		{
 			$authorizedUsers = func_get_args();
+
 			if (in_array(tsDroits::getTypeUtilisateur(), $authorizedUsers) === false)
 			{
 				throw new SecuriteException("Droits insuffisants : ce service n'est pas disponible");

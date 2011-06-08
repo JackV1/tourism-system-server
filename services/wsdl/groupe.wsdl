@@ -47,8 +47,9 @@
 	       	
 	       	<complexType name="utilisateur">
 			    <all>
-					<element name="idUtilisateur" type="xsd:int"/>
+				<element name="idUtilisateur" type="xsd:int"/>
 			     	<element name="login" type="xsd:string"/>
+			     	<element name="pass" type="xsd:string"/>
 			    </all>
 			</complexType>
 	       	

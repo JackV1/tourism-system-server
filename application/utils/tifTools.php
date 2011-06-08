@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -36,10 +36,6 @@
 					'cle' => '02.01.06',
 					'libelle' => 'Hôtellerie de plein air'
 				),
-				'ITI' => array(
-					'cle' => '02.01.07',
-					'libelle' => 'Itinéraires touristiques'
-				),
 				'LOI' => array(
 					'cle' => '02.01.08',
 					'libelle' => 'Loisirs'
@@ -63,10 +59,6 @@
 				'VIL' => array(
 					'cle' => '02.01.14',
 					'libelle' => "Hébergement d'accueil collectif"
-				),
-				'PRD' => array(
-					'cle' => '02.01.15',
-					'libelle' => 'Produits touristique'
 				)
 			);
 		
@@ -78,7 +70,7 @@
 			{
 				if($classification == $infos['cle'])
 				{
-					$bordereau =  $name;
+					$bordereau = $name;
 					break;
 				}	
 			}
@@ -102,7 +94,6 @@
 			}
 			
 			return self::$bordereaux[$bordereau];
-				
 		}
 		
 		

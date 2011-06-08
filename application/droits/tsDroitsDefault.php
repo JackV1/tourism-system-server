@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -71,7 +71,10 @@
 		
 		const SQL_FICHES_BORDEREAU_COMMUNE_PRIVE = "SELECT idFiche FROM sitFiche WHERE bordereau='%s' AND codeInsee='%s' AND idGroupe='%d'";
 		
+		//Nico
+		const SQL_FICHES_BORDEREAU_TERRITOIRE = "SELECT idFiche FROM sitFiche WHERE bordereau='%s' AND codeInsee IN (SELECT codeInsee FROM sitTerritoire WHERE idTerritoire='%d') AND (idGroupe='%d' OR idGroupe IS NULL)";
 		
+
 		
 
 		/**
@@ -102,11 +105,14 @@
 		{
 			// Droits sur bordereau - territoire
 			$droitsBT = tsDatabase::getRows(self::SQL_TERRITOIRES_ADMINISTRABLES, array($this -> idUtilisateur));
-			foreach($droitsBT as $droitBordereauTerritoire)
+			
+			//REAL
+			/*foreach($droitsBT as $droitBordereauTerritoire)
 			{
 				//print_r($droitBordereauTerritoire);
 				$bordereau = $droitBordereauTerritoire['bordereau'];
 				$idTerritoire = $droitBordereauTerritoire['idTerritoire'];
+				
 				$droit = $droitBordereauTerritoire['droit'];
 				$this -> territoiresAdministrables[] = $idTerritoire;
 				$this -> bordereauxAdministrables[] = $bordereau;
@@ -129,14 +135,15 @@
 								(isset($this -> droitsBordereauCommune[$bordereau][$oCommune -> codeInsee])) ?
 													$this -> droitsBordereauCommune[$bordereau][$oCommune -> codeInsee] | $droit : $droit;
 					}
+					
 				}
-			}
-
-			$this -> territoiresAdministrables = array_unique($this -> territoiresAdministrables);
-			$this -> bordereauxAdministrables = array_unique($this -> bordereauxAdministrables);
+				
+				$this -> territoiresAdministrables = array_unique($this -> territoiresAdministrables);
+				$this -> bordereauxAdministrables = array_unique($this -> bordereauxAdministrables);
+			}*/
 			
-			
-			// Récupération des fiches du territoire "public"
+			//REAL
+			/*
 			foreach($this -> droitsBordereauCommune as $bordereau => $bordereauCommune)
 			{
 				foreach($bordereauCommune as $commune => $droitBC)
@@ -151,20 +158,165 @@
 				}
 			}
 			
-			// Récupération des fiches du territoire "privé"
+			
 			foreach($this -> droitsBordereauCommunePrivees as $bordereau => $bordereauCommune)
 			{
 				foreach($bordereauCommune as $commune => $droitBC)
 				{
 					$fiches = tsDatabase::getRecords(self::SQL_FICHES_BORDEREAU_COMMUNE_PRIVE, array($bordereau, $commune, tsDroits::getGroupeUtilisateur()));
-					foreach($fiches as $idFiche)
+					foreach($fiches as $idFiche) 
 					{
 						$this -> fichesAdministrables[] = $idFiche;
 						$this -> droitsFiche[$idFiche] = (isset($this -> droitsFiche[$idFiche])) ?
 												$this -> droitsFiche[$idFiche] | $droitBC : $droitBC;
 					}
 				}
+			}*/
+			
+			//Anthony
+			$territoireBordereauxCommunes = array();
+			$keyMemCache = 'DROIT_BORDEREAUX_COMMUNES' . $this -> idUtilisateur . md5(implode('', $droitsBT));
+			/*$values = tsCache::get($keyMemCache);
+			
+			if($values === false)
+			{
+			*/
+				foreach($droitsBT as $droitBordereauTerritoire)
+				{
+					$bordereau = $droitBordereauTerritoire['bordereau'];
+					$idTerritoire = $droitBordereauTerritoire['idTerritoire'];
+					
+					$territoireBordereauxCommunes[$idTerritoire]['bordereaux'][] = $bordereau; //Anthony
+					
+					$droit = $droitBordereauTerritoire['droit'];
+					$this -> territoiresAdministrables[] = $idTerritoire;
+					$this -> bordereauxAdministrables[] = $bordereau;
+					$bt = $bordereau . $idTerritoire;
+					$this -> droitsBordereauTerritoire[$bt] = (isset($this -> droitsBordereauTerritoire[$bt])) ?
+														$this -> droitsBordereauTerritoire[$bt] | $droit : $droit;
+				}
+				
+				$this -> territoiresAdministrables = array_unique($this -> territoiresAdministrables);
+				$this -> bordereauxAdministrables = array_unique($this -> bordereauxAdministrables);
+				
+				foreach($this -> territoiresAdministrables as $idTerritoire)
+				{
+					$oTerritoire = territoireDb::getTerritoire($idTerritoire);
+					$territoireCommunes = territoireDb::getCommunesByTerritoire($oTerritoire);
+					
+					foreach($this -> bordereauxAdministrables as $bordereau)
+					{
+						$bt = $bordereau . $idTerritoire;
+						
+						if(isset($this -> droitsBordereauTerritoire[$bt]))
+						{
+							$lesDroits[$bordereau] = $this -> droitsBordereauTerritoire[$bt];
+						}
+					}
+					
+					foreach($territoireCommunes as $oCommune)
+					{
+						if ($oCommune -> prive === true)
+						{
+							foreach($lesDroits as $bordereau => $droit)
+							{
+								$this -> droitsBordereauCommunePrivees[$bordereau][$oCommune -> codeInsee] = 
+									(isset($this -> droitsBordereauCommunePrivees[$bordereau][$oCommune -> codeInsee])) ?
+														$this -> droitsBordereauCommunePrivees[$bordereau][$oCommune -> codeInsee] | $droit : $droit;
+							}
+	
+						}
+						else
+						{
+							foreach($lesDroits as $bordereau => $droit)
+							{
+								$this -> droitsBordereauCommune[$bordereau][$oCommune -> codeInsee] =
+										(isset($this -> droitsBordereauCommune[$bordereau][$oCommune -> codeInsee])) ?
+															$this -> droitsBordereauCommune[$bordereau][$oCommune -> codeInsee] | $droit : $droit;
+							}
+						}
+						
+						$territoireBordereauxCommunes[$idTerritoire]['communes'][] = $oCommune  -> codeInsee; //Anthony
+						
+					}
+					
+				}
+				
+				/*
+				$values -> droitsBordereauCommune = $this -> droitsBordereauCommune;
+				$values -> droitsBordereauCommunePrivees = $this -> droitsBordereauCommunePrivees;
+				$values -> droitsBordereauTerritoire = $this -> droitsBordereauTerritoire;
+				$values -> territoiresAdministrables = $this -> territoiresAdministrables;
+				$values -> bordereauxAdministrables = $this -> bordereauxAdministrables;
+				$values -> territoireBordereauxCommunes = $territoireBordereauxCommunes;
+				
+				tsCache::set($keyMemCache, $values, 600);
 			}
+			else
+			{
+				$this -> droitsBordereauCommune = $values -> droitsBordereauCommune;
+				$this -> droitsBordereauCommunePrivees = $values -> droitsBordereauCommunePrivees;
+				$this -> droitsBordereauTerritoire = $values -> droitsBordereauTerritoire;
+				$this -> territoiresAdministrables = $values -> territoiresAdministrables;
+				$this -> bordereauxAdministrables = $values -> bordereauxAdministrables;
+				$territoireBordereauxCommunes = $values -> territoireBordereauxCommunes;
+			}
+*/
+			
+			
+			
+			//Anthony
+			
+			foreach($territoireBordereauxCommunes as $idTerritoire => $values)
+			{
+				$bordereaux = $values['bordereaux'];
+				$communes = $values['communes'];
+				
+				if(!empty($bordereaux) && !empty($communes))
+				{
+					$strCommunes = implode("','", $communes);
+					$strBordereaux = implode("','", $bordereaux);
+					
+					$query = "SELECT idFiche, bordereau, codeInsee, idGroupe FROM sitFiche WHERE codeInsee IN ('$strCommunes') AND bordereau IN ('$strBordereaux')";
+					$fichesInfos = tsDatabase::getRows($query, array());
+					
+					foreach($fichesInfos as $ficheInfo)
+					{
+						$idFiche = $ficheInfo['idFiche'];
+						$bordereau = $ficheInfo['bordereau'];
+						$commune = $ficheInfo['codeInsee'];
+						$idGroupe = $ficheInfo['idGroupe'];
+						
+						
+						if(isset($this -> droitsBordereauCommune[$bordereau][$commune]))
+						{
+							if($idGroupe === tsDroits::getGroupeUtilisateur() || $idGroupe === NULL)
+							{
+								$droitBC = $this -> droitsBordereauCommune[$bordereau][$commune];
+								
+								$this -> fichesAdministrables[] = $idFiche;
+								$this -> droitsFiche[$idFiche] = (isset($this -> droitsFiche[$idFiche])) ? $this -> droitsFiche[$idFiche] | $droitBC : $droitBC;
+							}
+						}
+						
+						if(isset($this -> droitsBordereauCommunePrivees[$bordereau][$commune]))
+						{
+							if($idGroupe === tsDroits::getGroupeUtilisateur())
+							{
+								$droitBC = $this -> droitsBordereauCommunePrivees[$bordereau][$commune];
+								
+								$this -> fichesAdministrables[] = $idFiche;
+								$this -> droitsFiche[$idFiche] = (isset($this -> droitsFiche[$idFiche])) ? $this -> droitsFiche[$idFiche] | $droitBC : $droitBC;
+							}
+							
+						}
+					
+					}
+					
+				}
+				
+			}
+			
 		}
 		
 		
@@ -233,23 +385,13 @@
 		}
 		
 		
-		/**
-		 * Chargement des utilisateurs administrables 
-		 */
-		protected function loadUtilisateursAdministrables()
-		{
-			$sql = constant(get_class($this) . '::SQL_UTILISATEURS');
-			$this -> utilisateursAdministrables = tsDatabase::getRecords($sql,  array($this -> idUtilisateur));
-		}
-		
-		
-		
-		
 		
 		public function getDroitFiche(ficheModele $oFiche)
 		{
-			// Droit fiche
-			assert('in_array($oFiche -> idFiche, $this -> fichesAdministrables)');
+			if (in_array($oFiche -> idFiche, $this -> fichesAdministrables) === false)
+			{
+				throw new SecuriteException("Vous n'avez pas accès à cette fiche.");
+			}
 			return $this -> droitsFiche[$oFiche -> idFiche];
 		}
 
@@ -258,7 +400,6 @@
 		public function getDroitFicheChamp(ficheModele $oFiche, champModele $oChamp)
 		{
 			// Droit fiche champ
-			assert('in_array($oFiche -> idFiche, $this -> fichesAdministrables)');
 			$droits = tsDatabase::getRecords(self::SQL_DROIT_FICHE_CHAMP, array($this -> idUtilisateur, $oFiche -> idFiche, $oChamp -> idChamp));
 			// Le droit champ est défini
 			if (count($droits) == 0)

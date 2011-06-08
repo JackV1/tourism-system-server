@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -12,11 +12,11 @@
 	{
 		
 		const SQL_INIT_SESSION = "INSERT INTO sitSessions (idUtilisateur, sessionId, sessionStart, sessionEnd)
-									VALUES ('%d', '%s', NOW(), DATE_ADD(NOW(), INTERVAL 20 DAY))";
+									VALUES ('%d', '%s', NOW(), DATE_ADD(NOW(), INTERVAL 60 MINUTE))";
 		
 		const SQL_SESSION_ACTIVE = "SELECT sessionId FROM sitSessions WHERE idUtilisateur='%d' AND TIMESTAMPDIFF(SECOND, NOW(), sessionEnd) > 0";
 		
-		const SQL_REFRESH_SESSION = "UPDATE sitSessions SET sessionEnd=DATE_ADD(NOW(), INTERVAL 20 DAY) WHERE sessionId='%s'";
+		const SQL_REFRESH_SESSION = "UPDATE sitSessions SET sessionEnd=DATE_ADD(NOW(), INTERVAL 60 MINUTE) WHERE sessionId='%s'";
 		
 		const SQL_UTILISATEUR = "SELECT idUtilisateur FROM sitSessions WHERE sessionId='%s' AND TIMESTAMPDIFF(SECOND, NOW(), sessionEnd) > 0";
 		

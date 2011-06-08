@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.1 alpha-test - 2011-01-27
+ * @version		0.2 alpha-test - 2011-06-08
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -32,16 +32,13 @@
 			{
 				throw new ApplicationException("L'identifiant de champ n'est pas numérique");
 			}
-			$result = tsDatabase::getRow(self::SQL_CHAMP, array($idChamp), DB_FAIL_ON_ERROR);
-			$oChamp = new champModele();
-			$oChamp -> setIdChamp($idChamp);
-			$oChamp -> setIdentifiant($result['identifiant']);
-			$oChamp -> setXPath($result['xPath']);
-			$oChamp -> setLibelle($result['libelle']);
-			$oChamp -> setListe($result['liste']);
+			$result = tsDatabase::getObject(self::SQL_CHAMP, array($idChamp), DB_FAIL_ON_ERROR);
+			$oChamp = champModele::getInstance($result, 'champModele');
+			
 			// @todo : verifier que ca passe bien avec le SET
-			$oChamp -> setBordereau($result['bordereau']);
-			if (is_null($result['idChampParent']))
+			//$oChamp -> setBordereau($result['bordereau']);
+			$oChamp -> setIdChamp($idChamp);
+			if (is_null($result -> idChampParent))
 			{
 				// Enfants pour champ tif complexe
 				$oChampCollection = new ChampCollection();
@@ -55,7 +52,7 @@
 			}
 			else
 			{
-				$oChamp -> setIdChampParent($result['idChampParent']);
+				$oChamp -> setIdChampParent($result -> idChampParent);
 				$oChamp -> setListe($result['liste']);
 			}
 			return $oChamp;
