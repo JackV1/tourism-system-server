@@ -1,82 +1,77 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
-			
-			
-			
-			
 			
 			<complexType name="ArrayOfDroitsChamp">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:DroitChamp[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-			<complexType name="DroitChamp">
-			    <all>
-			     	<element name="visualisation" nillable="true" type="xsd:boolean"/>
-			     	<element name="modification" nillable="true" type="xsd:boolean"/>
-			     	<element name="validation" nillable="true" type="xsd:boolean"/>
-			    </all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:DroitChamp[]"/>
+					</restriction>
+				</complexContent>
 			</complexType>
 			
-			
+			<complexType name="DroitChamp">
+				<all>
+					<element name="visualisation" nillable="true" type="xsd:boolean"/>
+					<element name="modification" nillable="true" type="xsd:boolean"/>
+					<element name="validation" nillable="true" type="xsd:boolean"/>
+				</all>
+			</complexType>
 			
 			<complexType name="ArrayOfDroitsFiche">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="DroitFiche[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-			<complexType name="DroitFiche">
-			    <all>
-					<element name="visualisation" nillable="true" type="xsd:boolean"/>
-			     	<element name="modification" nillable="true" type="xsd:boolean"/>
-			     	<element name="validation" nillable="true" type="xsd:boolean"/>
-			     	<element name="suppressionFiches" nillable="true" type="xsd:boolean"/>
-			    </all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="DroitFiche[]"/>
+					</restriction>
+				</complexContent>
 			</complexType>
 			
+			<complexType name="DroitFiche">
+				<all>
+					<element name="visualisation" nillable="true" type="xsd:boolean"/>
+					<element name="modification" nillable="true" type="xsd:boolean"/>
+					<element name="validation" nillable="true" type="xsd:boolean"/>
+					<element name="suppressionFiches" nillable="true" type="xsd:boolean"/>
+				</all>
+			</complexType>
 			
 			<complexType name="ArrayOfDroitsTerritoire">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="DroitTerritoire[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-			<complexType name="DroitTerritoire">
-			    <all>
-			    	<element name="visualisation" nillable="true" type="xsd:boolean"/>
-			     	<element name="modification" nillable="true" type="xsd:boolean"/>
-			     	<element name="validation" nillable="true" type="xsd:boolean"/>
-			     	<element name="suppressionFiches" nillable="true" type="xsd:boolean"/>
-			     	<element name="creationFiches" nillable="true" type="xsd:boolean"/>
-			     	<element name="administration" nillable="true" type="xsd:boolean"/>
-			    </all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="DroitTerritoire[]"/>
+					</restriction>
+				</complexContent>
 			</complexType>
-
+			
+			<complexType name="DroitTerritoire">
+				<all>
+					<element name="visualisation" nillable="true" type="xsd:boolean"/>
+					<element name="modification" nillable="true" type="xsd:boolean"/>
+					<element name="validation" nillable="true" type="xsd:boolean"/>
+					<element name="suppressionFiches" nillable="true" type="xsd:boolean"/>
+					<element name="creationFiches" nillable="true" type="xsd:boolean"/>
+					<element name="administration" nillable="true" type="xsd:boolean"/>
+				</all>
+			</complexType>
 			
 		</xsd:schema>
 	</wsdl:types>
@@ -169,9 +164,20 @@
 		<part name="idUtilisateur" type="xsd:int"/>
 		<part name="bordereau" type="xsd:string"/>
 		<part name="idTerritoire" type="xsd:int"/>
-		<part name="idProfil" type="xsd:int"/>
+		<part name="idProfil" type="xsd:int" nillable="true" />
 	</message>
 	<message name="setDroitTerritoireProfilResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="unsetDroitTerritoireProfilRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idUtilisateur" type="xsd:int"/>
+		<part name="bordereau" type="xsd:string"/>
+		<part name="idTerritoire" type="xsd:int"/>
+	</message>
+	<message name="unsetDroitTerritoireProfilResponse">
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
@@ -221,6 +227,11 @@
 			<output message="tns:setDroitTerritoireProfilResponse"/>
 		</operation>
 		
+		<operation name="unsetDroitTerritoireProfil">
+			<input  message="tns:unsetDroitTerritoireProfilRequest"/>
+			<output message="tns:unsetDroitTerritoireProfilResponse"/>
+		</operation>
+		
 
 	</portType>
 
@@ -228,7 +239,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="setDroitTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -238,7 +249,7 @@
 		</operation>
 		
 		<operation name="setDroitTerritoireChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -248,7 +259,7 @@
 		</operation>
 		
 		<operation name="getDroitsTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -258,7 +269,7 @@
 		</operation>
 		
 		<operation name="getDroitTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -268,7 +279,7 @@
 		</operation>
 		
 		<operation name="getDroitTerritoireChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -278,7 +289,7 @@
 		</operation>
 		
 		<operation name="deleteDroitTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -288,7 +299,7 @@
 		</operation>
 		
 		<operation name="deleteDroitTerritoireChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -298,7 +309,17 @@
 		</operation>
 		
 		<operation name="setDroitTerritoireProfil">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="unsetDroitTerritoireProfil">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateurDroitTerritoire.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -312,7 +333,7 @@
 	<service name="TourismSystemWebServiceUtilisateurDroitTerritoire">
 		<documentation>Webservices utilisateurDroitTerritoire de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>utilisateurDroitTerritoire.php"/>
+			<soap:address location="{BASE_URL}utilisateurDroitTerritoire.php"/>
 		</port>
 	</service>
 

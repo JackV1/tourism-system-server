@@ -1,50 +1,50 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 			
 			
 			<complexType name="droitChamp">
-			    <all>
-			     	<element name="idChamp" type="xsd:int"/>
+				<all>
+					<element name="idChamp" type="xsd:int"/>
 					<element name="visualisation" type="boolean"/>
 					<element name="modification" type="boolean"/>
 					<element name="validation" type="boolean"/>
-			    </all>
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfDroitsChamp">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:droitChamp[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:droitChamp[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
 			
 			
 			
 			<complexType name="profilDroit">
-			    <all>
-					<element name="droit" type="xsd:int"/>
-			     	<element name="idProfil" type="xsd:int"/>
-			     	<element name="idGroupe" type="xs:anyType"/>
+				<all>
+					<element name="idProfil" type="xsd:int"/>
+					<element name="idGroupe" type="xs:anyType"/>
 					<element name="libelle" type="xsd:string"/>
 					<element name="visualisation" type="boolean"/>
 					<element name="modification" type="boolean"/>
@@ -54,16 +54,16 @@
 					<element name="administration" type="boolean"/>
 					<element name="droitsChamp" type="tns:ArrayOfDroitsChamp"/>
 					<!--element name="droitsChamp" type="xs:anyType"/-->
-			    </all>
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfProfilDroits">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:profilDroit[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:profilDroit[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
 			
 			
 			
@@ -197,7 +197,7 @@
 	<binding name="wsBinding" type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createProfil">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -207,7 +207,7 @@
 		</operation>
 		
 		<operation name="updateProfil">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -217,7 +217,7 @@
 		</operation>
 		
 		<operation name="deleteProfil">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -227,7 +227,7 @@
 		</operation>
 		
 		<operation name="setProfilDroitChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -237,7 +237,7 @@
 		</operation>
 		
 		<operation name="deleteProfilDroitChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -247,7 +247,7 @@
 		</operation>
 		
 		<operation name="getProfils">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -257,7 +257,7 @@
 		</operation>
 		
 		<operation name="getProfilDroits">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -267,7 +267,7 @@
 		</operation>
 		
 		<operation name="getProfilDroitChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/profilDroit.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/profilDroit.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -280,7 +280,7 @@
 	<service name="TourismSystemWebServiceProfilDroit">
 		<documentation>Webservice de profilDroit de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>profilDroit.php"/>
+			<soap:address location="{BASE_URL}profilDroit.php"/>
 		</port>
 	</service>
 

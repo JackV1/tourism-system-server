@@ -1,14 +1,14 @@
 <?php
     
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		1.0 alpha-test - 2011-01-27
  * @package		Tourism System Server
- * @copyright	Copyright (C) 2010 Raccourci Interactive
+ * @copyright	Copyright (C) 2010 Raccourci Interactive, Inc. All rights reserved
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 	
-	require_once('./application/db/thesaurusDb.php');
+	require_once('application/db/thesaurusDb.php');
 	
 	/**
 	 * Dom Extensions
@@ -130,6 +130,12 @@
 			//Logger::file($xpathQuery);
 			
 			$l = 0;
+			
+			if (strpos($xpathQuery, '/') === 0)
+			{
+				$xpathQuery = substr($xpathQuery, 1);
+			}
+			
 			$nodes = explode('/', $xpathQuery);
 			
 			// Root par défaut pour le current_node

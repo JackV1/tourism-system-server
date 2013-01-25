@@ -1,25 +1,25 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/modele/droitModele.php');
-	require_once('application/modele/droitTerritoireModele.php');
+	require_once('application/modele/champModele.php');
 	require_once('application/modele/bordereauModele.php');
+	require_once('application/modele/droitModele.php');
 	require_once('application/modele/droitChampModele.php');
+	require_once('application/modele/droitTerritoireModele.php');
+	require_once('application/modele/profilDroitModele.php');
+	require_once('application/modele/territoireModele.php');
+	require_once('application/modele/utilisateurModele.php');
 	
 	final class utilisateurDroitTerritoireDb
 	{
-		// @todo : UNION à ajouter pour le profil ??
-		// Jermey
-		//const SQL_DROIT = "SELECT droit FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d' AND idProfil IS NULL";
-		const SQL_DROIT = "SELECT droit FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d'";
-		//const SQL_DROIT = "SELECT droit FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%1\$d' AND bordereau='%2\$s' AND idTerritoire='%3\$d' AND droit IS NOT NULL UNION SELECT p.droit FROM sitProfilDroit p, sitUtilisateurDroitTerritoire udt WHERE idUtilisateur='%1\$d' AND bordereau='%2\$s' AND idTerritoire='%3\$d' AND p.idProfil=udt.idProfil AND p.droit IS NOT NULL";
+		const SQL_DROIT = "SELECT idProfil, droit FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d'";
 		const SQL_DROITS_UTILISATEUR = "SELECT bordereau, idTerritoire FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%d'";
 		const SQL_DROIT_CHAMP = "SELECT droit, idChamp FROM sitUtilisateurDroitTerritoireChamp WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d'";
 		const SQL_SET_DROIT = "REPLACE INTO sitUtilisateurDroitTerritoire (idUtilisateur, bordereau, idTerritoire, idProfil, droit) VALUES ('%d', '%s', '%d', NULL, '%d')";
@@ -27,9 +27,8 @@
 		const SQL_DELETE_DROIT = "DELETE FROM sitUtilisateurDroitTerritoire WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d'";
 		const SQL_DELETE_DROIT_CHAMP = "DELETE FROM sitUtilisateurDroitTerritoireChamp WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d' AND idChamp='%d'";
 		const SQL_DELETE_DROITS_CHAMP = "DELETE FROM sitUtilisateurDroitTerritoireChamp WHERE idUtilisateur='%d' AND bordereau='%s' AND idTerritoire='%d'";
-		//@modification sur la requête suivante by Robert F.
-		//const SQL_SET_DROIT_PROFIL = "INSERT INTO sitUtilisateurDroitTerritoire (idUtilisateur, bordereau, idTerritoire, idChamp, idProfil, droit) VALUES ('%d', '%s', '%d', NULL, '%d', NULL)";
-		const SQL_SET_DROIT_PROFIL = "INSERT INTO sitUtilisateurDroitTerritoire (idUtilisateur, bordereau, idTerritoire, idProfil, droit) VALUES ('%d', '%s', '%d', '%d', NULL)";
+		const SQL_SET_DROIT_PROFIL = "REPLACE INTO sitUtilisateurDroitTerritoire (idUtilisateur, bordereau, idTerritoire, idProfil) VALUES ('%d', '%s', '%d', '%d')";
+		const SQL_UNSET_DROIT_PROFIL = "UPDATE sitUtilisateurDroitTerritoire SET idProfil = NULL WHERE idUtilisateur = '%d' AND bordereau = '%s' AND idTerritoire = '%d'";
 		
 		
 		
@@ -40,13 +39,29 @@
 			$bordereau = $oBordereau -> bordereau;
 			$idTerritoire = $oTerritoire -> idTerritoire;
 			$result = tsDatabase::getRow(self::SQL_DROIT, array($idUtilisateur, $bordereau, $idTerritoire), DB_FAIL_ON_ERROR);
-			$oDroit = new droitTerritoireModele();
+			
+			/*$oDroit = new droitTerritoireModele();
+			$oDroit -> setIdUtilisateur($idUtilisateur);
 			$oDroit -> setBordereau($bordereau);
 			$oDroit -> setLibelleTerritoire($oTerritoire -> libelle);
 			$oDroit -> setIdTerritoire($idTerritoire);
-			$oDroit -> loadDroit($result['droit']);
+			$oDroit -> setIdProfil($result['idProfil']);*/
 			
-			$oDroit -> setDroitsChamp(self::getDroitsTerritoireChamp($oUtilisateur, $oBordereau, $oTerritoire));
+			if (is_null($result['idProfil']))
+			{
+				$oDroit = new droitTerritoireModele();
+				$oDroit -> loadDroit($result['droit']);
+				$oDroit -> setDroitsChamp(self::getDroitsTerritoireChamp($oUtilisateur, $oBordereau, $oTerritoire));
+			}
+			else
+			{
+				$oDroit = profilDroitDb::getProfil($result['idProfil']);
+			}
+			
+			$oDroit -> setIdUtilisateur($idUtilisateur);
+			$oDroit -> setBordereau($bordereau);
+			$oDroit -> setLibelleTerritoire($oTerritoire -> libelle);
+			$oDroit -> setIdTerritoire($idTerritoire);
 			
 			return $oDroit;
 		}
@@ -147,17 +162,24 @@
 		}
 		
 		
-		public static function setDroitTerritoireProfil(utilisateurModele $oUtilisateur, bordereauModele $oBordereau, territoireModele $oTerritoire, profilModele $oProfil)
+		public static function setDroitTerritoireProfil(utilisateurModele $oUtilisateur, bordereauModele $oBordereau, territoireModele $oTerritoire, profilDroitModele $oProfil = null)
 		{
-			// Suppression de l'ancien droit sur fiche
-			self::deleteDroitTerritoire($oUtilisateur, $oBordereau, $oTerritoire);
-			
 			$idUtilisateur = $oUtilisateur -> idUtilisateur;
 			$bordereau = $oBordereau -> bordereau;
 			$idTerritoire = $oTerritoire -> idTerritoire;
 			$idProfil = $oProfil -> idProfil;
 			
 			return tsDatabase::query(self::SQL_SET_DROIT_PROFIL, array($idUtilisateur, $bordereau, $idTerritoire, $idProfil));
+		}
+		
+		
+		public static function unsetDroitTerritoireProfil(utilisateurModele $oUtilisateur, bordereauModele $oBordereau, territoireModele $oTerritoire)
+		{
+			$idUtilisateur = $oUtilisateur -> idUtilisateur;
+			$bordereau = $oBordereau -> bordereau;
+			$idTerritoire = $oTerritoire -> idTerritoire;
+			
+			return tsDatabase::query(self::SQL_UNSET_DROIT_PROFIL, array($idUtilisateur, $bordereau, $idTerritoire));
 		}
 		
 		

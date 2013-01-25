@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -15,8 +15,8 @@
 	 */
 	abstract class wsEndpoint
 	{
-		
-		
+
+
 		/**
 		 * Méthode d'appel, chaque méthode de service passe par ici
 		 * Initialise l'application, charge les droits de l'utilisateur, puis appelle la méthode demandée
@@ -31,115 +31,133 @@
 			{
 				// Load de l'application
 				self::loadApplication();
-				
-				// Chargement des plugins
-				//tsPlugins::loadPlugins();
-				
+
+				// Chargement des plugins, load les hooks
+				tsPlugins::loadPlugins();
+
+				$className = get_class($this);
+
+				// Hook Before Session
+				tsPlugins::registerVar('arguments', $arguments);
+				tsPlugins::callHook($className, 'beforeSession');
+
 				// Vérification et renouvellement de la session, load des droits
-				tsDroits::restore($arguments[0]);
-				tsDroits::load();
-				
 				// Dépile $arguments pour enlever le sessionId
-				array_shift($arguments);
-				
-				$retour = array($method);
-				
+				tsDroits::restore(array_shift($arguments));
+				tsDroits::load();
+
 				if (method_exists($this, '_' . $method))
 				{
+					// Hook Params
+					tsPlugins::setHookParams((array) array_pop($arguments));
+
+					// Hook Before
+					$hookName = 'before' . ucfirst($method);
+					foreach (getParamsName($className, '_' . $method) as $k => $paramName)
+					{
+						tsPlugins::registerVar($paramName, $arguments[$k]);
+					}
+					tsPlugins::callHook($className, $hookName);
+
 					$retour = call_user_func_array(array($this, '_' . $method), $arguments);
 					$retour = (is_array($retour) === false) ? array() : $retour;
+
+					// Hook After
+					$hookName = 'after' . ucfirst($method);
+					tsPlugins::registerVar('retour', $retour);
+					tsPlugins::callHook($className, $hookName);
+
+					// Hook Responses
+					$retour['hookResponses'] = tsPlugins::getHookResponses();
 				}
 				else
 				{
 					throw new ApplicationException("La méthode demandée n'existe pas");
 				}
-				
-				
-				
+
+
+
 				if (count(Logger::$errors) > 0)
 				{
 					$success = false;
 					$errors = Logger::$errors;
-					$errorLevel = 2;
-					$errorCode = null;
+					$errorCode = 0;
+					$errorInfos = array();
 				}
 				elseif (count(Logger::$notices) > 0)
 				{
 					$success = false;
 					$errors = Logger::$notices;
-					$errorLevel = 1;
-					$errorCode = null;
+					$errorCode = 0;
+					$errorInfos = array();
 				}
 				else
 				{
 					$success = true;
 					$errors = null;
-					$errorLevel = 0;
-					$errorCode = null;
+					$errorCode = 0;
+					$errorInfos = array();
 				}
 
+			}
+			catch(SessionException $e)
+			{
+				$success = false;
+				$errors = $e -> getMessage();
+				$errorCode = 510;
+				$errorInfos = $e -> getInfos();
+
+				Logger::file("Erreur de session");
 			}
 			catch(SecuriteException $e)
 			{
 				$success = false;
 				$errors = $e -> getMessage();
-				$errorLevel = 4;
-				$errorCode = null;
-				
-				Logger::file($e -> getMessage());
-			}
-			catch(ApplicationException $e)
-			{
-				$success = false;
-				$errors = $e -> getMessage();
-				$errorLevel = 4;
-				$errorCode = null;
-				
+				$errorCode = $e -> getCode();
+				$errorInfos = $e -> getInfos();
+
 				Logger::file($e -> getMessage());
 			}
 			catch(ImportException $e)
 			{
 				$success = false;
 				$errors = $e -> getMessage();
-				$errorLevel = 4;
-				$errorCode = 511;
-				$retour = array('idFiche' => $e -> getIdFiche());
-				
+				$errorCode = $e -> getCode();
+				$errorInfos = $e -> getInfos();
+
 				Logger::file($e -> getMessage());
 			}
-			catch(SessionException $e)
+			catch(ApplicationException $e)
 			{
 				$success = false;
 				$errors = $e -> getMessage();
-				$errorLevel = 2;
-				$errorCode = 510;
-				
-				Logger::file("Erreur de session");
+				$errorCode = $e -> getCode();
+				$errorInfos = $e -> getInfos();
+
+				Logger::file($e -> getMessage());
 			}
 			catch(Exception $e)
 			{
 				$success = false;
 				$errors = $e -> getMessage();
-				$errorLevel = 3;
-				$errorCode = null;
-				
+				$errorCode = $e -> getCode();
+				$errorInfos = array();
+
 				Logger::file($e -> getMessage());
 			}
 
-			return array_merge(array('status' => new wsStatus($success, $errors, $errorLevel, $errorCode)), (array)$retour);
+			return array_merge(array('status' => new wsStatus($success, $errors, $errorCode, $errorInfos)), (array) $retour);
 		}
-		
-		
-		
-		
+
+
+
+
 		/**
 		 * Initialisation de l'application (config, bdd, cache)
 		 * @void
 		 */
 		final protected function loadApplication()
 		{
-			tsConfig::loadConfig('config');
-			
 			Logger::init(array(
 				'email' => tsConfig::get('TS_EMAIL_LOGS'),
 				'application' => 'Tourism System',
@@ -148,21 +166,20 @@
 				'verbose' => false,
 				'encoding' => 'UTF-8'
 			));
-			
-			
+
 			tsDatabase::load(tsConfig::get('TS_BDD_TYPE'));
 			tsDatabase::connect(
 				tsConfig::get('TS_BDD_SERVER'),
 				tsConfig::get('TS_BDD_USER'),
 				tsConfig::get('TS_BDD_PASSWORD'));
 			tsDatabase::selectDatabase(tsConfig::get('TS_BDD_NAME'));
-			
+
 			tsCache::load(tsConfig::get('TS_CACHE'));
 		}
-		
-		
-		
-		
+
+
+
+
 		/**
 		 * Restriction des accès aux services
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
@@ -176,87 +193,132 @@
 				throw new SecuriteException("Droits insuffisants : ce service n'est pas disponible");
 			}
 		}
-		
-		
+
+
 		/**
-		 * 
-		 * @param ficheModele $oFiche : 
+		 *
+		 * @param ficheModele $oFiche :
+		 * @param object   $droit
+		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
+		 */
+		protected function checkAccesFiche(ficheModele $oFiche)
+		{
+			if (tsDroits::isFicheAdministrable($oFiche) === false)
+			{
+				throw new SecuriteException("Vous n'avez pas accès à cette fiche.", 516, array('idFiche' => $oFiche -> idFiche));
+			}
+		}
+
+
+		/**
+		 *
+		 * @param ficheModele $oFiche :
 		 * @param object   $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitFiche(ficheModele $oFiche, $droit)
 		{
-			//throw new SecuriteException("Droits insuffisants : ce service n'est pas disponible");
+			$droitsFiche = tsDroits::getDroitFiche($oFiche);
+
+			if (($droitsFiche & $droit) === 0)
+			{
+				throw new SecuriteException("Droits insuffisants : vous n'avez pas les droits sur cette fiche", 517, array('idFiche' => $oFiche->idFiche));
+			}
 		}
-		
+
+
 		/**
-		 * 
+		 *
+		 * @param ficheModele $oFiche :
+		 * @param object   $droit
+		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
+		 */
+		protected function checkDroitFicheChamp(ficheModele $oFiche, champModele $oChamp, $droit)
+		{
+			$droitsFiche = tsDroits::getDroitFiche($oFiche);
+			$droitsFicheChamp = tsDroits::getDroitFicheChamp($oFiche, $oChamp, $droitFiche);
+
+			if (($droitsFicheChamp & $droit) === 0)
+			{
+				throw new SecuriteException("Droits insuffisants : vous n'avez pas les droits sur le champ cette fiche", 518,
+					array('idFiche' => $oFiche->idFiche, 'idChamp' => $oChamp -> idChamp));
+			}
+		}
+
+		/**
+		 *
 		 * @param groupeModele $oGroupe
 		 * @param object    $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitGroupe(groupeModele $oGroupe, $droit)
 		{
-			
+
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param champModele $oChamp
 		 * @param object   $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitChamp(champModele $oChamp, $droit)
 		{
-			
+
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param utilisateurModele $oUtilisateur
 		 * @param object         $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitUtilisateur(utilisateurModele $oUtilisateur, $droit)
 		{
-			
+
 		}
-		
+
 		/**
-		 * 
-		 * @param profilModele $oProfil
+		 *
+		 * @param profilDroitModele $oProfil
 		 * @param object    $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
-		protected function checkDroitProfil(profilModele $oProfil, $droit)
+		protected function checkDroitProfil(profilDroitModele $oProfil, $droit)
 		{
-			
+			if (tsDroits::isRoot() === false)
+			{
+				if ($oProfil -> idGroupe != tsDroits::getGroupeUtilisateur() && $droit == DROIT_ADMIN)
+				{
+					throw new SecuriteException("Droits insuffisants : vous n'avez pas les droits sur ce profil", 520, array('idFiche' => $oProfil->idProfil));
+				}
+			}
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param territoireModele $oTerritoire
 		 * @param object        $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitTerritoire(territoireModele $oTerritoire, $droit)
 		{
-			
+
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param thesaurusModele $oThesaurus
 		 * @param object       $droit
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
 		protected function checkDroitThesaurus(thesaurusModele $oThesaurus, $droit)
 		{
-			
+
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param bordereauModele $oBordereau
 		 * @param communeModele   $oCommune
 		 * @param object       $droit
@@ -264,11 +326,16 @@
 		 */
 		protected function checkDroitBordereauCommune(bordereauModele $oBordereau, communeModele $oCommune, $droit)
 		{
-			
+			$droitsBordereauCommune = tsDroits::getDroitBordereauCommune($oBordereau, $oCommune);
+
+			if (($droitsBordereauCommune & $droit) === 0)
+			{
+				throw new SecuriteException("Droits insuffisants : vous n'avez pas les droits sur ce bordereau/commune");
+			}
 		}
-		
+
 		/**
-		 * 
+		 *
 		 * @param bordereauModele  $oBordereau
 		 * @param territoireModele $oTerritoire
 		 * @param object        $droit
@@ -276,21 +343,20 @@
 		 */
 		protected function checkDroitBordereauTerritoire(bordereauModele $oBordereau, territoireModele $oTerritoire, $droit)
 		{
-			
+
 		}
-		
-		
+
+
 		/**
-		 * 
-		 * @param communeModele $oCommune : 
-		 * @param object $droit
+		 *
+		 * @param communeModele $oCommune :
 		 * @throws SecuriteException : l'utilisateur n'a pas accès au service
 		 */
-		protected function checkDroitCommune(communeModele $oCommune, $droit)
+		protected function checkDroitCommune(communeModele $oCommune)
 		{
-			
+
 		}
-		
+
 	}
 
 

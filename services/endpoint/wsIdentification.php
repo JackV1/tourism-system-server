@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		2.0 alpha-test - 2011-06-08
+ * @version		1.0 alpha-test - 2011-01-27
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -15,7 +15,7 @@
 	 */
 	final class wsIdentification extends wsEndpoint
 	{
-	
+
 		/**
 		 * Méthode d'authentification aux webservices.
 		 * L'identification ouvre une session pour l'accès aux autres méthodes
@@ -29,17 +29,17 @@
 			try
 			{
 				self::loadApplication();
-				
+
 				if ($email == '')
 				{
 					throw new ApplicationException('L\'identifiant fourni ne peut pas être vide');
 				}
-				
+
 				if ($password == '')
 				{
 					throw new ApplicationException('Le mot de passe fourni ne peut pas être vide');
 				}
-				
+
 				return(array(new wsStatus(true), tsDroits::connect($email, $password)));
 			}
 			catch(ApplicationException $e)
@@ -51,8 +51,9 @@
 				return array(new wsStatus(false, $e -> getMessage(), 3));
 			}
 		}
-		
-		
+
+
+
 	}
 
 

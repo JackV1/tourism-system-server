@@ -1,102 +1,137 @@
 <?php
 
-/**
- * @version		0.2 alpha-test - 2011-06-08
- * @package		Tourism System Server
- * @copyright	Copyright (C) 2010 Raccourci Interactive
- * @license		Qt Public License; see LICENSE.txt
- * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
- */
+	/**
+	 * @version        0.3 alpha-test - 2013-01-25
+	 * @package        Tourism System Client
+	 * @copyright      Copyright (C) 2010 Raccourci Interactive
+	 * @license        GNU GPLv3 ; see LICENSE.txt
+	 * @author         Jeremie Perrin <jeremie.raccourci@gmail.com>
+	 */
 
 	final class tsCache
 	{
-		
-		
+
+
 		private static $me;
 		private static $instance;
 		private static $cacheType;
-		
-		
+		private static $purge;
+
+
 		/**
 		 * Constructeur de la classe tsCache
+		 *
 		 * @param string $cacheType : type de cache à utiliser
 		 */
-		private function __construct($cacheType)
+		private function __construct( $cacheType )
 		{
-			if (defined('CACHE_LOADED'))
+			if( defined( 'CACHE_LOADED' ) )
 			{
-				throw new ApplicationException("Le cache est déjà initialisé");
+				throw new Exception( "Le cache est déjà initialisé" );
 			}
-			
-			define('CACHE_LOADED', true);
+
+			define( 'CACHE_LOADED' , true );
 			self::$cacheType = $cacheType;
-			$this -> factory();
+			$this->factory();
 		}
-		
-		
-		
+
+
+
 		/**
 		 * Singleton
+		 *
 		 * @param string $databaseType : type de connection à utiliser
-		 * @return object : instance de la classe tsDatabase  
+		 *
+		 * @return object : instance de la classe tsDatabase
 		 */
-		public static function load($cacheType)
+		public static function load( $cacheType , $purge = false )
 		{
-			if (isset(self::$me) === false)
+			if( isset( self::$me ) === false )
 			{
-				$c = __CLASS__;
-				self::$me = new $c(strtolower($cacheType));
+				$c           = __CLASS__;
+				self::$me    = new $c( strtolower( $cacheType ) );
+				self::$purge = $purge;
 			}
 		}
-		
-		
-		
+
+
+
 		/**
 		 * Factory de la classe tsCache[type]
 		 */
 		private function factory()
 		{
-			switch (self::$cacheType)
+			switch( self::$cacheType )
 			{
+				case 'mysql':
+					require_once( 'tsCacheMySQL.php' );
+					self::$instance = new tsCacheMySQL();
+					break;
+				case 'redis':
+					require_once( 'tsCacheRedis.php' );
+					self::$instance = new tsCacheRedis();
+					break;
+				case 'apc':
+					require_once( 'tsCacheAPC.php' );
+					self::$instance = new tsCacheAPC();
+					break;
 				case 'memcache':
-					require_once('application/cache/tsCacheMemcache.php');
+					require_once( 'tsCacheMemcache.php' );
 					self::$instance = new tsCacheMemcache();
-				break;
+					break;
 				case 'session':
-					require_once('application/cache/tsCacheSession.php');
+					require_once( 'tsCacheSession.php' );
 					self::$instance = new tsCacheSession();
-				break;
+					break;
+				case 'nocache':
+					require_once( 'tsCacheNocache.php' );
+					self::$instance = new tsCacheNocache();
+					break;
 				default:
-					throw new ApplicationException("Le cache n'a pas pu être initialisé");
-				break;
+					throw new Exception( "Le cache n'a pas pu être initialisé" );
+					break;
 			}
 		}
-		
-		
-		
-		
-		
-		
-		
-		public static function set($varName, $value, $timeOut = null)
+
+
+
+		public static function set( &$varName , &$value , $timeOut = null )
 		{
-			return self::$instance -> set(tsConfig::get('TS_CACHE_PREFIXE') . $varName, $value, $timeOut);
+			return self::$instance->set( self::makeKey( $varName ) , $value , $timeOut );
 		}
-		
-		
-		public static function get($varName)
-		{	
-			return self::$instance -> get(tsConfig::get('TS_CACHE_PREFIXE') . $varName);
-		}
-		
-		
-		public static function delete($varName)
+
+
+
+		public static function &get( &$varName )
 		{
-			self::$instance -> delete(tsConfig::get('TS_CACHE_PREFIXE') . $varName);
+			if( self::$purge === true )
+			{
+				$retour = false;
+			}
+			else
+			{
+				$retour = self::$instance->get( self::makeKey( $varName ) );
+			}
+
+			return $retour;
 		}
-		
+
+
+
+		public static function delete( &$varName )
+		{
+			self::$instance->delete( self::makeKey( $varName ) );
+		}
+
+
+		private static function &makeKey( &$varName )
+		{
+			$retour = TS_CACHE_PREFIXE . '.' . serialize( $varName );
+
+			return $retour;
+		}
+
 
 	}
-
 
 ?>

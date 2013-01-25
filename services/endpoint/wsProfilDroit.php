@@ -1,16 +1,18 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/utilisateurDb.php');
+	require_once('application/db/champDb.php');
 	require_once('application/db/groupeDb.php');
 	require_once('application/db/profilDroitDb.php');
+	require_once('application/modele/droitModele.php');
+	require_once('application/modele/droitChampModele.php');
 
 	/**
 	 * Classe wsProfilDroit - endpoint du webservice ProfilDroit
@@ -74,7 +76,7 @@
 		 */
 		protected function _deleteProfil($idProfil)
 		{
-			$this -> restrictAccess('root');
+			$this -> restrictAccess('root', 'superadmin');
 			$oProfil = profilDroitDb::getProfil($idProfil);
 			$this -> checkDroitProfil($oProfil, DROIT_ADMIN);
 			profilDroitDb::deleteProfil($oProfil);
@@ -131,9 +133,16 @@
 		protected function _getProfils()
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
-			$profils = (tsDroits::isRoot()) ? 
-						profilDroitDb::getProfils() : 
-						profilDroitDb::getProfilsGroupe(tsDroits::getGroupeUtilisateur());
+			if (tsDroits::isRoot())
+			{
+				$profils = profilDroitDb::getProfils();
+			}
+			else
+			{
+				$idGroupe = tsDroits::getGroupeUtilisateur();
+				$oGroupe = groupeDb::getGroupe($idGroupe);
+				$profils = profilDroitDb::getProfilsGroupe($oGroupe);
+			}
 			return array('profils' => $profils);
 		}
 		

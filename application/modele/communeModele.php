@@ -1,7 +1,7 @@
 <?php
 	
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -16,6 +16,7 @@
 		protected $libelle;
 		protected $codeInsee;
 		protected $codePostal;
+		protected $codePays;
 		protected $gpsLat;
 		protected $gpsLng;
 
@@ -23,8 +24,9 @@
 		{
 			$str = '<h2>Commune</h2>';
 			$str .= '<h4>Libelle : ' . $this -> libelle . '</h4>';
-			$str .= '<h4>Code postal : ' . $this -> codePostal . '</h4>';
 			$str .= '<h4>Code Insee : ' . $this -> codeInsee . '</h4>';
+			$str .= '<h4>Code postal : ' . $this -> codePostal . '</h4>';
+			$str .= '<h4>Code pays : ' . $this -> codePays . '</h4>';
 			$str .= '<h4>Latitude : ' . $this -> gpsLat . '</h4>';
 			$str .= '<h4>Longitude : ' . $this -> gpsLng . '</h4>';
 			return $str;

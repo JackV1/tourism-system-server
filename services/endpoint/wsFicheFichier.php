@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -29,7 +29,7 @@
 		protected function _addFicheFichier($idFiche, $nomFichier, $principal, $url)
 		{
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			$idFichier = ficheFichierDb::addFicheFichier($oFiche, $nomFichier, $principal, $url);
 			return array('idFichier' => $idFichier);
 		}
@@ -44,7 +44,7 @@
 			$oFicheFichier = ficheFichierDb::getFicheFichier($idFichier);
 			$idFiche = $oFicheFichier -> idFiche;
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_GET);
+			$this -> checkAccesFiche($oFiche);
 			ficheFichierDb::deleteFicheFichier($oFicheFichier);
 			return array();
 		}
@@ -58,7 +58,7 @@
 		protected function _getFicheFichiers($idFiche)
 		{
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_GET);
+			$this -> checkAccesFiche($oFiche);
 			$fichiers = ficheFichierDb::getFicheFichiers($oFiche);
 			return array('fichiers' => $fichiers);
 		}
@@ -75,7 +75,7 @@
 			// Vérification des droits sur fiche après traitement
 			$idFiche = $oFichier -> idFiche;
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_GET);
+			$this -> checkAccesFiche($oFiche);
 			return array('fichier' => $oFichier);
 		}
 		

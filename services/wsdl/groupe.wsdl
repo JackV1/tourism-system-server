@@ -1,71 +1,74 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfGroupes">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:groupe[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       	<complexType name="groupe">
-			    <all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:groupe[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
+			<complexType name="groupe">
+				<all>
 					<element name="idGroupe" type="xsd:int"/>
-			     	<element name="idSuperAdmin" type="xsd:int"/>
-			     	<element name="nomGroupe" type="xsd:string"/>
-			    </all>
+					<element name="idSuperAdmin" type="xsd:int"/>
+					<element name="nomGroupe" type="xsd:string"/>
+					<element name="descriptionGroupe" type="xsd:string"/>
+				</all>
 			</complexType>
 			
 			
 			<complexType name="ArrayOfUtilisateurs">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:utilisateur[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       	<complexType name="utilisateur">
-			    <all>
-				<element name="idUtilisateur" type="xsd:int"/>
-			     	<element name="login" type="xsd:string"/>
-			     	<element name="pass" type="xsd:string"/>
-			    </all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:utilisateur[]"/>
+					</restriction>
+				</complexContent>
 			</complexType>
-	       	
-	       	<complexType name="ArrayOfTerritoires">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:territoire[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       <complexType name="territoire">
-			    <all>
+			
+			<complexType name="utilisateur">
+				<all>
+					<element name="idUtilisateur" type="xsd:int"/>
+					<element name="login" type="xsd:string"/>
+					<element name="pass" type="xsd:string"/>
+					<element name="typeUtilisateur" type="xsd:string"/>
+				</all>
+			</complexType>
+			
+			<complexType name="ArrayOfTerritoires">
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:territoire[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
+		   <complexType name="territoire">
+				<all>
 					<element name="idTerritoire" type="xsd:int"/>
-			     	<element name="libelle" type="xsd:string"/>
-			    </all>
+					<element name="libelle" type="xsd:string"/>
+				</all>
 			</complexType>
 			
 			
@@ -76,18 +79,49 @@
 	
 
 	
+	<message name="getGroupeRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+	</message>
+	<message name="getGroupeResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="groupe" nillable="true" type="tns:groupe"/>
+	</message>
+	
+	<message name="getGroupesRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupeParent" nillable="true" type="xsd:int"/>
+	</message>
+	<message name="getGroupesResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="groupes" nillable="true" type="tns:ArrayOfGroupes"/>
+	</message>
+	
 	<message name="createGroupeRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="nomGroupe" type="xsd:string"/>
+		<part name="descriptionGroupe" type="xsd:string"/>
+		<part name="idGroupeParent" nillable="true" type="xsd:int"/>
 	</message>
 	<message name="createGroupeResponse">
 		<part name="status" type="tns:WSstatus"/>
 		<part name="idGroupe" nillable="true" type="xsd:int"/>
 	</message>
 	
+	<message name="updateGroupeRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+		<part name="nomGroupe" type="xsd:string"/>
+		<part name="descriptionGroupe" type="xsd:string"/>
+	</message>
+	<message name="updateGroupeResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
 	<message name="deleteGroupeRequest">
 		<part name="sessionId" type="xsd:string"/>
-		<part name="idGroupe" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
 	</message>
 	<message name="deleteGroupeResponse">
 		<part name="status" type="tns:WSstatus"/>
@@ -104,30 +138,22 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
-	<message name="getGroupesRequest">
-		<part name="sessionId" type="xsd:string"/>
-	</message>
-	<message name="getGroupesResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="groupes" nillable="true" type="xsd:anyType"/>
-	</message>
-	
-	<message name="getGroupeTerritoiresRequest">
-		<part name="sessionId" type="xsd:string"/>
-		<part name="idGroupe" type="xsd:string"/>
-	</message>
-	<message name="getGroupeTerritoiresResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="territoires" type="tns:ArrayOfTerritoires"/>
-	</message>
-	
 	<message name="getUtilisateursGroupeRequest">
 		<part name="sessionId" type="xsd:string"/>
-		<part name="idGroupe" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
 	</message>
 	<message name="getUtilisateursGroupeResponse">
 		<part name="status" type="tns:WSstatus"/>
 		<part name="utilisateurs" type="tns:ArrayOfUtilisateurs"/>
+	</message>
+	
+	<message name="getGroupeTerritoiresRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+	</message>
+	<message name="getGroupeTerritoiresResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="territoires" type="tns:ArrayOfTerritoires"/>
 	</message>
 	
 	<message name="addGroupeTerritoireRequest">
@@ -150,12 +176,41 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
-	<message name="updateGroupeRequest">
+	<message name="getGroupePartenairesRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idGroupe" type="xsd:int"/>
-		<part name="nomGroupe" type="xsd:string"/>
 	</message>
-	<message name="updateGroupeResponse">
+	<message name="getGroupePartenairesResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="partenaires" type="xs:anyType"/>
+	</message>
+	
+	<message name="addGroupePartenaireRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+		<part name="idGroupePartenaire" type="xsd:int"/>
+		<part name="typePartenaire" type="xsd:string"/>
+	</message>
+	<message name="addGroupePartenaireResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="deleteGroupePartenaireRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+		<part name="idGroupePartenaire" type="xsd:int"/>
+	</message>
+	<message name="deleteGroupePartenaireResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="deleteGroupePartenaireFicheRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idFiche" type="xsd:int"/>
+	</message>
+	<message name="deleteGroupePartenaireFicheResponse">
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
@@ -184,9 +239,19 @@
 			<output message="tns:getGroupesResponse"/>
 		</operation>
 		
+		<operation name="getGroupe">
+			<input  message="tns:getGroupeRequest"/>
+			<output message="tns:getGroupeResponse"/>
+		</operation>
+		
 		<operation name="getGroupeTerritoires">
 			<input  message="tns:getGroupeTerritoiresRequest"/>
 			<output message="tns:getGroupeTerritoiresResponse"/>
+		</operation>
+		
+		<operation name="getGroupePartenaires">
+			<input  message="tns:getGroupePartenairesRequest"/>
+			<output message="tns:getGroupePartenairesResponse"/>
 		</operation>
 
 		<operation name="getUtilisateursGroupe">
@@ -204,9 +269,24 @@
 			<output message="tns:deleteGroupeTerritoireResponse"/>
 		</operation>
 		
+		<operation name="addGroupePartenaire">
+			<input  message="tns:addGroupePartenaireRequest"/>
+			<output message="tns:addGroupePartenaireResponse"/>
+		</operation>
+		
+		<operation name="deleteGroupePartenaire">
+			<input  message="tns:deleteGroupePartenaireRequest"/>
+			<output message="tns:deleteGroupePartenaireResponse"/>
+		</operation>
+		
 		<operation name="updateGroupe">
 			<input  message="tns:updateGroupeRequest"/>
 			<output message="tns:updateGroupeResponse"/>
+		</operation>
+		
+		<operation name="deleteGroupePartenaireFiche">
+			<input  message="tns:deleteGroupePartenaireFicheRequest"/>
+			<output message="tns:deleteGroupePartenaireFicheResponse"/>
 		</operation>
 	</portType>
 
@@ -216,7 +296,7 @@
 		
 		
 		<operation name="createGroupe">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -226,7 +306,7 @@
 		</operation>
 		
 		<operation name="deleteGroupe">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -236,7 +316,7 @@
 		</operation>
 		
 		<operation name="setSuperAdminGroupe">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -246,7 +326,17 @@
 		</operation>
 		
 		<operation name="getGroupes">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="getGroupe">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -256,7 +346,17 @@
 		</operation>
 		
 		<operation name="getGroupeTerritoires">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="getGroupePartenaires">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -266,7 +366,7 @@
 		</operation>
 		
 		<operation name="getUtilisateursGroupe">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -276,7 +376,7 @@
 		</operation>
 		
 		<operation name="addGroupeTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -286,7 +386,27 @@
 		</operation>
 		
 		<operation name="deleteGroupeTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="addGroupePartenaire">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="deleteGroupePartenaire">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -296,7 +416,17 @@
 		</operation>
 		
 		<operation name="updateGroupe">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/groupe.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="deleteGroupePartenaireFiche">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -309,7 +439,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices groupe de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>groupe.php"/>
+			<soap:address location="{BASE_URL}groupe.php"/>
 		</port>
 	</service>
 

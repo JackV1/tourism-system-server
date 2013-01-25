@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -12,12 +12,12 @@
 
 	final class tsDatabase
 	{
-		
+
 		private static $controller;
 		private static $instance;
 		private static $databaseType;
-		
-		
+
+
 		/**
 		 * Constructeur de la classe tsDatabase
 		 * @param string $databaseType : type de connection à utiliser
@@ -28,18 +28,18 @@
 			{
 				throw new ApplicationException("L'accès à la BDD est déjà chargé");
 			}
-			
+
 			define('DATABASE_LOADED', true);
 			self::$databaseType = $databaseType;
 			$this -> factory();
 		}
-		
-		
-		
+
+
+
 		/**
 		 * Singleton
 		 * @param string $databaseType : type de connection à utiliser
-		 * @return object : instance de la classe tsDatabase  
+		 * @return object : instance de la classe tsDatabase
 		 */
 		public static function load($databaseType)
 	    {
@@ -49,9 +49,9 @@
 	            self::$instance = new $c(strtolower($databaseType));
 	        }
 	    }
-		
-		
-		
+
+
+
 		/**
 		 * Factory de la classe tsDatabase[type]
 		 */
@@ -68,33 +68,33 @@
 				break;
 			}
 		}
-		
-		
-		
-		
-		
-		
-		public static function query($sql, array $params)
+
+
+
+
+
+
+		public static function &query($sql, array $params)
 		{
 			return self::$controller -> query($sql, $params);
 		}
-		
+
 		public static function insert($sql, array $params)
 		{
 			return self::$controller -> insert($sql, $params);
 		}
-		
-		public static function getRecord($sql, array $params)
+
+		public static function &getRecord($sql, array $params)
 		{
 			return self::$controller -> getRecord($sql, $params);
 		}
-		
-		public static function getRecords($sql, array $params)
+
+		public static function &getRecords($sql, array $params)
 		{
 			return self::$controller -> getRecords($sql, $params);
 		}
-		
-		public static function getRow($sql, array $params)
+
+		public static function &getRow($sql, array $params)
 		{
 			$result = self::$controller -> getRows($sql, $params);
 			$args = func_get_args();
@@ -106,8 +106,8 @@
 			}
 			return $result[0];
 		}
-		
-		public static function getObject($sql, array $params)
+
+		public static function &getObject($sql, array $params)
 		{
 			$result = self::$controller -> getObjects($sql, $params);
 			$args = func_get_args();
@@ -119,30 +119,30 @@
 			}
 			return $result[0];
 		}
-		
-		
-		public static function getObjects($sql, array $params)
+
+
+		public static function &getObjects($sql, array $params)
 		{
 			return self::$controller -> getObjects($sql, $params);
 		}
-		
-		
-		public static function getRows($sql, array $params)
+
+
+		public static function &getRows($sql, array $params)
 		{
 			return self::$controller -> getRows($sql, $params);
 		}
-		
+
 		public static function connect($dbServer, $dbLogin, $dbPassword)
 		{
 			return self::$controller -> connect($dbServer, $dbLogin, $dbPassword);
 		}
-		
+
 		public static function selectDatabase($dbName)
 		{
 			return self::$controller -> selectDatabase($dbName);
 		}
 
-		
+
 
 	}
 

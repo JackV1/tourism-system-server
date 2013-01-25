@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -10,9 +10,9 @@
 
 	abstract class baseModele
 	{
-	
+
 		//private $setted = array();
-	
+
 		final public function __get($name)
 		{
 			/*if (array_key_exists($name, $this -> setted) === false)
@@ -21,13 +21,13 @@
 			}*/
 			return $this -> $name;
 		}
-		
-		
-		
-		private function __call($method, $args)
-	    {
+
+
+
+		public function __call($method, $args)
+		{
 			$paramName = lcfirst(substr($method, 3));
-			
+
 			if (substr($method, 0, 3) == "set")
 			{
 				$this -> $paramName = $args[0];
@@ -55,16 +55,16 @@
 			}
 			return $str;
 		}
-		
-		
-		
-		final public static function getInstance(stdClass $object, $className)
+
+
+
+		final public static function &getInstance(stdClass $object, $className)
 		{
 			$instance = new $className();
 			$oReflection = new ReflectionClass($className);
 			$properties = $oReflection -> getProperties();
 			foreach($properties as $property)
-			{ 
+			{
 				$name = $property -> getName();
 				if ($property -> isProtected())
 				{
@@ -78,10 +78,10 @@
 			}
 			return $instance;
 		}
-		
-		
-		
-		final public function getObject()
+
+
+
+		final public function &getObject()
 		{
 			$obj = new stdClass;
 			foreach($this as $varName => $ok)
@@ -90,9 +90,9 @@
 			}
 			return $obj;
 		}
-		
-		
-		
+
+
+
 		/*final public static function load($obj, $classname)
 		{
 			//$classname = __CLASS__;
@@ -103,17 +103,17 @@
 			}
 			return $instance;
 		}*/
-		
-		
-		
+
+
+
 		final public function toWsdl()
 		{
 			// @todo
 		}
-		
-		
-	
+
+
+
 	}
-	
+
 
 ?>

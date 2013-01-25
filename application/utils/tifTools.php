@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -10,7 +10,7 @@
 
 	final class tifTools
 	{
-	
+
 		private static $bordereaux = array(
 				'ASC' => array(
 					'cle' => '02.01.01',
@@ -36,6 +36,10 @@
 					'cle' => '02.01.06',
 					'libelle' => 'Hôtellerie de plein air'
 				),
+				'ITI' => array(
+					'cle' => '02.01.07',
+					'libelle' => 'Itinéraires touristiques'
+				),
 				'LOI' => array(
 					'cle' => '02.01.08',
 					'libelle' => 'Loisirs'
@@ -59,11 +63,15 @@
 				'VIL' => array(
 					'cle' => '02.01.14',
 					'libelle' => "Hébergement d'accueil collectif"
+				),
+				'PRD' => array(
+					'cle' => '02.01.15',
+					'libelle' => 'Produits touristique'
 				)
 			);
-		
-		
-		
+
+
+
 		public static function getBordereau($classification)
 		{
 			foreach (self::$bordereaux as $name => $infos)
@@ -72,31 +80,31 @@
 				{
 					$bordereau = $name;
 					break;
-				}	
+				}
 			}
-			
+
 			if(!isset($bordereau))
 			{
 				throw new Exception("Aucun bordereau pour cette classification");
 			}
-			
-			return $bordereau;	
-			
-		}
-		
 
-		
+			return $bordereau;
+
+		}
+
+
+
 		public static function getInfosBordereau($bordereau)
 		{
 			if(!isset(self::$bordereaux[$bordereau]))
 			{
 				throw new Exception("Ce bordereau n'est pas défini");
 			}
-			
+
 			return self::$bordereaux[$bordereau];
 		}
-		
-		
+
+
 		public static function getCodeRegionByCodeInsee($codeInsee)
 		{
 			$departement = floor(intval($codeInsee) / 1000);
@@ -162,8 +170,8 @@
 			}
 			return($codeRegion);
 		}
-		
-		
+
+
 	}
 
 

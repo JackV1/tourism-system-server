@@ -1,17 +1,19 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
- 
-	require_once('application/db/ficheDb.php');
+
 	require_once('application/db/communeDb.php');
-	
-	
+	require_once('application/db/ficheDb.php');
+	require_once('application/modele/bordereauModele.php');
+	require_once('application/modele/ficheSimpleModele.php');
+
+
 	/**
 	 * Classe wsFiche - endpoint du webservice Fiche
 	 * Service de gestion des fiches (liste, création, suppression)
@@ -19,29 +21,13 @@
 	 */
 	final class wsFiche extends wsEndpoint
 	{
-	
-	
-		/**
-		 * Retourne la source xml de la fiche
-		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
-		 * @return string xml : source xml de la fiche au format TIF v3.0
-		 * @access root superadmin admin desk manager
-		 */
-		protected function _getXmlFiche($idFiche)
-		{
-			//$this -> restrictAccess('root', 'superadmin', 'admin', 'desk', 'manager');
-			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$droitsFiche = tsDroits::getDroitFiche($oFiche);
-			$fiche = ficheDb::getFiche($oFiche, $droitsFiche);
-			return array('xml' => $fiche -> xml);
-		}
-		
-		
+
+
 		/**
 		 * Retourne un objet ficheModele
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
 		 * @param int $idFicheVersion [optional] : identifiant de la version de la fiche sitFicheVersion.idFicheVersion
-		 * @return ficheModele fiche 
+		 * @return ficheModele fiche
 		 * @access root superadmin admin desk manager
 		 */
 		protected function _getFiche($idFiche, $idFicheVersion = null)
@@ -55,16 +41,17 @@
 				$oFiche -> gpsLat = $oFicheSimple -> gpsLat;
 				$oFiche -> gpsLng = $oFicheSimple -> gpsLng;
 			}
+			$this -> checkAccesFiche($oFiche);
 			$droitsFiche = tsDroits::getDroitFiche($oFiche);
 			$fiche = ficheDb::getFiche($oFiche, $droitsFiche);
 			return array('fiche' => $fiche);
 		}
-		
-		
+
+
 		/**
 		 * Retourne un objet ficheModele
-		 * @param string $reference : identifiant externe de la fiche 
-		 * @return ficheModele fiche 
+		 * @param string $reference : identifiant externe de la fiche
+		 * @return ficheModele fiche
 		 * @access root superadmin admin desk manager
 		 */
 		protected function _getFicheByRefExterne($reference)
@@ -72,12 +59,13 @@
 			//$this -> restrictAccess('root', 'superadmin', 'admin', 'desk', 'manager');
 			$idFiche = ficheDb::getIdFicheByRefExterne($reference);
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
+			$this -> checkAccesFiche($oFiche);
 			$droitsFiche = tsDroits::getDroitFiche($oFiche);
 			$fiche = ficheDb::getFiche($oFiche, $droitsFiche);
 			return array('fiche' => $fiche);
 		}
-		
-		
+
+
 		/**
 		 * Création d'une fiche
 		 * @param string $bordereau : bordereau Tourinfrance de la fiche à créer
@@ -90,11 +78,15 @@
 		{
 			// @todo:Retourne une fiche simplifiée ?
 			$this -> restrictAccess('root', 'superadmin', 'admin');
-			$idFiche = ficheDb::createFiche($bordereau, $codeInsee, $referenceExterne);
+			$oBordereau = new bordereauModele();
+			$oBordereau -> setBordereau($bordereau);
+			$oCommune = communeDb::getCommune($codeInsee);
+			$this -> checkDroitBordereauCommune($oBordereau, $oCommune, DROIT_CREATION_FICHES);
+			$idFiche = ficheDb::createFiche($oBordereau, $oCommune, $referenceExterne);
 			return array('idFiche' => $idFiche);
 		}
-		
-		
+
+
 		/**
 		 * Supression d'une fiche
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
@@ -104,23 +96,37 @@
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkDroitFiche($oFiche, DROIT_SUPPRESSION_FICHES);
 			ficheDb::deleteFiche($oFiche);
 			return array();
 		}
-		
-		
+
+
 		/**
 		 * Retourne la liste des fiches visibles par l'utilisateur courant
+		 *
 		 * @return fiches : ficheCollection (collection de ficheModele)
 		 * @access root superadmin admin desk manager
 		 */
 		protected function _getFiches()
 		{
-			return array('fiches' => ficheDb::getFiches());
+			return array( 'fiches' => ficheDb::getFiches() );
 		}
-		
-		
+
+
+		/**
+		 * Retourne la liste des fiches visibles par l'utilisateur courant
+		 *
+		 * @return fiches : ficheCollection (collection de ficheModele)
+		 * @access root superadmin admin desk manager
+		 */
+		protected function _getFichesIds()
+		{
+			return array( 'fiches' => ficheDb::getFichesIds() );
+		}
+
+
+
 		/**
 		 * Retourne la liste des fiches correspondant aux critères de recherche envoyés
 		 * @return fiches : ficheCollection (collection de ficheModele)
@@ -128,83 +134,127 @@
 		 * @param array $filters : filtres de recherche : tableau de codes Tourinfrance
 		 * @access root superadmin admin desk manager
 		 */
-		protected function _rechercheFiches($bordereau = null, $filters = array())
+		protected function _rechercheFiches($bordereau = null, $filtersParam = array())
 		{
+			$fiches = ficheDb::getFichesBordereau($bordereau);
+//			$fiches = ficheDb::getFiches();
+			$hasFilters = (count($filtersParam) > 0);
 
-			$fiches = ficheDb::getFiches();
-			$hasFilters = (count($filters) > 0);
-
-			foreach($fiches as $k => $fiche)
+			$filters = array();
+			foreach($filtersParam as $filterListOr)
 			{
-				$oFiche = ficheDb::getFicheByIdFiche($fiche -> idFiche);
+				$filters[] = explode('|', $filterListOr);
+			}
+
+			$fichesRetourB = array();
+
+			foreach($fiches as $k => &$fiche)
+			{
 				// Bordereau
-				if (is_null($bordereau) === false)
+				if (is_null($bordereau) === false) // y'a un bordereau
 				{
-					if ($bordereau != $oFiche -> bordereau)
+					if ($bordereau == $fiche -> bordereau) // ne charger que les fiches ayant ce bordereau
 					{
-						unset($fiches[$k]);
+						$fichesRetourB[] = $fiche;
 					}
 				}
+				else // pas de bordereau : charger toutes les fiches
+				{
+					$fichesRetourB[ ] = $fiche;
+				}
+
+			}
+
+			$fichesRetour = array();
+
+			foreach($fichesRetourB as $fichearray)
+			{
+				$oFiche = ficheDb::getFicheByIdFiche($fichearray->idFiche);
+
 				// Filters
 				if ($hasFilters)
 				{
-					$domFiche = new DOMDocument('1.0');
-					$domFiche -> loadXML($oFiche -> xml);
-					$domXpath = new DOMXpath($domFiche);
-					$keep = true;
-					
+					$keepAll = true;
+
 					foreach($filters as $filter)
 					{
-						$filtersOr = explode('|', $filter);
-						$keepTmp = false;
-						foreach($filtersOr as &$filterOr)
+						$keepAcceptOne = false;
+
+						foreach($filter as $filterOr)
 						{
-							$xPathQuery = "//*[@type='".$filterOr."' or @code='".$filterOr."']";
-							$keepTmp = $keepTmp || libXml::hasResult($domXpath, $xPathQuery);
+							// si on trouve au moins un contvoc : pas la peine de continuer les filtres OR
+							if( strpos( $oFiche->xml , '="' . $filterOr . '"' ) )
+							{
+								$keepAcceptOne = true;
+								break;
+							}
 						}
-						
-						$keep = $keep && $keepTmp;
+
+						$keepAll = $keepAll && $keepAcceptOne;
+
+						if (!$keepAll)
+						{
+							break;
+						}
 					}
-					if ($keep === false)
+					if( $keepAll )
 					{
-						unset($fiches[$k]);
+						$fichesRetour[] = $fichearray;
 					}
+
 				}
+				else // si pas de filtre : ajouter toutes les fiches du bordereau
+				{
+					$fichesRetour[ ] = $fichearray;
+				}
+
 			}
-			return array('fiches' => $fiches);
+
+			return array('fiches' => $fichesRetour);
 		}
-		
-		
+
+
 		/**
 		 * Méthode de sauvegarde de la fiche
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
 		 * @param stdClass $stdFiche : objet de type stdClass tel que retourné par getFiche
 		 * @access root superadmin admin desk manager
 		 */
-		protected function _sauvegardeFiche($idFiche, $stdFiche)
+		protected function _sauvegardeFiche($idFiche, $stdFiche, $champsValide = null, $champsRefuse = null)
 		{
+			$champsValide = !is_null($champsValide) ? $champsValide : array();
+			$champsRefuse = !is_null($champsRefuse) ? $champsRefuse : array();
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
+			$this -> checkAccesFiche($oFiche);
 			$droitsFiche = tsDroits::getDroitFiche($oFiche);
-			ficheDb::sauvegardeFiche($oFiche, $stdFiche, $droitsFiche);
-			return array();
+			
+			$idFicheVersion = null;
+			
+			if( ficheDb::sauvegardeFiche($oFiche, $stdFiche, $droitsFiche, $champsValide, $champsRefuse))
+			{
+				$newVersion = ficheDb::getFicheVersion($idFiche);	
+				$idFicheVersion = $newVersion['idFicheVersion'];
+			}
+			
+			return array('idVersion' => $idFicheVersion);
 		}
-		
-	
+
+
 		/**
 		 * Change l'état de publication d'une fiche
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
 		 * @param bool $publication : le statut de publication
 		 * @access root superadmin admin desk manager
 		 */
-		protected function _setPublicationFiche($idFiche, $publication) //#Anthony
+		protected function _setPublicationFiche($idFiche, $publication)
 		{
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			ficheDb::setPublicationFiche($oFiche, $publication);
 			return array();
 		}
-		
-	
+
+
 		/**
 		 * Récupère les versions d'une fiche
 		 * @return versions : Versions de la fiche
@@ -215,12 +265,12 @@
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			$versions = ficheDb::getFicheVersions($oFiche);
 			return array('versions' => $versions);
 		}
-		
-	
+
+
 		/**
 		 * Supprime une version de fiche
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
@@ -231,12 +281,12 @@
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkDroitFiche($oFiche, DROIT_SUPPRESSION_FICHES);
 			ficheDb::deleteFicheVersion($oFiche, $idFicheVersion);
 			return array();
 		}
-		
-	
+
+
 		/**
 		 * Restaure une version de fiche en créant une nouvelle version
 		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
@@ -247,12 +297,19 @@
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche, $idFicheVersion);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
-			ficheDb::sauvegardeFicheXml($oFiche -> idFiche, $oFiche -> xml);
-			return array();
+			$this -> checkDroitFiche($oFiche, DROIT_MODIFICATION);
+			
+			$newIdFicheVersion = null;
+			
+			if( ficheDb::createFicheVersion($oFiche -> idFiche, $oFiche -> xml) )
+			{
+				$newVersion = ficheDb::getFicheVersion($idFiche);	
+				$newIdFicheVersion = $newVersion['idFicheVersion'];
+			}
+			
+			return array('idVersion' => $newIdFicheVersion);
 		}
-		
-		
+
 	}
 
 

@@ -1,22 +1,24 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/modele/champModele.php');
 	require_once('application/modele/droitModele.php');
-	require_once('application/modele/droitFicheModele.php');
 	require_once('application/modele/droitChampModele.php');
+	require_once('application/modele/droitFicheModele.php');
+	require_once('application/modele/ficheModele.php');
+	require_once('application/modele/profilDroitModele.php');
+	require_once('application/modele/utilisateurModele.php');
 	
 	final class utilisateurDroitFicheDb
 	{
-		// @todo : UNION à ajouter pour le profil ??
-		const SQL_DROIT = "SELECT droit FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%d' AND idFiche='%d' AND idProfil IS NULL";
-		//const SQL_DROIT = "SELECT droit FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%1\$d' AND idFiche='%2\$d' AND droit IS NOT NULL UNION SELECT p.droit FROM sitProfilDroit p, sitUtilisateurDroitFiche udf WHERE idUtilisateur='%1\$d' AND idFiche='%2\$d' AND p.idProfil=udf.idProfil AND p.droit IS NOT NULL";
+		const SQL_DROIT = "SELECT idProfil, droit FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%d' AND idFiche='%d'";
 		const SQL_DROITS_UTILISATEUR = "SELECT idFiche FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%d'";
 		const SQL_DROIT_CHAMP = "SELECT droit, idChamp FROM sitUtilisateurDroitFicheChamp WHERE idUtilisateur='%d' AND idFiche='%d'";
 		const SQL_SET_DROIT = "REPLACE INTO sitUtilisateurDroitFiche (idUtilisateur, idFiche, idProfil, droit) VALUES ('%d', '%d', NULL, '%d')";
@@ -24,8 +26,9 @@
 		const SQL_DELETE_DROIT = "DELETE FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%d' AND idFiche='%d'";
 		const SQL_DELETE_DROIT_CHAMP = "DELETE FROM sitUtilisateurDroitFicheChamp WHERE idUtilisateur='%d' AND idFiche='%d' AND idChamp='%d'";
 		const SQL_DELETE_DROITS_CHAMP = "DELETE FROM sitUtilisateurDroitFicheChamp WHERE idUtilisateur='%d' AND idFiche='%d'";
-		//const SQL_SET_DROIT_PROFIL = "INSERT INTO sitUtilisateurDroitFiche (idUtilisateur, idFiche, idChamp, idProfil, droit) VALUES ('%d', '%d', NULL, '%d', NULL)";
-		const SQL_SET_DROIT_PROFIL = "INSERT INTO sitUtilisateurDroitFiche (idUtilisateur, idFiche, idProfil, droit) VALUES ('%d', '%d', '%d', NULL)";
+		const SQL_SET_DROIT_PROFIL = "REPLACE INTO sitUtilisateurDroitFiche (idUtilisateur, idFiche, idProfil) VALUES ('%d', '%d', '%d')";
+		const SQL_UNSET_DROIT_PROFIL = "UPDATE sitUtilisateurDroitFiche SET idProfil = NULL WHERE idUtilisateur = '%d' AND idFiche = '%d'";
+		const SQL_DROIT_FICHE_UTILISATEURS = "SELECT idUtilisateur FROM sitUtilisateurDroitFiche WHERE idFiche = '%d'";
 		
 		
 		public static function getDroitFiche(utilisateurModele $oUtilisateur, ficheModele $oFiche)
@@ -33,12 +36,31 @@
 			$idUtilisateur = $oUtilisateur -> idUtilisateur;
 			$idFiche = $oFiche -> idFiche;
 			$result = tsDatabase::getRow(self::SQL_DROIT, array($idUtilisateur, $idFiche), DB_FAIL_ON_ERROR);
-			$oDroit = new droitFicheModele();
+			
+			/*$oDroit = new droitFicheModele();
 			$oDroit -> setIdFiche($idFiche);
 			$oDroit -> setIdUtilisateur($idUtilisateur);
 			$oDroit -> loadDroit($result['droit']);
 			$oDroit -> setRaisonSociale($oFiche -> raisonSociale);
-			$oDroit -> setDroitsChamp(self::getDroitsFicheChamp($oUtilisateur, $oFiche));
+			$oDroit -> setBordereau($oFiche -> bordereau);
+			$oDroit -> setDroitsChamp(self::getDroitsFicheChamp($oUtilisateur, $oFiche));*/
+			
+			if (is_null($result['idProfil']))
+			{
+				$oDroit = new droitFicheModele();
+				$oDroit -> loadDroit($result['droit']);
+				$oDroit -> setDroitsChamp(self::getDroitsFicheChamp($oUtilisateur, $oFiche));
+			}
+			else
+			{
+				$oDroit = profilDroitDb::getProfil($result['idProfil']);
+			}
+			
+			$oDroit -> setIdFiche($idFiche);
+			$oDroit -> setIdUtilisateur($idUtilisateur);
+			$oDroit -> setRaisonSociale($oFiche -> raisonSociale);
+			$oDroit -> setBordereau($oFiche -> bordereau);
+			
 			return $oDroit;
 		}
 		
@@ -113,7 +135,6 @@
 		{
 			$idUtilisateur = $oUtilisateur -> idUtilisateur;
 			$idFiche = $oFiche -> idFiche;
-			
 			$deleteChamps = tsDatabase::query(self::SQL_DELETE_DROITS_CHAMP, array($idUtilisateur, $idFiche));
 			$deleteDroit = tsDatabase::query(self::SQL_DELETE_DROIT, array($idUtilisateur, $idFiche));
 			return $deleteChamps && $deleteDroit;
@@ -130,16 +151,34 @@
 		}
 		
 		
-		public static function setDroitFicheProfil(utilisateurModele $oUtilisateur, ficheModele $oFiche, profilModele $oProfil)
+		public static function setDroitFicheProfil(utilisateurModele $oUtilisateur, ficheModele $oFiche, profilDroitModele $oProfil)
 		{
-			// Suppression de l'ancien droit sur fiche
-			self::deleteDroitFiche($oUtilisateur, $oFiche);
-			
 			$idUtilisateur = $oUtilisateur -> idUtilisateur;
 			$idFiche = $oFiche -> idFiche;
 			$idProfil = $oProfil -> idProfil;
 			
 			return tsDatabase::query(self::SQL_SET_DROIT_PROFIL, array($idUtilisateur, $idFiche, $idProfil));
+		}
+		
+		
+		public static function unsetDroitFicheProfil(utilisateurModele $oUtilisateur, ficheModele $oFiche)
+		{
+			$idUtilisateur = $oUtilisateur -> idUtilisateur;
+			$idFiche = $oFiche -> idFiche;
+			
+			return tsDatabase::query(self::SQL_UNSET_DROIT_PROFIL, array($idUtilisateur, $idFiche));
+		}
+		
+		
+		public function getDroitFicheUtilisateurs(ficheModele $oFiche)
+		{
+			$oUtilisateurCollection = new UtilisateurCollection();
+			$idUtilisateurs = tsDatabase::getRecords(self::SQL_DROIT_FICHE_UTILISATEURS, array($oFiche -> idFiche));
+			foreach ($idUtilisateurs as $idUtilisateur)
+			{
+				$oUtilisateurCollection[] = utilisateurDb::getUtilisateur($idUtilisateur);
+			}
+			return $oUtilisateurCollection -> getCollection();
 		}
 		
 		

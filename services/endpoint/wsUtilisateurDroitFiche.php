@@ -1,19 +1,20 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/utilisateurDb.php');
-	require_once('application/db/groupeDb.php');
+	require_once('application/db/champDb.php');
 	require_once('application/db/ficheDb.php');
 	require_once('application/db/profilDroitDb.php');
-	require_once('application/db/champDb.php');
+	require_once('application/db/utilisateurDb.php');
 	require_once('application/db/utilisateurDroitFicheDb.php');
+	require_once('application/modele/droitChampModele.php');
+	require_once('application/modele/droitFicheModele.php');
 
 	/**
 	 * Classe wsUtilisateurDroitFiche - endpoint du webservice UtilisateurDroitFiche
@@ -52,7 +53,7 @@
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_GET);
+			$this -> checkAccesFiche($oFiche);
 			$droitFiche = utilisateurDroitFicheDb::getDroitFiche($oUtilisateur, $oFiche);
 			return array('droitFiche' => $droitFiche);
 		}
@@ -73,7 +74,7 @@
 			$oDroit = baseModele::getInstance($droit, 'droitFicheModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			
 			utilisateurDroitFicheDb::setDroitFiche($oUtilisateur, $oFiche, $oDroit);
 			return array();
@@ -97,7 +98,7 @@
 			$oDroit = baseModele::getInstance($droit, 'droitChampModele');
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			$this -> checkDroitChamp($oChamp, DROIT_GET);
 		
 			utilisateurDroitFicheDb::setDroitFicheChamp($oUtilisateur, $oFiche, $oChamp, $oDroit);
@@ -121,7 +122,7 @@
 			$oChamp = champDb::getChamp($idChamp);
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_GET);
+			//$this -> checkDroitFiche($oFiche, DROIT_GET);
 			$this -> checkDroitChamp($oChamp, DROIT_GET);
 			
 			$droitFicheChamp = utilisateurDroitFicheDb::getDroitFicheChamp($oUtilisateur, $oFiche, $oChamp);
@@ -142,7 +143,7 @@
 			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
 			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			
 			utilisateurDroitFicheDb::deleteDroitFiche($oUtilisateur, $oFiche);
 			return array();
@@ -164,7 +165,7 @@
 			$oChamp = champDb::getChamp($idChamp);
 						
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
 			$this -> checkDroitChamp($oChamp, DROIT_GET);
 			
 			utilisateurDroitFicheDb::deleteDroitFicheChamp($oUtilisateur, $oFiche, $oChamp);
@@ -184,17 +185,33 @@
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
-						
-			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			$this -> checkDroitFiche($oFiche, DROIT_ADMIN);
 			
-			if (is_null($idProfil) === false)
-			{
-				$oProfil = profilDroitDb::getProfil($idProfil);
-				$this -> checkDroitProfil($oProfil, DROIT_GET);
-			}
+			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
+			
+			$oProfil = profilDroitDb::getProfil($idProfil);
+			//$this -> checkDroitProfil($oProfil, DROIT_GET);
 			
 			utilisateurDroitFicheDb::setDroitFicheProfil($oUtilisateur, $oFiche, $oProfil);
+			return array();
+		}
+		
+		/**
+		 * Désassocie un droit sur fiche d'un utilisateur d'un profil de droits
+		 * @param int $idUtilisateur : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
+		 * @param int $idFiche : identifiant de fiche sitFiche.idFiche
+		 * @access root superadmin
+		 */
+		protected function _unsetDroitFicheProfil($idUtilisateur, $idFiche)
+		{
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
+			$oFiche = ficheDb::getFicheSimpleByIdFiche($idFiche);
+			
+			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
+			$this -> checkAccesFiche($oFiche);
+			
+			utilisateurDroitFicheDb::unsetDroitFicheProfil($oUtilisateur, $oFiche);
 			return array();
 		}
 		

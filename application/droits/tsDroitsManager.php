@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -13,7 +13,6 @@
 		
 		const SQL_FICHES_ADMINISTRABLES = "SELECT DISTINCT(idFiche) FROM sitUtilisateurDroitFiche WHERE idUtilisateur='%d'";
 		
-		
 		const SQL_DROIT_FICHE_ID = 'SELECT droit FROM sitUtilisateurDroitFiche WHERE idUtilisateur=\'%1$d\' AND idFiche=\'%2$d\'
 									AND idProfil IS NULL UNION SELECT pd.droit FROM sitProfilDroit pd, sitUtilisateurDroitFiche udf
 									WHERE udf.idUtilisateur=\'%1$d\' AND udf.idFiche=\'%2$d\' AND udf.idProfil=pd.idProfil';
@@ -23,58 +22,65 @@
 										WHERE udf.idUtilisateur=\'%1$d\' AND udf.idFiche=\'%2$d\' AND udf.idProfil=pd.idProfil AND pd.idChamp=\'%3$d\'';
 		
 		
-		protected function  loadDroitsBordereauTerritoire() {}
-		
-		protected function  loadUtilisateursAdministrables() {}
-		
-		public function getDroitFicheChamp(ficheModele $oFiche, champModele $oChamp)
-		{
-			$droits = tsDatabase::getRecords(self::SQL_DROIT_FICHE_ID_CHAMP, array($this -> idUtilisateur, $oFiche -> idFiche, $oChamp -> idChamp));
-			
-			// Le droit champ est défini
-			if (count($droits) == 0)
-			{
-				return false;
-			}
-			
-			$droitChamp = 0;
-			foreach($droits as $droit)
-			{
-				$droitChamp |= $droit;
-			}
-
-			return $droitChamp;
-		}
-		
-		public function getDroitFiche(ficheModele $oFiche)
-		{
-			//assert('in_array($idFiche, $this -> fichesAdministrables)');
-			$droits = tsDatabase::getRecords(self::SQL_DROIT_FICHE_ID, array($this -> idUtilisateur, $oFiche -> idFiche));
-			$droitFiche = 0;
-			foreach($droits as $droit)
-			{
-				$droitFiche |= $droit;
-			}
-			return $droitFiche;
-		}
 		
 		
-		public function getDroitThesaurus(thesaurusModele $oThesaurus)
+		/**
+		 * Chargement des groupes administrables 
+		 */
+		protected function loadGroupesAdministrables() {}
+		
+		
+		/**
+		 * Chargement des utilisateurs administrables 
+		 */
+		protected function loadUtilisateursAdministrables() {}
+		
+		
+		/**
+		 * Chargement des territoires administrables 
+		 */
+		protected function loadTerritoiresAdministrables() {}
+		
+		
+		
+		
+		public function getDroitGroupe(groupeModele $oGroupe)
 		{
 			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
 		}
+		
+		
+		public function getDroitChamp(champModele $oChamp)
+		{
+			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
+		}
+		
+		
+		public function getDroitFiche(ficheModele $oFiche)
+		{
+			return tsDatabase::getRecord(self::SQL_DROIT_FICHE_ID, array($this -> idUtilisateur, $oFiche -> idFiche));
+		}
+		
 		
 		public function getDroitUtilisateur(utilisateurModele $oUtilisateur)
 		{
 			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
 		}
 		
-		public function getDroitProfil(profilModele $oProfil)
+		
+		public function getDroitProfil(profilDroitModele $oProfil)
 		{
 			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
 		}
 		
+		
 		public function getDroitTerritoire(territoireModele $oTerritoire)
+		{
+			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
+		}
+		
+		
+		public function getDroitThesaurus(thesaurusModele $oThesaurus)
 		{
 			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
 		}
@@ -89,18 +95,7 @@
 			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
 		}
 		
-		public function getDroitGroupe(groupeModele $oGroupe)
-		{
-			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
-		}
-		
-		public function getDroitChamp(champModele $oChamp)
-		{
-			throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
-		}
-		
-		
 	}
 
-
+	
 ?>
