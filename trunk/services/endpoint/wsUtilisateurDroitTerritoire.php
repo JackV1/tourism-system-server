@@ -1,18 +1,21 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/utilisateurDb.php');
-	require_once('application/db/groupeDb.php');
-	require_once('application/db/profilDroitDb.php');
 	require_once('application/db/champDb.php');
+	require_once('application/db/profilDroitDb.php');
+	require_once('application/db/territoireDb.php');
+	require_once('application/db/utilisateurDb.php');
 	require_once('application/db/utilisateurDroitTerritoireDb.php');
+	require_once('application/modele/bordereauModele.php');
+	require_once('application/modele/droitChampModele.php');
+	require_once('application/modele/droitTerritoireModele.php');
 
 	/**
 	 * Classe wsUtilisateurDroitTerritoire - endpoint du webservice UtilisateurDroitTerritoire
@@ -187,18 +190,36 @@
 			$oBordereau = baseModele::getInstance($bordereau, 'bordereauModele');
 			$oBordereau -> setBordereau($bordereau);
 			$oTerritoire = territoireDb::getTerritoire($idTerritoire);
-						
+			
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
 			$this -> checkDroitBordereauTerritoire($oBordereau, $oTerritoire, DROIT_ADMIN);
 			
-			if (is_null($idProfil) === false)
-			{
-				$oProfil = profilDroitDb::getProfil($idProfil);
-				/*@todo */
-				//$this -> checkDroitProfil($oProfil);
-			}
+			$oProfil = profilDroitDb::getProfil($idProfil);
+			//$this -> checkDroitProfil($oProfil);
 			
 			utilisateurDroitTerritoireDb::setDroitTerritoireProfil($oUtilisateur, $oBordereau, $oTerritoire, $oProfil);
+			return array();
+		}
+		
+		/**
+		 * Désassocie un droit sur bordereau - territoire d'un utilisateur d'un profil de droits
+		 * @param int $idUtilisateur : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
+		 * @param string $bordereau : code bordereau (bordereauModele)
+		 * @param int $idTerritoire : identifiant de territoire sitTerritoire.idTerritoire
+		 * @access root superadmin
+		 */
+		protected function _unsetDroitTerritoireProfil($idUtilisateur, $bordereau, $idTerritoire)
+		{
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
+			$oBordereau = baseModele::getInstance($bordereau, 'bordereauModele');
+			$oBordereau -> setBordereau($bordereau);
+			$oTerritoire = territoireDb::getTerritoire($idTerritoire);
+			
+			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
+			$this -> checkDroitBordereauTerritoire($oBordereau, $oTerritoire, DROIT_ADMIN);
+			
+			utilisateurDroitTerritoireDb::unsetDroitTerritoireProfil($oUtilisateur, $oBordereau, $oTerritoire);
 			return array();
 		}
 		

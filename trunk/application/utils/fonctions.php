@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -33,8 +33,8 @@
 		}
 		return($arr);
 	}
-	
-	
+
+
 	function storeCompare(&$arr1, &$arr2)
 	{
 		if (is_array($arr1) && is_array($arr2))
@@ -49,7 +49,7 @@
 						{
 							unset($arr1[$key][$k]);
 							unset($arr2[$key][$k]);
-						}							
+						}
 					}
 					if (empty($arr1[$key]) && empty($arr2[$key]))
 					{
@@ -60,11 +60,11 @@
 			}
 		}
 	}
-	
+
 	function removeDir($dir)
 	{
 		$d = dir($dir);
-		while($entry = $d -> read()) 
+		while($entry = $d -> read())
 		{
 			if ($entry != "." && $entry != '..')
 			{
@@ -79,8 +79,48 @@
 			}
 		}
 		$d -> close();
-		rmdir($dir); 
+		rmdir($dir);
 	}
 
+	function strStartsWith( $haystack, $needles )
+	{
+		foreach($needles as $needle)
+		{
+			$length = strlen( $needle );
+			if ( substr( $haystack, 0, $length ) === $needle )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function strEndsWith( $haystack, $needle )
+	{
+		$length = strlen( $needle );
+		if( $length == 0 )
+		{
+			return true;
+		}
+		return ( substr( $haystack, -$length ) === $needle );
+	}
+	
+	function getParamsName($className, $methodName)
+	{
+		$oClass = new ReflectionClass($className);
+		$oMethod = $oClass->getMethod($methodName);
+		$parameters = $oMethod->getParameters();
+		
+		$paramsName = array();
+		if (count($parameters) > 1)
+		{
+			foreach ($parameters as $parameter)
+			{
+				$paramsName[] = $parameter->name;
+			}
+		}
+		
+		return $paramsName;
+	}
 
 ?>

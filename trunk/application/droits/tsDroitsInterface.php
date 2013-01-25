@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -21,7 +21,7 @@
 		
 		public function getDroitUtilisateur(utilisateurModele $oUtilisateur);
 		
-		public function getDroitProfil(profilModele $oProfil);
+		public function getDroitProfil(profilDroitModele $oProfil);
 		
 		public function getDroitTerritoire(territoireModele $oTerritoire);
 		

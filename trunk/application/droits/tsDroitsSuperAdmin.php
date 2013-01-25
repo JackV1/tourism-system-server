@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -11,23 +11,58 @@
 	final class tsDroitsSuperAdmin extends tsDroitsAdmin implements tsDroitsInterface
 	{
 		
-		const SQL_UTILISATEURS = "SELECT su.idUtilisateur FROM sitUtilisateur su, sitUtilisateur su2 
-								WHERE su.idGroupe=su2.idGroupe AND su2.idUtilisateur='%d'";
-
+		const SQL_UTILISATEURS = "SELECT idUtilisateur FROM sitUtilisateur WHERE idGroupe='%d' AND idUtilisateur!='%d'";
+		const SQL_TERRITOIRES = "SELECT idTerritoire FROM sitGroupeTerritoire WHERE idGroupe='%d'";
 		const SQL_PROFILS_ADMINISTRABLES = "SELECT idProfil FROM sitProfilDroit WHERE idGroupe='%d'";
 		
 		private $profilsGroupe = null;
 		
 		
-
+		
+		/**
+		 * Chargement des groupes administrables 
+		 */
+		protected function loadGroupesAdministrables()
+		{
+			$this -> groupesAdministrables = groupeDb::getGroupesChilds(groupeDb::getGroupe($this -> idGroupe));
+			$this -> groupesAdministrables[] = $this -> idGroupe;
+		}
+		
+		
 		/**
 		 * Chargement des utilisateurs administrables 
 		 */
 		protected function loadUtilisateursAdministrables()
 		{
-			$sql = constant(get_class($this) . '::SQL_UTILISATEURS');
-			$this -> utilisateursAdministrables = tsDatabase::getRecords($sql,  array($this -> idUtilisateur));
+			foreach ($this -> groupesAdministrables as $idGroupe)
+			{
+				$this -> utilisateursAdministrables = array_merge(
+					$this -> utilisateursAdministrables,
+					tsDatabase::getRecords(self::SQL_UTILISATEURS, array($idGroupe, $this -> idUtilisateur))
+				);
+			}
+			
+			$this -> utilisateursAdministrables = array_unique($this -> utilisateursAdministrables);
 		}
+		
+		
+		/**
+		 * Chargement des territoires administrables 
+		 */
+		protected function loadTerritoiresAdministrables()
+		{
+			foreach ($this -> groupesAdministrables as $idGroupe)
+			{
+				$this -> territoiresAdministrables = array_merge(
+					$this -> territoiresAdministrables,
+					tsDatabase::getRecords(self::SQL_TERRITOIRES, array($idGroupe))
+				);
+			}
+			
+			$this -> territoiresAdministrables = array_unique($this -> territoiresAdministrables);
+		}
+		
+		
 		
 		
 		public function getDroitGroupe(groupeModele $oGroupe)
@@ -38,26 +73,11 @@
 			}
 			return DROIT_GET | DROIT_ADMIN;
 		}
-
-
+		
+		
 		public function getDroitChamp(champModele $oChamp)
 		{
 			return DROIT_GET;
-		}
-		
-		
-		public function getDroitFiche(ficheModele $oFiche)
-		{
-			if (in_array($oFiche -> idFiche, $this -> fichesAdministrables) === false)
-			{
-				throw new SecuriteException("Vous n'avez pas accès à cette fiche.");
-			}
-			$droit = new droitFicheModele();
-			$droit -> setVisualisation(true);
-			$droit -> setModification(true);
-			$droit -> setValidation(true);
-			$droit -> setSuppressionFiches(true);
-			return $droit -> getDroit();
 		}
 		
 		
@@ -71,10 +91,24 @@
 		}
 		
 		
+		/*public function getDroitFiche(ficheModele $oFiche)
+		{
+			if (in_array($oFiche -> idFiche, $this -> fichesAdministrables) === false)
+			{
+				throw new SecuriteException("Vous n'avez pas accÃ¨s Ã  cette fiche.");
+			}
+			$droit = new droitFicheModele();
+			$droit -> setVisualisation(true);
+			$droit -> setModification(true);
+			$droit -> setValidation(true);
+			$droit -> setSuppressionFiches(true);
+			return $droit -> getDroit();
+		}*/
+		
+		
 		public function getDroitUtilisateur(utilisateurModele $oUtilisateur)
 		{
 			$idUtilisateur = $oUtilisateur -> getIdUtilisateur();
-			//assert('in_array($idUtilisateur, $this -> utilisateursAdministrables)');
 			if (in_array($idUtilisateur, $this -> utilisateursAdministrables) === false)
 			{
 				throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
@@ -83,7 +117,7 @@
 		}
 		
 		
-		public function getDroitProfil(profilModele $oProfil)
+		public function getDroitProfil(profilDroitModele $oProfil)
 		{
 			if (is_null($this -> profilsGroupe))
 			{
@@ -102,7 +136,6 @@
 		public function getDroitTerritoire(territoireModele $oTerritoire)
 		{
 			$idTerritoire = $oTerritoire -> getIdTerritoire();
-			//assert('in_array($idTerritoire, $this -> territoiresAdministrables)');
 			if (in_array($idTerritoire, $this -> territoiresAdministrables) === false)
 			{
 				throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
@@ -117,26 +150,12 @@
 		}
 		
 		
-		public function getDroitBordereauCommune(bordereauModele $oBordereau, communeModele $oCommune)
-		{
-			$codeInsee = $oCommune -> getCodeInsee();
-			$bordereau = $oBordereau -> getBordereau();
-			
-			//assert('isset($this -> droitsBordereauCommune[$bordereau][$codeInsee])');
-			if (isset($this -> droitsBordereauCommune[$bordereau][$codeInsee]) === false)
-			{
-				throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
-			}
-			return $this -> droitsBordereauCommune[$bordereau][$codeInsee];
-		}
-		
-		
 		public function getDroitBordereauTerritoire(bordereauModele $oBordereau, territoireModele $oTerritoire)
 		{
 			$idTerritoire = $oTerritoire -> getIdTerritoire();
 			$bordereau = $oBordereau -> getBordereau();
 			$bt = $bordereau . $idTerritoire;
-			//assert('isset($this -> droitsBordereauTerritoire[$bt])');
+			
 			if (isset($this -> droitsBordereauTerritoire[$bt]) === false)
 			{
 				throw new SecuriteException(sprintf('%1$s : %2$s', __CLASS__, __LINE__));
@@ -145,7 +164,6 @@
 		}
 		
 	}
-
-
-
+	
+	
 ?>

@@ -1,19 +1,24 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/db/communeDb.php');
+	require_once('application/db/thesaurusDb.php');
+	require_once('application/modele/communeModele.php');
 	require_once('application/modele/territoireModele.php');
+	require_once('application/modele/thesaurusModele.php');
 	
 	final class territoireDb
 	{
 	
 		const SQL_TERRITOIRE = "SELECT idTerritoire, libelle FROM sitTerritoire WHERE idTerritoire='%d'";
+		const SQL_TERRITOIRES = "SELECT idTerritoire, libelle FROM sitTerritoire WHERE idTerritoire IN ('%s')";
 		const SQL_UPDATE_TERRITOIRE = "UPDATE sitTerritoire SET libelle='%s' WHERE idTerritoire='%d'";
 		const SQL_COMMUNES_TERRITOIRE = "SELECT codeInsee, prive FROM sitTerritoireCommune WHERE idTerritoire='%d'";
 		const SQL_THESAURII_TERRITOIRE = "SELECT t.codeThesaurus FROM sitTerritoireThesaurus tt, sitThesaurus t WHERE tt.idThesaurus=t.idThesaurus AND idTerritoire='%d'";
@@ -25,7 +30,6 @@
 		const SQL_ADD_THESAURUS = "INSERT INTO sitTerritoireThesaurus (idTerritoire, idThesaurus) VALUES('%d', '%d')";
 		const SQL_CREATE_TERRITOIRE = "INSERT INTO sitTerritoire (libelle) VALUES('%s')";
 		const SQL_DELETE_TERRITOIRE = "DELETE FROM sitTerritoire WHERE idTerritoire='%d'";
-		const SQL_TERRITOIRES = "SELECT idTerritoire FROM sitTerritoire";
 		
 		
 		public static function getTerritoire($idTerritoire)
@@ -45,10 +49,10 @@
 		public static function getTerritoires()
 		{
 			$oTerritoireCollection = new territoireCollection();
-			$territoires = tsDatabase::getRecords(self::SQL_TERRITOIRES, array());
-			foreach($territoires as $idTerritoire)
+			$territoires = tsDatabase::getObjects(self::SQL_TERRITOIRES, array(tsDroits::getTerritoiresAdministrables()));
+			foreach ($territoires as $territoire)
 			{
-				$oTerritoireCollection[] = self::getTerritoire($idTerritoire);
+				$oTerritoireCollection[] = territoireModele::getInstance($territoire, 'territoireModele');
 			}
 			return $oTerritoireCollection -> getCollection();
 		}

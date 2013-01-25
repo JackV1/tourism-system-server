@@ -1,13 +1,17 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/modele/champModele.php');
+	require_once('application/modele/droitModele.php');
+	require_once('application/modele/droitChampModele.php');
+	require_once('application/modele/groupeModele.php');
 	require_once('application/modele/profilDroitModele.php');
 
 	final class profilDroitDb
@@ -38,7 +42,7 @@
 		}
 		
 		
-		public static function getDroitsChamp(profilModele $oProfil)
+		public static function getDroitsChamp(profilDroitModele $oProfil)
 		{
 			$idProfil = $oProfil -> idProfil;
 			$oDroitChampCollection = new droitChampCollection();
@@ -98,7 +102,7 @@
 		}
 		
 		
-		public static function updateProfil(profilModele $oProfil, droitModele $oDroit)
+		public static function updateProfil(profilDroitModele $oProfil, droitModele $oDroit)
 		{
 			$idProfil = $oProfil -> idProfil;
 			$droit = $oDroit -> getDroit();
@@ -106,7 +110,7 @@
 		}
 		
 		
-		public static function setProfilDroitChamp(profilModele $oProfil, champModele $oChamp, droitModele $oDroit)
+		public static function setProfilDroitChamp(profilDroitModele $oProfil, champModele $oChamp, droitModele $oDroit)
 		{
 			$idProfil = $oProfil -> idProfil;
 			$idChamp = $oChamp -> idChamp;
@@ -115,7 +119,7 @@
 		}
 		
 		
-		public static function deleteProfilDroitChamp(profilModele $oProfil, champModele $oChamp) 
+		public static function deleteProfilDroitChamp(profilDroitModele $oProfil, champModele $oChamp) 
 		{
 			$idProfil = $oProfil -> idProfil;
 			$idChamp = $oChamp -> idChamp;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -13,22 +13,22 @@
 
 		public function __construct()
 		{
-			
+
 		}
-		
-		
+
+
 		public function set($varName, $value)
 		{
 			$_SESSION[$varName] = $value;
 		}
-		
-		
+
+
 		public function get($varName)
 		{
 			return (isset($_SESSION[$varName]) ? $_SESSION[$varName] : false);
 		}
-		
-		
+
+
 		public function delete($varName)
 		{
 			unset($_SESSION[$varName]);

@@ -1,39 +1,31 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 
-			
+
 		</xsd:schema>
 	</wsdl:types>
-	
-	
-	<message name="getXmlFicheRequest">
-		<part name="sessionId" type="xsd:string"/>
-		<part name="idFiche" type="xsd:int"/>
-	</message>
-	<message name="getXmlFicheResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="xml" type="xsd:string"/>
-	</message>
-	
+
+
 	<message name="getFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -43,7 +35,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="fiche" type="xs:anyType"/>
 	</message>
-	
+
 	<message name="createFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="bordereau" type="xsd:string"/>
@@ -54,7 +46,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="idFiche" type="xsd:int"/>
 	</message>
-	
+
 	<message name="deleteFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -63,16 +55,24 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
-	
-	<message name="getFichesRequest">
-		<part name="sessionId" type="xsd:string"/>
-	</message>
-	<message name="getFichesResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="fiches" nillable="true" type="xs:anyType"/>
-	</message>
-	
-	<message name="rechercheFichesRequest">
+
+    <message name="getFichesRequest">
+        <part name="sessionId" type="xsd:string"/>
+    </message>
+    <message name="getFichesResponse">
+        <part name="status" type="tns:WSstatus"/>
+        <part name="fiches" nillable="true" type="xs:anyType"/>
+    </message>
+
+    <message name="getFichesIdsRequest">
+        <part name="sessionId" type="xsd:string"/>
+    </message>
+    <message name="getFichesIdsResponse">
+        <part name="status" type="tns:WSstatus"/>
+        <part name="fiches" nillable="true" type="xs:anyType"/>
+    </message>
+
+    <message name="rechercheFichesRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="bordereau" type="xsd:string" nillable="true"/>
 		<part name="filters" type="xs:anyType"/>
@@ -81,17 +81,19 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="fiches" nillable="true" type="xs:anyType"/>
 	</message>
-	
+
 	<message name="sauvegardeFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
 		<part name="oFiche" type="xs:anyType"/>
+		<part name="champsValide" type="xs:anyType" nillable="true" />
+		<part name="champsRefuse" type="xs:anyType" nillable="true" />
 	</message>
 	<message name="sauvegardeFicheResponse">
 		<part name="status" type="tns:WSstatus"/>
-		<part name="reponse" type="xs:anyType" nillable="true" />
+		<part name="idVersion" type="xs:anyType" nillable="true" />
 	</message>
-	
+
 	<message name="setPublicationFicheRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -101,7 +103,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
-	
+
 	<message name="getFicheByRefExterneRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="reference" type="xsd:string"/>
@@ -110,7 +112,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="fiche" type="xs:anyType"/>
 	</message>
-	
+
 	<message name="getFicheVersionsRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -119,7 +121,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="versions" type="xs:anyType"/>
 	</message>
-	
+
 	<message name="deleteFicheVersionRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -129,7 +131,7 @@
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
-	
+
 	<message name="restoreFicheVersionRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idFiche" type="xsd:int"/>
@@ -137,89 +139,79 @@
 	</message>
 	<message name="restoreFicheVersionResponse">
 		<part name="status" type="tns:WSstatus"/>
-		<part name="reponse" type="xs:anyType" nillable="true" />
+		<part name="idVersion" type="xs:anyType" nillable="true" />
 	</message>
-	
-	
+
+
 	<portType name="CspPorts">
-		<operation name="getXmlFiche">
-			<input  message="tns:getXmlFicheRequest"/>
-			<output message="tns:getXmlFicheResponse"/>
-		</operation>
-		
 		<operation name="getFiche">
 			<input  message="tns:getFicheRequest"/>
 			<output message="tns:getFicheResponse"/>
 		</operation>
-		
+
 		<operation name="createFiche">
 			<input  message="tns:createFicheRequest"/>
 			<output message="tns:createFicheResponse"/>
 		</operation>
-		
+
 		<operation name="deleteFiche">
 			<input  message="tns:deleteFicheRequest"/>
 			<output message="tns:deleteFicheResponse"/>
 		</operation>
-		
-		<operation name="getFiches">
-			<input  message="tns:getFichesRequest"/>
-			<output message="tns:getFichesResponse"/>
-		</operation>
-		
-		<operation name="rechercheFiches">
+
+        <operation name="getFiches">
+            <input message="tns:getFichesRequest"/>
+            <output message="tns:getFichesResponse"/>
+        </operation>
+
+        <operation name="getFichesIds">
+            <input message="tns:getFichesIdsRequest"/>
+            <output message="tns:getFichesIdsResponse"/>
+        </operation>
+
+        <operation name="rechercheFiches">
 			<input  message="tns:rechercheFichesRequest"/>
 			<output message="tns:rechercheFichesResponse"/>
 		</operation>
-		
+
 		<operation name="sauvegardeFiche">
 			<input  message="tns:sauvegardeFicheRequest"/>
 			<output message="tns:sauvegardeFicheResponse"/>
 		</operation>
-		
+
 		<operation name="setPublicationFiche">
 			<input  message="tns:setPublicationFicheRequest"/>
 			<output message="tns:setPublicationFicheResponse"/>
 		</operation>
-		
+
 		<operation name="getFicheByRefExterne">
 			<input  message="tns:getFicheByRefExterneRequest"/>
 			<output message="tns:getFicheByRefExterneResponse"/>
 		</operation>
-		
+
 		<operation name="getFicheVersions">
 			<input  message="tns:getFicheVersionsRequest"/>
 			<output message="tns:getFicheVersionsResponse"/>
 		</operation>
-		
+
 		<operation name="deleteFicheVersion">
 			<input  message="tns:deleteFicheVersionRequest"/>
 			<output message="tns:deleteFicheVersionResponse"/>
 		</operation>
-		
+
 		<operation name="restoreFicheVersion">
 			<input  message="tns:restoreFicheVersionRequest"/>
 			<output message="tns:restoreFicheVersionResponse"/>
 		</operation>
-		
+
 
 	</portType>
 
 
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
-		<operation name="getXmlFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
-			<input>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</input>
-			<output>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</output>
-		</operation>
-		
 		<operation name="getFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -227,9 +219,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="createFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -237,9 +229,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="deleteFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -247,9 +239,29 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
-		<operation name="getFiches">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+
+        <operation name="getFiches">
+            <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+            <input>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+
+        <operation name="getFichesIds">
+            <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+            <input>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
+
+        <operation name="rechercheFiches">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -257,19 +269,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
-		<operation name="rechercheFiches">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
-			<input>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</input>
-			<output>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</output>
-		</operation>
-		
+
 		<operation name="sauvegardeFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -277,9 +279,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="setPublicationFiche">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -287,9 +289,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="getFicheByRefExterne">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -297,9 +299,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="getFicheVersions">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -307,9 +309,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="deleteFicheVersion">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -317,9 +319,9 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 		<operation name="restoreFicheVersion">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/fiche.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -327,13 +329,13 @@
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</output>
 		</operation>
-		
+
 	</binding>
-	
+
 	<service name="TourismSystemWebServiceFiche">
 		<documentation>Webservices fiche de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>fiche.php"/>
+			<soap:address location="{BASE_URL}fiche.php"/>
 		</port>
 	</service>
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -9,19 +9,22 @@
  */
 
 	require_once('application/modele/utilisateurModele.php');
+	require_once('application/modele/groupeModele.php');
 	require_once('application/modele/sessionModele.php');
 	
 	final class utilisateurDb
 	{
 	
-		const SQL_UTILISATEUR = "SELECT idUtilisateur, login, pass, typeUtilisateur, idGroupe FROM sitUtilisateur WHERE idUtilisateur='%d'";
+		const SQL_UTILISATEUR = "SELECT idUtilisateur, login AS email, pass AS password, typeUtilisateur, idGroupe FROM sitUtilisateur WHERE idUtilisateur='%d'";
+		const SQL_UTILISATEURS = "SELECT idUtilisateur, login AS email, pass AS password, typeUtilisateur, idGroupe FROM sitUtilisateur WHERE idUtilisateur IN ('%s')";
 		const SQL_UTILISATEUR_EMAIL = "SELECT idUtilisateur FROM sitUtilisateur WHERE login='%s'";
 		const SQL_CREATE_UTILISATEUR = "INSERT INTO sitUtilisateur (login, pass, typeUtilisateur, idGroupe) VALUES('%s', '%s', '%s', '%d')";
 		const SQL_DELETE_UTILISATEUR = "DELETE FROM sitUtilisateur WHERE idUtilisateur='%d'";
 		const SQL_IS_UTILISATEUR = "SELECT idUtilisateur FROM sitUtilisateur WHERE login='%s'";
 		const SQL_IS_SUPERADMIN = "SELECT idGroupe FROM sitGroupe WHERE idSuperAdmin='%d'";
 		const SQL_GET_PASSWORD = "SELECT pass FROM sitUtilisateur WHERE idUtilisateur='%d'";
-		const SQL_CHANGE_PASSWORD = "UPDATE sitUtilisateur SET pass='%s' WHERE idUtilisateur='%d'";
+		const SQL_UPDATE_PASSWORD = "UPDATE sitUtilisateur SET pass='%s' WHERE idUtilisateur='%d'";
+		const SQL_UPDATE_GROUPE = "UPDATE sitUtilisateur SET idGroupe='%d' WHERE idUtilisateur='%d'";
 		const SQL_SESSIONS_UTILISATEUR = "SELECT sessionId, sessionStart, sessionEnd, ip FROM sitSessions WHERE idUtilisateur='%d'";
 		
 		
@@ -31,21 +34,20 @@
 			{
 				throw new ApplicationException("L'identifiant d'utilisateur n'est pas numérique");
 			}
-			$result = tsDatabase::getRow(self::SQL_UTILISATEUR, array($idUtilisateur), DB_FAIL_ON_ERROR);
-			if ($result['typeUtilisateur'] == 'admin')
+			$utilisateur = tsDatabase::getObject(self::SQL_UTILISATEUR, array($idUtilisateur), DB_FAIL_ON_ERROR);
+			$oUtilisateur = utilisateurModele::getInstance($utilisateur, 'utilisateurModele');
+			if ($oUtilisateur -> getTypeUtilisateur() == 'admin')
 			{
-				$result['typeUtilisateur'] = self::isSuperAdmin($result['idUtilisateur']) === false ? $result['typeUtilisateur'] : 'superadmin';
+				$oUtilisateur -> setTypeUtilisateur(
+					self::isSuperAdmin($oUtilisateur -> getIdUtilisateur()) === false
+					? $oUtilisateur -> getTypeUtilisateur() : 'superadmin'
+				);
 			}
-			$oUtilisateur = new utilisateurModele();
-			$oUtilisateur -> setIdUtilisateur($result['idUtilisateur']);
-			$oUtilisateur -> setIdGroupe($result['idGroupe']);
-			$oUtilisateur -> setTypeUtilisateur($result['typeUtilisateur']);
-			$oUtilisateur -> setEmail($result['login']);
-			if (tsDroits::isRoot() === true || tsDroits::getTypeUtilisateur() == 'superadmin')
+			if (in_array(tsDroits::getTypeUtilisateur(), array('root', 'superadmin', 'admin')) === false)
 			{
-				$oUtilisateur -> setPassword($result['pass']);
+				$oUtilisateur -> setPassword(null);
 			}
-			return $oUtilisateur;// -> getObject();
+			return $oUtilisateur -> getObject();
 		}
 		
 		
@@ -60,10 +62,18 @@
 		public static function getUtilisateurs()
 		{
 			$oUtilisateurCollection = new UtilisateurCollection();
-			$idUtilisateurs = tsDroits::getUtilisateursAdministrables();
-			foreach($idUtilisateurs as $idUtilisateur)
+			$utilisateurs = tsDatabase::getObjects(self::SQL_UTILISATEURS, array(tsDroits::getUtilisateursAdministrables()));
+			foreach ($utilisateurs as $utilisateur)
 			{
-				$oUtilisateurCollection[] = self::getUtilisateur($idUtilisateur);
+				$oUtilisateur = utilisateurModele::getInstance($utilisateur, 'utilisateurModele');
+				if ($oUtilisateur -> getTypeUtilisateur() == 'admin')
+				{
+					$oUtilisateur -> setTypeUtilisateur(
+						self::isSuperAdmin($oUtilisateur -> getIdUtilisateur()) === false
+						? $oUtilisateur -> getTypeUtilisateur() : 'superadmin'
+					);
+				}
+				$oUtilisateurCollection[] = $oUtilisateur;
 			}
 			return $oUtilisateurCollection -> getCollection();
 		}
@@ -111,7 +121,7 @@
 		}
 		
 		
-		public static function changePassword($oldPassword, $newPassword, utilisateurModele $oUtilisateur)
+		public static function updateUtilisateurPassword($oldPassword, $newPassword, utilisateurModele $oUtilisateur)
 		{
 			if (self::isPasswordValide($newPassword) === false)
 			{
@@ -122,7 +132,13 @@
 			{
 				throw new ApplicationException("Le mot de passe n'est pas correct");
 			}
-			return tsDatabase::query(self::SQL_CHANGE_PASSWORD, array($newPassword, $oUtilisateur -> idUtilisateur));
+			return tsDatabase::query(self::SQL_UPDATE_PASSWORD, array($newPassword, $oUtilisateur -> idUtilisateur));
+		}
+		
+		
+		public static function updateUtilisateurGroupe(utilisateurModele $oUtilisateur, groupeModele $oGroupe)
+		{
+			return tsDatabase::query(self::SQL_UPDATE_GROUPE, array($oGroupe -> idGroupe, $oUtilisateur -> idUtilisateur));
 		}
 		
 		

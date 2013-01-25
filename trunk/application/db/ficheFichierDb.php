@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/modele/ficheModele.php');
 	require_once('application/modele/ficheFichierModele.php');
 	
 	// @todo : en verifiant la classe : penser à s'occuper de l'image principale 
@@ -77,7 +78,7 @@
 		{
 			$principalYN = ($principal === true) ? 'Y' : 'N';
 			
-			$content = file_get_contents($url);
+			$content = file_get_contents(str_replace(' ', '%20', $url));
 			if ($content === false)
 			{
 				throw new ApplicationException("Le fichier envoyé n'est pas acccessible");
@@ -178,22 +179,30 @@
 			
 			switch (strtolower($extension))
 			{
-				case 'pdf':
-					$type = 'pdf';
+				case 'mp3': case 'wav':
+					$type = 'audio';
 				break;
-				case 'jpg': case 'jpeg': case 'png': case 'gif':
-					$type = 'image';
-				break;
+				
 				case 'doc': case 'txt': case 'xls':
 				case 'odt': case 'csv':
 					$type = 'doc';
 				break;
+				
+				case 'jpg': case 'jpeg': case 'png': case 'gif':
+					$type = 'image';
+				break;
+				
+				case 'pdf':
+					$type = 'pdf';
+				break;
+				
 				case 'flv': case 'mpg': case 'mpeg':
 				case 'avi': case 'mov': case 'mp4':
 					$type = 'video';
 				break;
-				case 'mp3': case 'wav':
-					$type = 'audio';
+				
+				case 'xml':
+					$type = 'xml';
 				break;
 			}
 			

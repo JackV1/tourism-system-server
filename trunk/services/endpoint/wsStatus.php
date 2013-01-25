@@ -1,7 +1,7 @@
 <?
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -11,12 +11,12 @@
 	class WSStatus
 	{
 		// Objet commun pour le retour du service
-		public function __construct($success, $message, $level = 0, $errorCode = null)
+		public function __construct($success, $message, $errorCode = 0, $errorInfos = array())
 		{
 			$this -> success = $success;
 			$this -> message = (is_array($message)) ? implode('<br />', $message) : $message;
-			//$this -> level = intval($level);
 			$this -> errorCode = $errorCode;
+			$this -> errorInfos = $errorInfos;
 		}
 	
 	}

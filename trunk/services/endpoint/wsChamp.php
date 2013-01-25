@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -9,7 +9,6 @@
  */
 
 	require_once('application/db/champDb.php');
-	require_once('application/db/communeDb.php');
 
 	/**
 	 * Classe wsChamp - endpoint du webservice Champ

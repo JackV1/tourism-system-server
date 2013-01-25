@@ -1,59 +1,60 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 			
 			<complexType name="territoire">
-			    <all>
+				<all>
 					<element name="idTerritoire" type="xsd:int"/>
-			     	<element name="libelle" type="xsd:string"/>
-			    </all>
+					<element name="libelle" type="xsd:string"/>
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfTerritoires">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:territoire[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       	<complexType name="commune">
-			    <all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:territoire[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
+			<complexType name="commune">
+				<all>
 				<element name="libelle" type="xsd:string"/>
-			     	<element name="codeInsee" type="xsd:string"/>
-			     	<element name="codePostal" type="xsd:int"/>
-			     	<element name="gpsLat" type="xsd:float"/>
-			     	<element name="gpsLng" type="xsd:float"/>
+					<element name="codeInsee" type="xsd:string"/>
+					<element name="codePostal" type="xsd:int"/>
+					<element name="gpsLat" type="xsd:float"/>
+					<element name="gpsLng" type="xsd:float"/>
 				<element name="prive" type="xsd:string" nillable="true"/>
-			    </all>			      
+				</all>			      
 			</complexType>
 			
 			<complexType name="ArrayOfCommunes">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:commune[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:commune[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
 		</xsd:schema>
 	</wsdl:types>
 	
@@ -217,7 +218,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="getTerritoires">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -226,7 +227,7 @@
 			</output>
 		</operation>
 		<operation name="getCommunesByTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -235,7 +236,7 @@
 			</output>
 		</operation>
 		<operation name="getThesaurusByTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -244,7 +245,7 @@
 			</output>
 		</operation>
 		<operation name="createTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -253,7 +254,7 @@
 			</output>
 		</operation>
 		<operation name="updateTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -262,7 +263,7 @@
 			</output>
 		</operation>
 		<operation name="deleteTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -271,7 +272,7 @@
 			</output>
 		</operation>
 		<operation name="addCommuneTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -280,7 +281,7 @@
 			</output>
 		</operation>
 		<operation name="setCommuneTerritoirePrive">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -289,7 +290,7 @@
 			</output>
 		</operation>
 		<operation name="deleteCommuneTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -298,7 +299,7 @@
 			</output>
 		</operation>
 		<operation name="addThesaurusTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -307,7 +308,7 @@
 			</output>
 		</operation>
 		<operation name="deleteThesaurusTerritoire">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/territoires.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/territoires.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -320,7 +321,7 @@
 	<service name="TourismSystemWebServiceTerritoires">
 		<documentation>Webservices territoires de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>territoires.php"/>
+			<soap:address location="{BASE_URL}territoires.php"/>
 		</port>
 	</service>
 

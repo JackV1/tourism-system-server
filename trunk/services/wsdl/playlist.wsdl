@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 			
 			
@@ -112,7 +113,7 @@
 		
 		
 		<operation name="getPlaylists">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -122,7 +123,7 @@
 		</operation>
 		
 		<operation name="getPlaylist">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -132,7 +133,7 @@
 		</operation>
 		
 		<operation name="createPlaylist">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -142,7 +143,7 @@
 		</operation>
 		
 		<operation name="updatePlaylist">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -152,7 +153,7 @@
 		</operation>
 		
 		<operation name="deletePlaylist">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/playlist.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/playlist.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -166,7 +167,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices playlist de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>playlist.php"/>
+			<soap:address location="{BASE_URL}playlist.php"/>
 		</port>
 	</service>
 

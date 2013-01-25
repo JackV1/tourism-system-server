@@ -1,47 +1,48 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
-   		
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>			      
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>			      
 			</complexType>
 			
 			<complexType name="champ">
-			    <all>
+				<all>
 					<element name="idChamp" type="xsd:int"/>
-			     	<element name="identifiant" type="xsd:string"/>
-			     	<element name="xPath" type="xsd:string"/>
-			     	<element name="libelle" type="xsd:string"/>
-			     	<element name="liste" nillable="true" type="xsd:string"/>
-			     	<element name="bordereau" nillable="true" type="xsd:string"/>
-			     	<element name="champs" nillable="true" type="xsd:anyType"/>
-			     	<element name="idChampParent" nillable="true" type="xsd:int"/>
-			    </all>
+					<element name="identifiant" type="xsd:string"/>
+					<element name="xPath" type="xsd:string"/>
+					<element name="libelle" type="xsd:string"/>
+					<element name="liste" nillable="true" type="xsd:string"/>
+					<element name="bordereau" nillable="true" type="xsd:string"/>
+					<element name="champs" nillable="true" type="xsd:anyType"/>
+					<element name="idChampParent" nillable="true" type="xsd:int"/>
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfChamps">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:champ[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       	
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:champ[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
+			
 		</xsd:schema>
 	</wsdl:types>
 	
@@ -144,7 +145,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -153,7 +154,7 @@
 			</output>
 		</operation>
 		<operation name="deleteChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -162,7 +163,7 @@
 			</output>
 		</operation>
 		<operation name="updateChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -171,7 +172,7 @@
 			</output>
 		</operation>
 		<operation name="getChamp">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -180,7 +181,7 @@
 			</output>
 		</operation>
 		<operation name="getChampByIdentifiant">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -189,7 +190,7 @@
 			</output>
 		</operation>
 		<operation name="getChamps">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/champ.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/champ.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -202,7 +203,7 @@
 	<service name="TourismSystemWebServiceChamp">
 		<documentation>Webservices champ de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>champ.php"/>
+			<soap:address location="{BASE_URL}champ.php"/>
 		</port>
 	</service>
 

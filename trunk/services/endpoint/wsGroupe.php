@@ -1,16 +1,17 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/utilisateurDb.php');
+	require_once('application/db/ficheDb.php');
 	require_once('application/db/groupeDb.php');
 	require_once('application/db/territoireDb.php');
+	require_once('application/db/utilisateurDb.php');
 
 	/**
 	 * Classe wsGroupe - endpoint du webservice Groupe
@@ -19,18 +20,58 @@
 	 */
 	final class wsGroupe extends wsEndpoint
 	{
+		
+		/**
+		 * Retourne un groupe via son identifiant
+		 * @return groupeModele groupe : le groupe demandé
+		 * @access root superadmin
+		 */
+		protected function _getGroupe($idGroupe)
+		{
+			$this -> restrictAccess('root', 'superadmin');
+			return array('groupe' => groupeDb::getGroupe($idGroupe));
+		}
+		
+		/**
+		 * Retourne la liste des groupes d'utilisateurs
+		 * @return groupeCollection groupes : collection de groupeModele
+		 * @access root superadmin
+		 */
+		protected function _getGroupes($idGroupeParent = null)
+		{
+			$this -> restrictAccess('root', 'superadmin');
+			return array('groupes' => groupeDb::getGroupes($idGroupeParent));
+		}
 	
 		/**
 		 * Création d'un groupe d'utilisateurs
 		 * @param string $nomGroupe : nom du groupe à créer
+		 * @param string $descriptionGroupe : description du groupe à créer
+		 * @param int $idGroupeParent : parent du groupe à créer
 		 * @return int idGroupe : identifiant du groupe sitGroupe.idGroupe 
 		 * @access root
 		 */
-		protected function _createGroupe($nomGroupe)
+		protected function _createGroupe($nomGroupe, $descriptionGroupe, $idGroupeParent = null)
 		{
 			$this -> restrictAccess('root');
-			$idGroupe = groupeDb::createGroupe($nomGroupe);
+			$idGroupe = groupeDb::createGroupe($nomGroupe, $descriptionGroupe, $idGroupeParent);
 			return array('idGroupe' => $idGroupe);
+		}
+		
+		/**
+		 * Mise à jour du nom d'un groupe
+		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
+		 * @param string $nomGroupe : nom du groupe
+		 * @param string $descriptionGroupe : description du groupe
+		 * @access root
+		 */
+		protected function _updateGroupe($idGroupe, $nomGroupe, $descriptionGroupe)
+		{
+			$this -> restrictAccess('root');
+			$oGroupe = groupeDb::getGroupe($idGroupe);
+			$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
+			groupeDb::updateGroupe($oGroupe, $nomGroupe, $descriptionGroupe);
+			return array();
 		}
 		
 		
@@ -71,18 +112,6 @@
 				groupeDb::unsetSuperAdminGroupe($oGroupe);
 			}
 			return array();
-		}
-		
-		/**
-		 * Retourne la liste des groupes d'utilisateurs
-		 * @return groupeCollection groupes : collection de groupeModele
-		 * @access root
-		 */
-		protected function _getGroupes()
-		{
-			$this -> restrictAccess('root');
-			$groupes = groupeDb::getGroupes();
-			return array('groupes' => $groupes);
 		}
 		
 		/**
@@ -149,17 +178,77 @@
 		}
 		
 		/**
-		 * Suppression de la liaison d'un groupe à un territoire
+		 * Récupération de tous les partenaires d'un groupe
 		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
-		 * @param int $idTerritoire : identifiant du territoire sitTerritoire.idTerritoire
 		 * @access root
 		 */
-		protected function _updateGroupe($idGroupe, $nomGroupe)
+		protected function _getGroupePartenaires($idGroupe)
+		{
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			$oGroupe = groupeDb::getGroupe($idGroupe);
+			$this -> checkDroitGroupe($oGroupe, DROIT_GET);
+			$partenaires = groupeDb::getGroupePartenaires($oGroupe);
+			return array('partenaires' => $partenaires);
+		}
+		
+		/**
+		 * Liaison d'un groupe à un partenaire
+		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
+		 * @param int $idGroupePartenaire : identifiant du partenaire sitGroupe.idGroupe
+		 * @access root
+		 */
+		protected function _addGroupePartenaire($idGroupe, $idGroupePartenaire, $typePartenaire)
 		{
 			$this -> restrictAccess('root');
 			$oGroupe = groupeDb::getGroupe($idGroupe);
+			$oGroupePartenaire = groupeDb::getGroupe($idGroupePartenaire);
 			$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
-			groupeDb::updateGroupe($oGroupe, $nomGroupe);
+			$this -> checkDroitGroupe($oGroupePartenaire, DROIT_GET);
+			groupeDb::addGroupePartenaire($oGroupe, $oGroupePartenaire, $typePartenaire);
+			return array();
+		}
+		
+		/**
+		 * Suppression de la liaison d'un groupe à un partenaire
+		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
+		 * @param int $idGroupePartenaire : identifiant du partenaire sitGroupe.idGroupe
+		 * @access root
+		 */
+		protected function _deleteGroupePartenaire($idGroupe, $idGroupePartenaire)
+		{
+			$this -> restrictAccess('root');
+			$oGroupe = groupeDb::getGroupe($idGroupe);
+			$oGroupePartenaire = groupeDb::getGroupe($idGroupePartenaire);
+			$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
+			$this -> checkDroitGroupe($oGroupePartenaire, DROIT_GET);
+			groupeDb::deleteGroupePartenaire($oGroupe, $oGroupePartenaire);
+			return array();
+		}
+		
+		
+		/**
+		 * Suppression d'une fiche partenaire pour le groupe de l'utilisateur connecté
+		 * Exlusion pour un partenaire Exclude / Suppresion de l'inclusion pour un partenaire include
+		 * @param int $idFiche : identifiant de la fiche sitFiche.idFiche
+		 * @access root superadmin admin
+		 */
+		protected function _deleteGroupePartenaireFiche($idFiche)
+		{
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
+			$this -> checkDroitFiche($oFiche, DROIT_VISUALISATION);
+			$oGroupe = groupeDb::getGroupe(tsDroits::getGroupeUtilisateur());
+			$oGroupePartenaire = groupeDb::getGroupe($oFiche -> idGroupe);
+			$typePartenaire = groupeDb::getGroupePartenaireType($oGroupe, $oGroupePartenaire);
+			switch ($typePartenaire)
+			{
+				case 'exclude' :
+					groupeDb::addGroupePartenaireFicheExclude($oFiche);
+					break;
+				case 'include' :
+					groupeDb::deleteGroupePartenaireFicheInclude($oFiche);
+					break;
+			}
 			return array();
 		}
 		

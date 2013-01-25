@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -17,7 +17,7 @@
 		protected $libelle;
 		
 		// @todo : hook bordereaux
-		private $bordereaux = array('HOT', 'HPA', 'HLO', 'FMA', 'DEG', 'RES', 'ASC', 'LOI', 'PNA', 'PCU', 'VIL', 'ORG');
+		private $bordereaux = array('HOT', 'HPA', 'HLO', 'FMA', 'DEG', 'RES', 'ITI', 'PRD', 'ASC', 'LOI', 'PNA', 'PCU', 'VIL', 'ORG', 'COM');
 		
 		
 		public function setBordereau($bordereau)

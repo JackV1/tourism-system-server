@@ -1,22 +1,21 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/territoireDb.php');
 	require_once('application/db/communeDb.php');
+	require_once('application/db/territoireDb.php');
 	require_once('application/db/thesaurusDb.php');
-	require_once('application/db/groupeDb.php');
 
 	/**
 	 * Classe wsTerritoires - endpoint du webservice Territoires
 	 * Gestion des territoires
-	 * @access root superadmin admin desk
+	 * @access root superadmin admin
 	 */
 	final class wsTerritoires extends wsEndpoint
 	{
@@ -24,22 +23,19 @@
 		/**
 		 * Retourne la liste des territoires (visibles de l'utilisateur)
 		 * @return territoireCollection territoires : collection de territoireModele
-		 * @access root superadmin admin desk
+		 * @access root superadmin admin
 		 */
 		protected function _getTerritoires()
 		{
-			$this -> restrictAccess('desk', 'admin', 'superadmin', 'root');
-			$territoires = (tsDroits::isRoot() === true) ?
-				territoireDb::getTerritoires() :
-				groupeDb::getGroupeTerritoires(groupeDb::getGroupe(tsDroits::getGroupeUtilisateur()));
-			return array('territoires' => $territoires);
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			return array('territoires' => territoireDb::getTerritoires());
 		}
 		
 		/**
 		 * Retourne la liste des communes d'un territoire
 		 * @param int $idTerritoire : identifiant du territoire sitTerritoire.idTerritoire
 		 * @return communeCollection communes : collection de communeModele
-		 * @access root superadmin admin desk
+		 * @access root superadmin admin
 		 */
 		protected function _getCommunesByTerritoire($idTerritoire)
 		{
@@ -53,7 +49,7 @@
 		 * Retourne la liste des thésaurii d'un territoire
 		 * @param int $idTerritoire : identifiant du territoire sitTerritoire.idTerritoire
 		 * @return thesaurusCollection thesaurii : collection de thesaurusModele
-		 * @access root superadmin admin desk
+		 * @access root superadmin admin
 		 */
 		protected function _getThesaurusByTerritoire($idTerritoire)
 		{

@@ -1,43 +1,44 @@
 <?xml version="1.0"?>
 <definitions name="CSP"
-    targetNamespace="urn:CSP"
-    xmlns:tns="urn:CSP"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:typens="urn:CSP"
-    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
-    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns="http://schemas.xmlsoap.org/wsdl/">
+	targetNamespace="urn:CSP"
+	xmlns:tns="urn:CSP"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:typens="urn:CSP"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/">
 
 
 	<wsdl:types>
-   		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
+		<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:CSP">
 			<complexType name="WSstatus">
-			    <all>
-			     	<element name="success" type="xsd:boolean"/>
+				<all>
+					<element name="success" type="xsd:boolean"/>
 					<element name="message" type="xsd:string"/>
-					<element name="errorCode" type="xsd:int" nillable="true"/>
-			    </all>
+					<element name="errorCode" type="xsd:int" />
+					<element name="errorInfos" type="xs:anyType" />
+				</all>
 			</complexType>
 			
 			
 			<complexType name="utilisateur">
-			    <all>
+				<all>
 					<element name="idUtilisateur" type="xsd:int"/>
-			     	<element name="idGroupe" type="xsd:int"/>
-			     	<element name="typeUtilisateur" type="tns:typeUtilisateur[]"/>
-			     	<element name="email" type="xsd:string"/>
-			     	<element name="password" type="xsd:string" nillable="true"/>
-			    </all>
+					<element name="idGroupe" type="xsd:int"/>
+					<element name="typeUtilisateur" type="tns:typeUtilisateur[]"/>
+					<element name="email" type="xsd:string"/>
+					<element name="password" type="xsd:string" nillable="true"/>
+				</all>
 			</complexType>
 			
 			<complexType name="ArrayOfUtilisateurs">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:utilisateur[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:utilisateur[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
 			
 			
 			<simpleType name="typeUtilisateur">
@@ -66,32 +67,32 @@
 			
 			
 			<complexType name="ArrayOfSessions">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:session[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
-	       	<complexType name="session">
-			    <all>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:session[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
+			<complexType name="session">
+				<all>
 					<element name="idUtilisateur" type="xsd:int"/>
-			     	<element name="sessionId" type="xsd:string"/>
-			     	<element name="sessionStart" type="xsd:string"/>
-			     	<element name="sessionEnd" type="xsd:string"/>
-			     	<element name="ip" type="xsd:string"/>
-			    </all>
+					<element name="sessionId" type="xsd:string"/>
+					<element name="sessionStart" type="xsd:string"/>
+					<element name="sessionEnd" type="xsd:string"/>
+					<element name="ip" type="xsd:string"/>
+				</all>
 			</complexType>
 			
 			
 			
 			<complexType name="ArrayOfDroits">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="xs:anyType"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="xs:anyType"/>
+					</restriction>
+				</complexContent>
+			</complexType>
 			
 			
 			
@@ -99,42 +100,42 @@
 			
 			
 			<complexType name="ArrayOfDroitsChamp">
-	        	<complexContent mixed="false">
-		            <restriction base="soapenc:Array">
-		            	<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:DroitChamp[]"/>
-		          	</restriction>
-	        	</complexContent>
-	       	</complexType>
-	       	
+				<complexContent mixed="false">
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="tns:DroitChamp[]"/>
+					</restriction>
+				</complexContent>
+			</complexType>
+			
 			<complexType name="DroitChamp">
-			    <all>
-			     	<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
-			     	<element name="validation" nillable="true" type="tns:YesOrNo"/>
-			    </all>
+				<all>
+					<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
+					<element name="validation" nillable="true" type="tns:YesOrNo"/>
+				</all>
 			</complexType>
 			
 			<complexType name="DroitFiche">
-			    <all>
+				<all>
 					<element name="suppressionFiches" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
-			     	<element name="validation" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="profil" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="libelle" nillable="true" type="xsd:string"/>
-			     	<element name="idGroupe" nillable="true" type="xsd:int"/>
-			    </all>
+					<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
+					<element name="validation" nillable="true" type="tns:YesOrNo"/>
+					<element name="profil" nillable="true" type="tns:YesOrNo"/>
+					<element name="libelle" nillable="true" type="xsd:string"/>
+					<element name="idGroupe" nillable="true" type="xsd:int"/>
+				</all>
 			</complexType>
 			
 			<complexType name="DroitTerritoire">
-			    <all>
-			    	<element name="administration" nillable="true" type="tns:YesOrNo"/>
-			    	<element name="creationFiches" nillable="true" type="tns:YesOrNo"/>
+				<all>
+					<element name="administration" nillable="true" type="tns:YesOrNo"/>
+					<element name="creationFiches" nillable="true" type="tns:YesOrNo"/>
 					<element name="suppressionFiches" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
-			     	<element name="validation" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="profil" nillable="true" type="tns:YesOrNo"/>
-			     	<element name="libelle" nillable="true" type="xsd:string"/>
-			     	<element name="idGroupe" nillable="true" type="xsd:int"/>
-			    </all>
+					<element name="controleChamp" nillable="true" type="tns:controleChamp"/>
+					<element name="validation" nillable="true" type="tns:YesOrNo"/>
+					<element name="profil" nillable="true" type="tns:YesOrNo"/>
+					<element name="libelle" nillable="true" type="xsd:string"/>
+					<element name="idGroupe" nillable="true" type="xsd:int"/>
+				</all>
 			</complexType>
 
 			
@@ -164,13 +165,23 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
-	<message name="changePasswordRequest">
+	<message name="updateUtilisateurPasswordRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="idUtilisateur" nillable="true" type="xsd:string"/>
 		<part name="oldPassword" type="xsd:string"/>
 		<part name="newPassword" type="xsd:string"/>
 	</message>
-	<message name="changePasswordResponse">
+	<message name="updateUtilisateurPasswordResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="updateUtilisateurGroupeRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idUtilisateur" nillable="true" type="xsd:int"/>
+		<part name="idGroupe" nillable="true" type="xsd:int"/>
+	</message>
+	<message name="updateUtilisateurGroupeResponse">
 		<part name="status" type="tns:WSstatus"/>
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
@@ -232,9 +243,14 @@
 			<output message="tns:deleteUtilisateurResponse"/>
 		</operation>
 		
-		<operation name="changePassword">
-			<input  message="tns:changePasswordRequest"/>
-			<output message="tns:changePasswordResponse"/>
+		<operation name="updateUtilisateurPassword">
+			<input  message="tns:updateUtilisateurPasswordRequest"/>
+			<output message="tns:updateUtilisateurPasswordResponse"/>
+		</operation>
+		
+		<operation name="updateUtilisateurGroupe">
+			<input  message="tns:updateUtilisateurGroupeRequest"/>
+			<output message="tns:updateUtilisateurGroupeResponse"/>
 		</operation>
 		
 		<operation name="sendPassword">
@@ -269,7 +285,7 @@
 	<binding name="wsBinding"  type="typens:CspPorts">
 		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
 		<operation name="createUtilisateur">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -279,7 +295,7 @@
 		</operation>
 		
 		<operation name="deleteUtilisateur">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -288,8 +304,18 @@
 			</output>
 		</operation>
 		
-		<operation name="changePassword">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+		<operation name="updateUtilisateurPassword">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="updateUtilisateurGroupe">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -299,7 +325,7 @@
 		</operation>
 		
 		<operation name="sendPassword">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -309,7 +335,7 @@
 		</operation>
 		
 		<operation name="getUtilisateur">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -319,7 +345,7 @@
 		</operation>
 		
 		<operation name="getUtilisateurs">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -329,7 +355,7 @@
 		</operation>
 		
 		<operation name="getSessionsUtilisateur">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -339,7 +365,7 @@
 		</operation>
 		
 		<operation name="getDroitsUtilisateur">
-			<soap:operation soapAction="http://<?php echo $_SERVER['SERVER_NAME']; ?>/services/wsdl/utilisateur.wsdl" style="rpc"/>
+			<soap:operation soapAction="{BASE_URL}services/wsdl/utilisateur.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
 			</input>
@@ -353,7 +379,7 @@
 	<service name="TourismSystemWebServiceUtilisateur">
 		<documentation>Webservices utilisateur de Tourism System</documentation>
 		<port name="CspPorts" binding="tns:wsBinding">
-			<soap:address location="http://<?php echo $_SERVER['SERVER_NAME']; ?>utilisateur.php"/>
+			<soap:address location="{BASE_URL}utilisateur.php"/>
 		</port>
 	</service>
 

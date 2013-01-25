@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -63,7 +63,6 @@
 		
 		public static function getXpathValue($domXpath, $oChamp, $node = null)
 		{
-
 			if (count($oChamp -> champs) > 0)
 			{
 				$retour = array();
@@ -76,28 +75,30 @@
 						$retour[$i][$champ -> identifiant] = libXml::getXpathValue($domXpath, $champ, $domNode);
 					}
 				}
-				return $retour;
-			}
-			
-			$nodelist = (is_null($node)) ? $domXpath -> query($oChamp -> xPath) :
-											$domXpath -> query($oChamp -> xPath, $node);
-
-			if ($nodelist -> length == 0)
-			{
-				$retour = '';
-			}
-			elseif($nodelist -> length == 1)
-			{
-				$retour = $nodelist -> item(0) -> nodeValue;
 			}
 			else
 			{
-				$retour = array();
-				for ($i = 0; $i < $nodelist -> length; $i++)
+				$nodelist = (is_null($node)) ? $domXpath -> query($oChamp -> xPath) :
+												$domXpath -> query($oChamp -> xPath, $node);
+				
+				if ($nodelist -> length == 0)
 				{
-					$retour[] = $nodelist -> item($i) -> nodeValue;
+					$retour = '';
+				}
+				elseif($nodelist -> length == 1)
+				{
+					$retour = trim($nodelist -> item(0) -> nodeValue);
+				}
+				else
+				{
+					$retour = array();
+					for ($i = 0; $i < $nodelist -> length; $i++)
+					{
+						$retour[] = $nodelist -> item($i) -> nodeValue;
+					}
 				}
 			}
+			
 			return $retour;
 		}
 		

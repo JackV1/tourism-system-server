@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -17,7 +17,7 @@
 		protected $codeThesaurus;
 		protected $prefixe;
 		protected $idThesaurus;
-		
+		protected $idNorme;
 		
 		public function __toString()
 		{
@@ -26,6 +26,7 @@
 			$str .= '<h4>Libelle : ' . $this -> libelle . '</h4>';
 			$str .= '<h4>Prefixe : ' . $this -> prefixe . '</h4>';
 			$str .= '<h4>idThesaurus : ' . $this -> idThesaurus . '</h4>';
+			$str .= '<h4>idNorme : ' . $this -> idNorme . '</h4>';
 			return $str;
 		}
 		

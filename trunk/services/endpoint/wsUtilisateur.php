@@ -1,17 +1,15 @@
 <?php
 
 /**
- * @version		0.2 alpha-test - 2011-06-08
+ * @version		0.3 alpha-test - 2013-01-25
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
-	require_once('application/db/ficheDb.php');
-	require_once('application/db/utilisateurDb.php');
-	require_once('application/db/communeDb.php');
 	require_once('application/db/groupeDb.php');
+	require_once('application/db/utilisateurDb.php');
 	require_once('application/db/utilisateurDroitFicheDb.php');
 	require_once('application/db/utilisateurDroitTerritoireDb.php');
 
@@ -30,28 +28,19 @@
 		 * 				manager : propriétaire d'établissement
 		 * 				desk : accueillant d'office de tourisme
 		 * 				admin : administrateur de territoires
+		 * @param int $idGroupe [optional] : identifiant du groupe parent de l'utilisateur
 		 * @return int idUtilisateur : identifiant de l'utilisateur créé sitUtilisateur.idUtilisateur 
-		 * @access root superadmin admin
+		 * @access root superadmin 
 		 */
 		protected function _createUtilisateur($email, $typeUtilisateur, $idGroupe = null)
 		{
-			if (is_null($idGroupe) === false)
-			{
-				$this -> restrictAccess('root');
-			}
-			else
-			{
-				$this -> restrictAccess('admin', 'superadmin', 'root');
-				$idGroupe = tsDroits::getGroupeUtilisateur();
-			}
-			
-			$password = utilisateurDb::createUtilisateur($email, $typeUtilisateur, $idGroupe);
+			$this -> restrictAccess('superadmin', 'root');
+			$idGroupe = (is_null($idGroupe) === false ? $idGroupe : tsDroits::getGroupeUtilisateur());
+			$idUtilisateur = utilisateurDb::createUtilisateur($email, $typeUtilisateur, $idGroupe);
 			
 			// #hook OpenId ajout utilisateur pour le plugin à coder !
 			//$openidClient = new wsOpenidClient();
 			//$openidClient -> addUser($email, $password);
-			
-			return $password;
 			
 			return array('idUtilisateur' => $idUtilisateur);
 		}
@@ -60,11 +49,11 @@
 		/**
 		 * Suppression d'un utilisateur
 		 * @param int $idUtilisateur : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
-		 * @access root superadmin admin
+		 * @access root superadmin
 		 */
 		protected function _deleteUtilisateur($idUtilisateur)
 		{
-			$this -> restrictAccess('admin', 'superadmin', 'root');
+			$this -> restrictAccess('superadmin', 'root');
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_DELETE);
 			utilisateurDb::deleteUtilisateur($oUtilisateur);
@@ -79,36 +68,38 @@
 		 * 		le mot de passe doit être composé de 4 à 64 caractères alphanumériques
 		 * @param int $idUtilisateur [optional] : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
 		 * 				Utilisateur courant par défaut 
-		 * @access root superadmin admin
+		 * @access root superadmin
 		 */
-		protected function _changePassword($oldPassword, $newPassword, $idUtilisateur = null)
+		protected function _updateUtilisateurPassword($oldPassword, $newPassword, $idUtilisateur = null)
 		{
-			$this -> restrictAccess('admin', 'superadmin', 'root');
+			$this -> restrictAccess('superadmin', 'root');
 			if (is_null($idUtilisateur))
 			{
 				$idUtilisateur = tsDroits::getIdUtilisateur();
 			}
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			utilisateurDb::changePassword($oldPassword, $newPassword, $oUtilisateur);
+			utilisateurDb::updateUtilisateurPassword($oldPassword, $newPassword, $oUtilisateur);
 			return array();
 		}
 		
 		
 		/**
-		 * Méthode d'envoi du mot de passe à un utilisateur
-		 * @param int $idUtilisateur [optional] : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
-		 * 				Utilisateur courant par défaut 
-		 * @access root superadmin admin
+		 * Méthode de chagement de groupe d'un utilisateur
+		 * @param int $idUtilisateur : identifiant de l'utilisateur sitUtilisateur.idUtilisateur
+		 * @param int $idGroupe : identifiant du groupe sitGroupe.idGroupe
+		 * @access root superadmin
 		 */
-		/*protected function _sendPassword($idUtilisateur = null)
+		protected function _updateUtilisateurGroupe($idUtilisateur, $idGroupe)
 		{
-			$this -> restrictAccess('admin', 'superadmin', 'root');
+			$this -> restrictAccess('superadmin', 'root');
 			$oUtilisateur = utilisateurDb::getUtilisateur($idUtilisateur);
+			$oGroupe = groupeDb::getGroupe($idGroupe);
 			$this -> checkDroitUtilisateur($oUtilisateur, DROIT_ADMIN);
-			utilisateurDb::sendPassword($oUtilisateur);
+			$this -> checkDroitGroupe($oGroupe, DROIT_ADMIN);
+			utilisateurDb::updateUtilisateurGroupe($oUtilisateur, $oGroupe);
 			return array();
-		}*/
+		}
 		
 		
 		/**
@@ -139,9 +130,8 @@
 		 */
 		protected function _getUtilisateurs()
 		{
-			 $this -> restrictAccess('superadmin', 'root', 'admin');
-			$utilisateurs = utilisateurDb::getUtilisateurs();
-			return array('utilisateurs' => $utilisateurs);
+			$this -> restrictAccess('root', 'superadmin', 'admin');
+			return array('utilisateurs' => utilisateurDb::getUtilisateurs());
 		}
 		
 		
