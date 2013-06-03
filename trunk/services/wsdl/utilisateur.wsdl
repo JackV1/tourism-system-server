@@ -167,9 +167,9 @@
 	
 	<message name="updateUtilisateurPasswordRequest">
 		<part name="sessionId" type="xsd:string"/>
-		<part name="idUtilisateur" nillable="true" type="xsd:string"/>
 		<part name="oldPassword" type="xsd:string"/>
 		<part name="newPassword" type="xsd:string"/>
+		<part name="idUtilisateur" nillable="true" type="xsd:int"/>
 	</message>
 	<message name="updateUtilisateurPasswordResponse">
 		<part name="status" type="tns:WSstatus"/>

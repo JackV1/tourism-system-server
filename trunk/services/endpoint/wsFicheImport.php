@@ -1,18 +1,18 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/db/champDb.php');
 	require_once('application/db/communeDb.php');
 	require_once('application/db/ficheDb.php');
 	require_once('application/modele/bordereauModele.php');
 	require_once('application/utils/tifTools.php');
-	require_once('application/utils/xmlFiche.php');
 
 	/**
 	 * Classe wsFicheImport - endpoint du webservice FicheImport
@@ -31,9 +31,7 @@
 		{
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			
-			$xmlFiche = new xmlFiche($xmlTif);
-			
-			$dcIdentifier = $xmlFiche -> getValue('//tif:DublinCore/dc:identifier');
+			$dcIdentifier = tsXml::getValueXpath($xmlTif, '//tif:DublinCore/dc:identifier');
 			if (empty($dcIdentifier))
 			{
 				throw new ImportException("Aucun dcIdentifier", 511);
@@ -49,19 +47,19 @@
 				$idFiche = ficheDb::getIdFicheByCodeTIF($dcIdentifier);
 			}
 			
-			$raisonSociale = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:RaisonSociale');
+			$raisonSociale = tsXml::getValueXpath($xmlTif, '//tif:Contacts/tif:DetailContact[attribute::type="04.03.13"][1]/tif:RaisonSociale');
 			if (empty($raisonSociale))
 			{
 				throw new ImportException("Aucune raison sociale", 512, array('idFiche' => $idFiche));
 			}
 			
-			/*$dcTitle = $xmlFiche -> getValue('//tif:DublinCore/dc:title');
+			/*$dcTitle = tsXml::getValueXpath($xmlTif, '//tif:DublinCore/dc:title');
 			if (empty($dcTitle))
 			{
 				throw new ImportException("Aucun dcTitle", 513, array('idFiche' => $idFiche));
 			}*/
 			
-			$classification = $xmlFiche -> getValue('//tif:DublinCore/tif:Classification/@code');
+			$classification = tsXml::getValueXpath($xmlTif, '//tif:DublinCore/tif:Classification/@code');
 			try
 			{
 				$bordereau = tifTools::getBordereau($classification);
@@ -71,7 +69,7 @@
 				throw new ImportException($e -> getMessage(), 514, array('idFiche' => $idFiche));
 			}
 			
-			$codeInsee = $xmlFiche -> getValue('//tif:Contacts/tif:DetailContact[@type="04.03.13"][1]//tif:Commune/@code');
+			$codeInsee = tsXml::getValueXpath($xmlTif, '//tif:Contacts/tif:DetailContact[@type="04.03.13"][1]//tif:Commune/@code');
 			if (empty($codeInsee))
 			{
 				throw new ImportException("Aucun codeInsee", 515, array('idFiche' => $idFiche));
@@ -103,9 +101,18 @@
 			// Hook beforeCreateFicheVersion
 			tsPlugins::registerVar('oFiche', $oFiche);
 			tsPlugins::registerVar('xmlTif', $xmlTif);
-			tsPlugins::callHook('wsFicheImport', 'beforeCreateFicheVersion');
+			tsPlugins::callHook('wsFicheImport', 'importFiche', 'beforeCreateFicheVersion');
 			
 			ficheDb::createFicheVersion($idFiche, $xmlTif);
+			
+			// Fix : en attendant que la plateforme envoie le contrat hors du XML
+			$oChamp = champDb::getChamp(200);
+			$contrat = tsXml::getValueXpath($xmlTif, $oChamp -> xPath);
+
+			if (!empty($contrat))
+			{
+				champDb::setFicheValueChamp($oFiche, $oChamp, $contrat);
+			}
 
 			$oFiche -> newFiche = $newFiche;
 			
@@ -204,6 +211,3 @@
 		
 		
 	}
-
-
-?>

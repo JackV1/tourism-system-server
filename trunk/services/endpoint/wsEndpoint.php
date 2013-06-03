@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -15,7 +15,7 @@
 	 */
 	abstract class wsEndpoint
 	{
-
+		private static $loaded = false;
 
 		/**
 		 * Méthode d'appel, chaque méthode de service passe par ici
@@ -27,10 +27,18 @@
 		 */
 		public function __call($method, $arguments)
 		{
+			// Appel entre services en interne
+			if (self::$loaded == true)
+			{
+				return call_user_func_array(array($this, '_' . $method), $arguments);
+			}
+
 			try
 			{
 				// Load de l'application
 				self::loadApplication();
+
+				self::$loaded = true;
 
 				// Chargement des plugins, load les hooks
 				tsPlugins::loadPlugins();
@@ -39,7 +47,7 @@
 
 				// Hook Before Session
 				tsPlugins::registerVar('arguments', $arguments);
-				tsPlugins::callHook($className, 'beforeSession');
+				tsPlugins::callHook($className, $method, 'beforeSession');
 
 				// Vérification et renouvellement de la session, load des droits
 				// Dépile $arguments pour enlever le sessionId
@@ -52,20 +60,18 @@
 					tsPlugins::setHookParams((array) array_pop($arguments));
 
 					// Hook Before
-					$hookName = 'before' . ucfirst($method);
 					foreach (getParamsName($className, '_' . $method) as $k => $paramName)
 					{
 						tsPlugins::registerVar($paramName, $arguments[$k]);
 					}
-					tsPlugins::callHook($className, $hookName);
+					tsPlugins::callHook($className, $method, 'before');
 
 					$retour = call_user_func_array(array($this, '_' . $method), $arguments);
 					$retour = (is_array($retour) === false) ? array() : $retour;
 
 					// Hook After
-					$hookName = 'after' . ucfirst($method);
 					tsPlugins::registerVar('retour', $retour);
-					tsPlugins::callHook($className, $hookName);
+					tsPlugins::callHook($className, $method, 'after');
 
 					// Hook Responses
 					$retour['hookResponses'] = tsPlugins::getHookResponses();
@@ -358,6 +364,3 @@
 		}
 
 	}
-
-
-?>

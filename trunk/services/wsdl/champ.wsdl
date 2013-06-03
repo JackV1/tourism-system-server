@@ -24,13 +24,18 @@
 			<complexType name="champ">
 				<all>
 					<element name="idChamp" type="xsd:int"/>
-					<element name="identifiant" type="xsd:string"/>
-					<element name="xPath" type="xsd:string"/>
-					<element name="libelle" type="xsd:string"/>
-					<element name="liste" nillable="true" type="xsd:string"/>
-					<element name="bordereau" nillable="true" type="xsd:string"/>
-					<element name="champs" nillable="true" type="xsd:anyType"/>
 					<element name="idChampParent" nillable="true" type="xsd:int"/>
+					<element name="identifiant" type="xsd:string"/>
+					<element name="libelle" type="xsd:string"/>
+					<element name="stockage" type="xsd:string"/>
+					<element name="xPath" type="xsd:string"/>
+					<element name="scope" type="xsd:string"/>
+					<element name="versioning" type="xsd:string"/>
+					<element name="plugin" type="xsd:string"/>
+					<element name="bordereau" nillable="true" type="xsd:string"/>
+					<element name="liste" nillable="true" type="xsd:string"/>
+					<element name="cle" nillable="true" type="xsd:string"/>
+					<element name="champs" nillable="true" type="xsd:anyType"/>
 				</all>
 			</complexType>
 			

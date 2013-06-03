@@ -5,16 +5,20 @@ CREATE TABLE IF NOT EXISTS sitChamp (
   idChamp mediumint(3) unsigned NOT NULL AUTO_INCREMENT,
   idChampParent mediumint(3) unsigned DEFAULT NULL,
   libelle varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  stockage enum('xml','db','plugin') COLLATE utf8_unicode_ci NOT NULL,
   xpath text COLLATE utf8_unicode_ci,
+  scope enum('fiche','groupe') COLLATE utf8_unicode_ci DEFAULT NULL,
+  versioning enum('Y','N') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `plugin` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   bordereau set('HOT','HPA','HLO','FMA','PCU','PNA','RES','DEG','LOI','ASC','ITI','VIL','ORG','PRD') COLLATE utf8_unicode_ci DEFAULT NULL,
-  groupe enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
-  codification enum('type','code','lib_jour') COLLATE utf8_unicode_ci DEFAULT NULL,
   liste varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  identifiant varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  systeme enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  identifiant varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   cle enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (idChamp),
-  KEY idChampParent (idChampParent)
+  KEY idChampParent (idChampParent),
+  KEY idxChampListe (liste) USING HASH,
+  KEY idxChampIdentifiant (identifiant) USING BTREE,
+  KEY idxChampXPath (xpath(192))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE IF NOT EXISTS sitCommune (
@@ -79,7 +83,10 @@ CREATE TABLE IF NOT EXISTS sitEntreesThesaurusMasque (
   UNIQUE KEY `Index 1` (idThesaurus,cle),
   KEY fk_cleThesaurus (cle)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
+CREATE TABLE IF NOT EXISTS `sitEntreesThesaurusMasqueSum` (
+`idThesaurus` mediumint(3) unsigned
+,`masque` text
+);
 CREATE TABLE IF NOT EXISTS sitEntreesThesaurusStems (
   cle varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   lang enum('fr','en','de','es','nl','it') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'fr',
@@ -99,12 +106,13 @@ CREATE TABLE IF NOT EXISTS sitFiche (
   gpsLat double(14,12) DEFAULT NULL,
   gpsLng double(14,12) DEFAULT NULL,
   idGroupe mediumint(3) unsigned DEFAULT NULL,
+  ficheDeReference enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
   referenceExterne varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  publication enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   dateCreation datetime NOT NULL,
   PRIMARY KEY (idFiche) USING BTREE,
-  KEY idGroupe (idGroupe),
-  KEY refExt (referenceExterne) USING BTREE,
-  KEY codeInsee (codeInsee) USING HASH
+  KEY codeInsee (codeInsee),
+  KEY idGroupe (idGroupe)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE IF NOT EXISTS sitFicheChamps (
@@ -128,13 +136,13 @@ CREATE TABLE IF NOT EXISTS sitFicheFichier (
   principal enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (idFichier),
   KEY idFiche (idFiche)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sitFichePublication (
   idFiche int(4) unsigned NOT NULL,
   idGroupe mediumint(3) unsigned NOT NULL,
-  PRIMARY KEY (idFiche,idGroupe) USING BTREE,
-  KEY idGroupe (idGroupe) USING HASH
+  PRIMARY KEY (idFiche,idGroupe),
+  KEY idGroupe (idGroupe)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sitFicheSupprime (
@@ -154,6 +162,15 @@ CREATE TABLE IF NOT EXISTS sitFicheSupprime (
   KEY codeInsee (codeInsee)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS sitFicheValeurChamp (
+  idFiche int(4) unsigned NOT NULL,
+  idFicheVersion int(6) unsigned NOT NULL DEFAULT '0',
+  idChamp mediumint(3) unsigned NOT NULL,
+  idGroupe mediumint(3) unsigned NOT NULL DEFAULT '0',
+  valeur text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (idFiche,idFicheVersion,idChamp,idGroupe)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS sitFicheValidationChamp (
   idValidationChamp int(4) unsigned NOT NULL AUTO_INCREMENT,
   idFiche int(4) unsigned NOT NULL,
@@ -169,7 +186,7 @@ CREATE TABLE IF NOT EXISTS sitFicheValidationChamp (
   KEY idFiche (idFiche),
   KEY idChamp (idChamp),
   KEY IdValidateur (IdValidateur)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sitFicheVersion (
   idFicheVersion int(6) unsigned NOT NULL,
@@ -178,10 +195,9 @@ CREATE TABLE IF NOT EXISTS sitFicheVersion (
   idUtilisateur int(6) unsigned DEFAULT NULL,
   etat enum('brouillon','a_valider','accepte','refuse') COLLATE utf8_unicode_ci NOT NULL,
   dateValidation datetime DEFAULT NULL,
-  PRIMARY KEY (idFicheVersion,idFiche),
-  KEY idUtilisateur (idUtilisateur),
-  KEY idFiche (idFiche),
-  KEY idUtilisateur_2 (idUtilisateur)
+  PRIMARY KEY (idFicheVersion,idFiche) USING BTREE,
+  KEY idUtilisateur (idUtilisateur) USING HASH,
+  KEY idFiche (idFiche)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sitGroupe (
@@ -215,6 +231,13 @@ CREATE TABLE IF NOT EXISTS sitGroupePartenaireFicheInclude (
   idFiche int(4) unsigned NOT NULL,
   PRIMARY KEY (idGroupe,idFiche),
   KEY idFiche (idFiche)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS sitGroupePlugin (
+  idGroupe mediumint(3) unsigned NOT NULL,
+  idPlugin smallint(2) unsigned NOT NULL,
+  PRIMARY KEY (idGroupe,idPlugin),
+  KEY idPlugin (idPlugin)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS sitGroupeTerritoire (
@@ -265,7 +288,7 @@ CREATE TABLE IF NOT EXISTS sitSessions (
   sessionEnd datetime NOT NULL,
   ip varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   UNIQUE KEY sessionId (sessionId) USING BTREE,
-  KEY idUtilisateur (idUtilisateur)
+  KEY idUtilisateur (idUtilisateur) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE IF NOT EXISTS sitSessionsArchive (
@@ -316,7 +339,9 @@ CREATE TABLE IF NOT EXISTS sitUtilisateur (
   idGroupe mediumint(3) unsigned DEFAULT NULL,
   typeUtilisateur enum('desk','admin','manager') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'admin',
   PRIMARY KEY (idUtilisateur),
-  KEY idGroupeCreateur (idGroupe)
+  KEY idGroupeCreateur (idGroupe),
+  KEY idxUserLogin (login),
+  KEY idxUserPasswd (pass)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 CREATE TABLE IF NOT EXISTS sitUtilisateurDroitFiche (
@@ -360,6 +385,9 @@ CREATE TABLE IF NOT EXISTS sitUtilisateurDroitTerritoireChamp (
   KEY idTerritoire (idTerritoire),
   KEY idChamp (idChamp)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
+DROP TABLE IF EXISTS `sitEntreesThesaurusMasqueSum`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=root@`%` SQL SECURITY DEFINER VIEW tourismSystem2.sitEntreesThesaurusMasqueSum AS select tourismSystem2.sitEntreesThesaurusMasque.idThesaurus AS idThesaurus,group_concat(tourismSystem2.sitEntreesThesaurusMasque.cle separator '|') AS masque from tourismSystem2.sitEntreesThesaurusMasque group by tourismSystem2.sitEntreesThesaurusMasque.idThesaurus;
 
 
 ALTER TABLE `sitChamp`
@@ -388,7 +416,6 @@ ALTER TABLE `sitFiche`
   ADD CONSTRAINT sitFiche_ibfk_3 FOREIGN KEY (idGroupe) REFERENCES sitGroupe (idGroupe) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE `sitFicheChamps`
-  ADD CONSTRAINT fk_fichechamp_cle FOREIGN KEY (cle) REFERENCES sitEntreesThesaurus (cle),
   ADD CONSTRAINT fk_fichechamp_idFiche FOREIGN KEY (idFiche) REFERENCES sitFiche (idFiche) ON DELETE CASCADE;
 
 ALTER TABLE `sitFicheFichier`
@@ -399,17 +426,15 @@ ALTER TABLE `sitFichePublication`
   ADD CONSTRAINT sitFichePublication_ibfk_2 FOREIGN KEY (idGroupe) REFERENCES sitGroupe (idGroupe) ON DELETE CASCADE;
 
 ALTER TABLE `sitFicheValidationChamp`
-  ADD CONSTRAINT sitFicheValidationChamp_ibfk_9 FOREIGN KEY (IdValidateur) REFERENCES sitUtilisateur (idUtilisateur) ON DELETE SET NULL ON UPDATE NO ACTION,
   ADD CONSTRAINT sitFicheValidationChamp_ibfk_1 FOREIGN KEY (idFiche) REFERENCES sitFiche (idFiche) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT sitFicheValidationChamp_ibfk_5 FOREIGN KEY (idChamp) REFERENCES sitChamp (idChamp) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT sitFicheValidationChamp_ibfk_8 FOREIGN KEY (idUtilisateur) REFERENCES sitUtilisateur (idUtilisateur) ON DELETE SET NULL ON UPDATE NO ACTION;
+  ADD CONSTRAINT sitFicheValidationChamp_ibfk_10 FOREIGN KEY (idUtilisateur) REFERENCES sitUtilisateur (idUtilisateur) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT sitFicheValidationChamp_ibfk_5 FOREIGN KEY (idChamp) REFERENCES sitChamp (idChamp) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `sitFicheVersion`
   ADD CONSTRAINT sitFicheVersion_ibfk_1 FOREIGN KEY (idFiche) REFERENCES sitFiche (idFiche) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT sitFicheVersion_ibfk_2 FOREIGN KEY (idUtilisateur) REFERENCES sitUtilisateur (idUtilisateur) ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE `sitGroupe`
-  ADD CONSTRAINT sitGroupe_ibfk_1 FOREIGN KEY (idSuperAdmin) REFERENCES sitUtilisateur (idUtilisateur) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT sitGroupe_ibfk_2 FOREIGN KEY (idGroupeParent) REFERENCES sitGroupe (idGroupe) ON DELETE CASCADE;
 
 ALTER TABLE `sitGroupePartenaire`
@@ -423,6 +448,10 @@ ALTER TABLE `sitGroupePartenaireFicheExclude`
 ALTER TABLE `sitGroupePartenaireFicheInclude`
   ADD CONSTRAINT sitGroupePartenaireFicheInclude_ibfk_1 FOREIGN KEY (idGroupe) REFERENCES sitGroupe (idGroupe) ON DELETE CASCADE,
   ADD CONSTRAINT sitGroupePartenaireFicheInclude_ibfk_2 FOREIGN KEY (idFiche) REFERENCES sitFiche (idFiche) ON DELETE CASCADE;
+
+ALTER TABLE `sitGroupePlugin`
+  ADD CONSTRAINT sitGroupePlugin_ibfk_1 FOREIGN KEY (idGroupe) REFERENCES sitGroupe (idGroupe) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT sitGroupePlugin_ibfk_2 FOREIGN KEY (idPlugin) REFERENCES sitPlugin (idPlugin) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `sitGroupeTerritoire`
   ADD CONSTRAINT sitGroupeTerritoire_ibfk_1 FOREIGN KEY (idGroupe) REFERENCES sitGroupe (idGroupe) ON DELETE CASCADE,

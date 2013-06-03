@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -9,7 +9,6 @@
  */
 
 	require_once('application/collection/ficheSimpleCollection.php');
-	require_once('application/utils/xmlFiche.php');
 	require_once('application/utils/tifTools.php');
 
 	final class ficheSimpleModele extends baseModele implements WSDLable
@@ -26,27 +25,27 @@
 		protected $raisonSociale;
 		protected $codeTIF;
 		protected $codeInsee;
+                protected $commune;
 		protected $bordereau;
 		protected $gpsLat;
 		protected $gpsLng;
 		protected $idGroupe;
+                protected $nomGroupe;
 		protected $publication;
 		protected $referenceExterne;
 		protected $dateCreation;
 
 		public static function loadByXml(&$xml)
 		{
-			$xmlFiche = new xmlFiche($xml);
-
 			$classname = __CLASS__;
 			$oFiche = new $classname();
 
-			$oFiche -> setRaisonSociale($xmlFiche -> getValue(self::XPATH_RAISON_SOCIALE));
-			$oFiche -> setCodeInsee($xmlFiche -> getValue(self::XPATH_CODE_INSEE));
-			$oFiche -> setBordereau(tifTools::getBordereau($xmlFiche -> getValue(self::XPATH_BORDEREAU)));
-			$oFiche -> setGpsLat($xmlFiche -> getValue(self::XPATH_GPS_LAT));
-			$oFiche -> setGpsLng($xmlFiche -> getValue(self::XPATH_GPS_LNG));
-			$oFiche -> setReferenceExterne($xmlFiche -> getValue(self::XPATH_REFERENCE_EXTERNE));
+			$oFiche -> setRaisonSociale(tsXml::getValueXpath($xml, self::XPATH_RAISON_SOCIALE));
+			$oFiche -> setCodeInsee(tsXml::getValueXpath($xml, self::XPATH_CODE_INSEE));
+			$oFiche -> setBordereau(tifTools::getBordereau(tsXml::getValueXpath($xml, self::XPATH_BORDEREAU)));
+			$oFiche -> setGpsLat(tsXml::getValueXpath($xml, self::XPATH_GPS_LAT));
+			$oFiche -> setGpsLng(tsXml::getValueXpath($xml, self::XPATH_GPS_LNG));
+			$oFiche -> setReferenceExterne(tsXml::getValueXpath($xml, self::XPATH_REFERENCE_EXTERNE));
 
 			return $oFiche;
 		}
@@ -70,6 +69,3 @@
 		}
 
 	}
-
-
-?>

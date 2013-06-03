@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
  * @author		Nicolas Marchand <nicolas.raccourci@gmail.com>
  */
 
+	require_once('application/db/pluginDb.php');
 	require_once('application/db/territoireDb.php');
 	require_once('application/modele/groupeModele.php');
 	require_once('application/modele/territoireModele.php');
@@ -37,6 +38,9 @@
 		const SQL_DELETE_GROUPE_PARTENAIRE = "DELETE FROM sitGroupePartenaire WHERE idGroupe='%d' AND idGroupePartenaire='%d'";
 		const SQL_ADD_PARTENAIRE_FICHE_EXCLUDE = "INSERT INTO sitGroupePartenaireFicheExclude (idGroupe, idFiche) VALUES ('%d', '%d')";
 		const SQL_DELETE_PARTENAIRE_FICHE_INCLUDE = "DELETE FROM sitGroupePartenaireFicheInclude WHERE idGroupe ='%d' AND idFiche ='%d'";
+		const SQL_GROUPE_PLUGINS = "SELECT idPlugin FROM sitGroupePlugin WHERE idGroupe='%d'";
+		const SQL_ADD_PLUGIN_GROUPE = "INSERT INTO sitGroupePlugin (idGroupe, idPlugin) VALUES ('%d', '%d')";
+		const SQL_DELETE_PLUGIN_GROUPE = "DELETE FROM sitGroupePlugin WHERE idGroupe='%d' AND idPlugin='%d'";
 		
 		
 		public static function getGroupe($idGroupe)
@@ -194,7 +198,26 @@
 			return tsDatabase::query(self::SQL_DELETE_PARTENAIRE_FICHE_INCLUDE, array(tsDroits::getGroupeUtilisateur(), $oFiche -> idFiche));
 		}
 		
+		
+		public static function getGroupePlugins(groupeModele $oGroupe)
+		{
+			$oPluginCollection = new PluginCollection();
+			$idPlugins = tsDatabase::getRecords(self::SQL_GROUPE_PLUGINS, array($oGroupe->idGroupe));
+			foreach($idPlugins as $idPlugin)
+			{
+				$oPluginCollection[] = pluginDb::getPlugin($idPlugin);
+			}
+			return $oPluginCollection -> getCollection();
+		}
+		
+		public static function addGroupePlugin($idGroupe, $oPlugin)
+		{
+			return tsDatabase::query(self::SQL_ADD_PLUGIN_GROUPE, array($idGroupe, $oPlugin->idPlugin));
+		}
+		
+		public static function deleteGroupePlugin($idGroupe, $oPlugin)
+		{
+			return tsDatabase::query(self::SQL_DELETE_PLUGIN_GROUPE, array($idGroupe, $oPlugin->idPlugin));
+		}
+		
 	}
-	
-	
-?>

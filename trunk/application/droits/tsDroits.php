@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -237,6 +237,15 @@
 			}
 			else
 			{
+				if (tsDroits::getTypeUtilisateur() != 'manager' && $oChamp->stockage == 'db' && $oChamp->scope == 'groupe')
+				{
+					$droit = new droitChampModele();
+					$droit -> setVisualisation(true);
+					$droit -> setModification(true);
+					$droit -> setValidation(true);
+					return $droit -> getDroit();
+				}
+				
 				$droitChamp = new droitChampModele();
 				$droitChamp -> loadDroit($droitFiche);
 				return $droitChamp -> getDroit();
@@ -275,6 +284,3 @@
 
 
 	}
-
-
-?>

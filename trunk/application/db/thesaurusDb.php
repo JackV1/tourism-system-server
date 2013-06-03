@@ -1,7 +1,7 @@
 <?php
 
 	/**
-	 * @version        0.3 alpha-test - 2013-01-25
+	 * @version        0.4 alpha-test - 2013-06-03
 	 * @package        Tourism System Server
 	 * @copyright      Copyright (C) 2010 Raccourci Interactive
 	 * @license        Qt Public License; see LICENSE.txt
@@ -14,9 +14,9 @@
 	require_once('application/modele/entreeThesaurusModele.php');
 	require_once('application/modele/thesaurusModele.php');
 	require_once('application/utils/stemming/stem.php');
-	require_once('application/utils/fonctions.php');
+	require_once( 'application/utils/fonctions.php' );
 
-	// TODO : changer la clé primaire vers codeThesaurus
+// TODO : changer la clé primaire vers codeThesaurus
 	final class thesaurusDb
 	{
 
@@ -24,19 +24,21 @@
 		const SQL_THESAURII                      = "SELECT codeThesaurus FROM sitThesaurus";
 		const SQL_UPDATE_THESAURUS               = 'UPDATE sitThesaurus SET codeThesaurus=\'%1$s\', libelle=\'%2$s\' WHERE codeThesaurus=\'%1$s\'';
 		const SQL_CREATE_THESAURUS               = "INSERT INTO sitThesaurus(codeThesaurus, libelle, prefixe) VALUES ('%s', '%s', '%s')";
-		const SQL_ENTREES_THESAURUS              = "SELECT cle, libelle, liste, '%s' as lang FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND lang='%s'";
-		const SQL_ENTREES_THESAURUS_ROOT         = "SELECT cle, libelle, liste, '%s' as lang FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND lang='%s'";
+
+		const SQL_ENTREES_THESAURUS = "SELECT cle, libelle, liste, '%s' as lang FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND lang='%s'";
+
 		const SQL_ENTREES_THESAURUS_ROOT_ALL_LNG = "SELECT cle, libelle, liste, lang FROM sitEntreesThesaurus WHERE codeThesaurus='%s'";
+
 		const SQL_ENTREE_THESAURUS               = "SELECT cle, libelle, liste FROM sitEntreesThesaurus WHERE cle='%s' AND lang='%s'";
+
 		const SQL_ENTREES_THESAURUS_MASQUE       = "SELECT DISTINCT cle FROM sitEntreesThesaurusMasque WHERE idThesaurus IN ('%s')";
 		const SQL_ADD_ENTREE_THESAURUS           = "INSERT INTO sitEntreesThesaurus (codeThesaurus, cle, liste, lang, libelle) VALUES ('%s', '%s', '%s', '%s', '%s')";
 
 		const SQL_LISTE_FROM_CLE          = "SELECT liste FROM sitEntreesThesaurus WHERE cle='%s' AND lang='fr'";
-		const SQL_NUMERO_TIF              = "
-		SELECT IF (MAX(SUBSTRING_INDEX(cle, '.', -1) + 1) < 10,
-						CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', '0', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)),
-						CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)))
-				AS codeTIF FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND (LOCATE('%s',cle)=4 OR LOCATE('%s',cle)=5)";
+		const SQL_NUMERO_TIF              = "SELECT IF (MAX(SUBSTRING_INDEX(cle, '.', -1) + 1) < 10,
+														CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', '0', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)),
+														CONCAT(SUBSTRING(cle, 1, LENGTH(cle) - LOCATE('.', REVERSE(cle))), '.', MAX(SUBSTRING_INDEX(cle, '.', -1) + 1)))
+												AS codeTIF FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND (LOCATE('%s',cle)=4 OR LOCATE('%s',cle)=5)";
 		const SQL_CODE_PARENT             = "SELECT SUBSTRING_INDEX(cle, '.', -1)) AS numero FROM sitEntreesThesaurus WHERE codeThesaurus='%s' AND liste='%s'";
 		const SQL_PREFIXE_THESAURUS       = "SELECT MAX(prefixe) FROM sitThesaurus WHERE prefixe IS NOT NULL";
 		const SQL_DELETE_ENTREE_THESAURUS = "DELETE FROM sitEntreesThesaurus WHERE cle='%s' AND codeThesaurus<>'MTH.NAT.TIFV30'";
@@ -44,20 +46,22 @@
 		const SQL_SET_ENTREE_THESAURUS    = "REPLACE INTO sitEntreesThesaurus(libelle, cle, lang, codeThesaurus,liste) VALUES ('%s', '%s', '%s','%s','%s')";
 		const SQL_VALUE_BY_KEY            = "SELECT libelle FROM sitEntreesThesaurus WHERE cle='%s' AND lang='%s'";
 		const SQL_THESAURUS_BY_KEY        = "SELECT codeThesaurus FROM sitEntreesThesaurus WHERE cle='%s' LIMIT 0,1";
-		const SQL_LISTE_THESAURUS         = "SELECT cle, libelle FROM sitEntreesThesaurus WHERE liste = '%s'
-									AND cle REGEXP('^%s$') AND codeThesaurus = '%s' AND lang = 'fr'";
+		const SQL_LISTE_THESAURUS         = "SELECT 0 AS idNorme, cle, libelle FROM sitEntreesThesaurus WHERE liste = '%s' AND cle REGEXP('^%s$') AND codeThesaurus = '%s' AND lang = 'fr'";
 		const SQL_LISTE_THESAURUS_ALL_LNG = "SELECT cle, libelle FROM sitEntreesThesaurus WHERE liste = '%s'
 									AND cle REGEXP('^%s$') AND codeThesaurus = '%s'";
 
-		const SQL_ARBRE_THESAURUS = "SELECT cle, libelle FROM sitEntreesThesaurus WHERE cle REGEXP('^((99|[0-9]{3}).)?%s(.[0-9]{2,3})*$') AND codeThesaurus = '%s' AND lang = 'fr'";
+		const SQL_ARBRE_THESAURUS = "SELECT 1 AS idNorme, cle, libelle FROM sitEntreesThesaurus WHERE cle REGEXP('^((99|[0-9]{3}).)?%s(.[0-9]{2,3})*$') AND codeThesaurus = '%s' AND lang = 'fr'";
 
 		const SQL_KEY_THESAURUS_BY_STEM        = "SELECT t.cle, t.libelle , t.codeThesaurus FROM sitEntreesThesaurus t INNER JOIN sitEntreesThesaurusStems s ON (t.cle = s.cle AND t.lang = s.lang) WHERE s.stem LIKE '%s' AND s.lang = 'fr' AND t.codeThesaurus IN ( 'MTH.NAT.TIFV30' , 'MTH.LOC.RAC' , '%s' ) AND t.liste = '%s'";
 		const SQL_ADD_ENTREE_THESAURUS_STEM    = 'INSERT INTO sitEntreesThesaurusStems (cle, lang, stem) VALUES (\'%1$s\', \'%2$s\', \'%3$s\')';
 		const SQL_UPDATE_ENTREE_THESAURUS_STEM = 'UPDATE sitEntreesThesaurusStems SET stem = \'%1$s\' WHERE cle = \'%2$s\' AND lang = \'%3$s\'';
 		const SQL_DELETE_ENTREE_THESAURUS_STEM = 'DELETE FROM sitEntreesThesaurusStems WHERE cle = \'%s\' ';
 
+
 		private static $pop;
 		private static $entrees;
+		private static $entreesByKey;
+		private static $entreesKeys;
 
 
 		public static function getThesaurus( $codeThesaurus )
@@ -113,25 +117,35 @@
 			}
 
 			$oEntreeThesaurusCollection = new entreeThesaurusCollection();
-			if( tsDroits::isRoot() )
+			if( tsDroits::isRoot() ) // toutes les langues
 			{
-				$entreesThesaurus = tsDatabase::getRows( self::SQL_ENTREES_THESAURUS_ROOT_ALL_LNG , array( $oThesaurus->codeThesaurus ) );
+
+				// Hook request refactor
+				$sql = self::SQL_ENTREES_THESAURUS_ROOT_ALL_LNG;
+				tsPlugins::registerVar( 'sqlRequest' , $sql );
+				tsPlugins::callHook( 'thesaurusDb' , 'getEntreesThesaurusRoot' , 'requestRefactor' );
+
+				$entreesThesaurus = tsDatabase::getRows( $sql , array( $oThesaurus->codeThesaurus ) );
 			}
-			else
+			else // uniquement la langue demandée
 			{
-				$entreesThesaurus = tsDatabase::getRows( self::SQL_ENTREES_THESAURUS , array( $oThesaurus->codeThesaurus , $codeLangue ) );
+				// Hook request refactor
+				$sql = self::SQL_ENTREES_THESAURUS;
+				tsPlugins::registerVar( 'sqlRequest' , $sql );
+				tsPlugins::callHook( 'thesaurusDb' , 'getEntreesThesaurus' , 'requestRefactor' );
+
+				$entreesThesaurus = tsDatabase::getRows( $sql , array( $oThesaurus->codeThesaurus , $codeLangue ) );
 			}
 
 			// eliminer les clés masquées
 			$clesMasque = tsDatabase::getRecords( self::SQL_ENTREES_THESAURUS_MASQUE , array( $idGroupe = tsDroits::getGroupeUtilisateur() ) );
 
-			foreach( $entreesThesaurus as $entreeThesaurus )
+			foreach( $entreesThesaurus as &$entreeThesaurus )
 			{
 				foreach( $clesMasque as &$masque )
 				{
 					if( preg_match( '/' . $masque . '/' , $entreeThesaurus[ 'cle' ] ) )
 					{
-						throw new Exception( 'THESO RUSSE ++' . $masque . ' ++ ' . $entreeThesaurus[ 'cle' ] );
 						continue 2;
 					}
 				}
@@ -140,6 +154,11 @@
 				$oEntreeThesaurus->setCle( $entreeThesaurus[ 'cle' ] );
 				$oEntreeThesaurus->setLibelle( $entreeThesaurus[ 'libelle' ] );
 				$oEntreeThesaurus->setListe( $entreeThesaurus[ 'liste' ] );
+
+				if( !empty( $norme ) )
+				{
+					$oEntreeThesaurus->setLibellesExternes( $entreeThesaurus[ 'libellesExternes' ] );
+				}
 
 				$oEntreeThesaurus->setLang( $entreeThesaurus[ 'lang' ] );
 				$oEntreeThesaurusCollection[ ] = $oEntreeThesaurus->getObject();
@@ -174,7 +193,12 @@
 				throw new ApplicationException( "Le code langue n'est pas valide" );
 			}
 
-			$result = tsDatabase::getObject( self::SQL_ENTREE_THESAURUS , array( $codeTif , $codeLangue ) , DB_FAIL_ON_ERROR );
+			// Hook request refactor
+			$sql = self::SQL_ENTREE_THESAURUS;
+			tsPlugins::registerVar( 'sqlRequest' , $sql );
+			tsPlugins::callHook( 'thesaurusDb' , 'getEntreeThesaurus' , 'requestRefactor' );
+
+			$result = tsDatabase::getObject( $sql , array( $codeTif , $codeLangue ) , DB_FAIL_ON_ERROR );
 
 			return entreeThesaurusModele::getInstance( $result , 'entreeThesaurusModele' );
 		}
@@ -199,7 +223,7 @@
 			tsDatabase::insert( self::SQL_ADD_ENTREE_THESAURUS , array( $oThesaurus->codeThesaurus , $nextCode , $liste , $codeLangue , $libelle ) );
 
 			$stemmer = new Stem();
-			$stem    = $stemmer->stem( $libelle , ' ' , $codeLangue );
+			$stem    = $stemmer->stem( utf8_decode( urldecode($libelle)) , ' ' , $codeLangue );
 			tsDatabase::insert( self::SQL_ADD_ENTREE_THESAURUS_STEM , array( $nextCode , $codeLangue , $stem ) );
 
 			return $nextCode;
@@ -281,12 +305,12 @@
 
 
 
-		public static function getListeThesaurus( $liste , $cle , $pop )
+		public static function getListeThesaurus( $liste , $cle , $pop = null )
 		{
 			$cle = str_replace( '.*' , '' , $cle );
 			$cle = ( $cle == '' ? '.*' : "((99|[0-9]{3}).)?$cle(.[0-9]{2,3})+" );
 
-			self::$pop = ( $pop != '' ? explode( ',' , $pop ) : array() );
+			self::$pop = ( !is_null($pop) && $pop != '' ? explode( ',' , $pop ) : array() );
 
 			$entrees = tsDatabase::getRows( self::SQL_LISTE_THESAURUS , array( $liste , $cle , 'MTH.NAT.TIFV30' ) , DB_FAIL_ON_ERROR );
 			$entrees = array_filter( $entrees , array( 'self' , 'popListeThesaurus' ) );
@@ -348,7 +372,6 @@
 		}
 
 
-
 		public static function getArbreThesaurus( $cle , $pop )
 		{
 			$cle = str_replace( '.*' , '' , $cle );
@@ -360,9 +383,22 @@
 
 			self::$pop = ( $pop != '' ? explode( ',' , $pop ) : array() );
 
-			$entrees = tsDatabase::getRows( self::SQL_ARBRE_THESAURUS , array( $cle , 'MTH.NAT.TIFV30' ) , DB_FAIL_ON_ERROR );
+			// Hook request refactor
+			$sql = self::SQL_ARBRE_THESAURUS;
+			tsPlugins::registerVar( 'sqlRequest' , $sql );
+			tsPlugins::callHook( 'thesaurusDb' , 'getArbreThesaurus' , 'requestRefactor' );
+
+			$entrees = tsDatabase::getRows( $sql , array( $cle , 'MTH.NAT.TIFV30' ) , DB_FAIL_ON_ERROR );
+
 			$entrees = array_filter( $entrees , array( 'self' , 'popListeThesaurus' ) );
 			$entrees = array_values( $entrees );
+
+			$entreesParCle = array(); // entrees de thesaurus sans doublon
+			foreach( $entrees as &$e )
+			{
+				$entreesParCle[$e['cle']] = $e;
+			}
+			$entrees = array();
 
 			if( tsDroits::isRoot() === false )
 			{
@@ -383,44 +419,52 @@
 
 				foreach( $thesaurii as $thesaurus )
 				{
-					$entrees = array_merge( $entrees , tsDatabase::getRows( self::SQL_ARBRE_THESAURUS , array( $cle , $thesaurus ) , DB_FAIL_ON_ERROR ) );
+					// $entrees = array_merge( $entrees , tsDatabase::getRows( $sql , array( $cle , $thesaurus ) , DB_FAIL_ON_ERROR ) );
+					$entreesAutre = tsDatabase::getRows( $sql , array( $cle , $thesaurus ) , DB_FAIL_ON_ERROR );
+					foreach( $entreesAutre as &$e )
+					{
+						$entreesParCle[ $e[ 'cle' ] ] = $e;
+					}
 				}
+			}
+
+			foreach( $entreesParCle as &$e )
+			{
+				$entrees[] = $e;
 			}
 
 			self::$entrees = $entrees;
 
+			self::$entreesByKey = $entreesParCle;
+			self::$entreesKeys = array_keys( $entreesParCle);
+
 			return self::getEntreesRecursive( $cle );
-
-			/*if (tsDroits::isRoot() === false)
-			{
-				$idGroupe = tsDroits::getGroupeUtilisateur();
-				$oGroupe = groupeDb::getGroupe($idGroupe);
-				$oTerritoires = groupeDb::getGroupeTerritoires($oGroupe);
-			}
-			else
-			{
-				$oTerritoires = array();
-			}
-
-			$entrees = tsDatabase::getRows(self::SQL_ARBRE_THESAURUS, array($cle, 'MTH.NAT.TIFV30'), DB_FAIL_ON_ERROR);
-			$entrees = array_merge($entrees, tsDatabase::getRows(self::SQL_ARBRE_THESAURUS, array($cle, 'MTH.LOC.RAC'), DB_FAIL_ON_ERROR));
-			foreach ($oTerritoires as $oTerritoire)
-			{
-				$oThesaurii = territoireDb::getThesaurusByTerritoire($oTerritoire);
-				foreach ($oThesaurii as $oThesaurus)
-				{
-					$entrees = array_merge($entrees, tsDatabase::getRows(self::SQL_ARBRE_THESAURUS, array($cle, $oThesaurus -> codeThesaurus), DB_FAIL_ON_ERROR));
-				}
-			}
-			self::$entrees = array_filter($entrees, array('self', 'popListeThesaurus'));
-
-			$result = self::getEntreesRecursive($cle);
-
-			return $result;*/
 		}
 
 
 		private static function getEntreesRecursive( $cle )
+		{
+			$arbre = array();
+			foreach( self::$entreesKeys as $k )
+			{
+				if( preg_match( '/^([0-9]{2,3}.)?' . $cle . '.[0-9]{2,3}$/' , $k ) )
+				{
+					$entree = self::$entreesByKey[$k];
+					$children = self::getEntreesRecursive( $entree['cle'] );
+
+					if( count( $children ) > 0 )
+					{
+						$entree[ 'children' ] = $children;
+					}
+
+					$arbre[ ] = $entree;
+				}
+			}
+			return $arbre;
+		}
+
+
+/*		private static function getEntreesRecursive( $cle )
 		{
 			$arbre = array();
 			foreach( self::$entrees as $entree )
@@ -428,8 +472,8 @@
 				if( preg_match( '/^([0-9]{2,3}.)?' . $cle . '.[0-9]{2,3}$/' , $entree[ 'cle' ] ) )
 				{
 					$resultTmp = $entree;
-
 					$children = self::getEntreesRecursive( $resultTmp[ 'cle' ] );
+
 					if( count( $children ) > 0 )
 					{
 						$resultTmp[ 'children' ] = $children;
@@ -439,7 +483,7 @@
 			}
 
 			return $arbre;
-		}
+		}*/
 
 
 		private static function popListeThesaurus( $item )
@@ -497,6 +541,3 @@
 		}
 
 	}
-
-
-?>

@@ -215,6 +215,26 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 	
+	<message name="addGroupePluginRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+		<part name="nomPlugin" type="xsd:string"/>
+	</message>
+	<message name="addGroupePluginResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
+	<message name="deleteGroupePluginRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="idGroupe" type="xsd:int"/>
+		<part name="nomPlugin" type="xsd:string"/>
+	</message>
+	<message name="deleteGroupePluginResponse">
+		<part name="status" type="tns:WSstatus"/>
+		<part name="reponse" type="xs:anyType" nillable="true" />
+	</message>
+	
 	
 	
 	<portType name="CspPorts">
@@ -287,6 +307,16 @@
 		<operation name="deleteGroupePartenaireFiche">
 			<input  message="tns:deleteGroupePartenaireFicheRequest"/>
 			<output message="tns:deleteGroupePartenaireFicheResponse"/>
+		</operation>
+		
+		<operation name="addGroupePlugin">
+			<input  message="tns:addGroupePluginRequest"/>
+			<output message="tns:addGroupePluginResponse"/>
+		</operation>
+		
+		<operation name="deleteGroupePlugin">
+			<input  message="tns:deleteGroupePluginRequest"/>
+			<output message="tns:deleteGroupePluginResponse"/>
 		</operation>
 	</portType>
 
@@ -426,6 +456,26 @@
 		</operation>
 		
 		<operation name="deleteGroupePartenaireFiche">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="addGroupePlugin">
+			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
+			<input>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</input>
+			<output>
+				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+			</output>
+		</operation>
+		
+		<operation name="deleteGroupePlugin">
 			<soap:operation soapAction="{BASE_URL}services/wsdl/groupe.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -111,7 +111,7 @@
 			}
 			
 			$pass = substr(md5(uniqid(mt_rand(), true)), 10, 6);
-			return tsDatabase::insert(self::SQL_CREATE_UTILISATEUR, array($email, $pass, $typeUtilisateur, $idGroupe));
+			return tsDatabase::insert(self::SQL_CREATE_UTILISATEUR, array(strtolower($email), $pass, $typeUtilisateur, $idGroupe));
 		}
 		
 		
@@ -173,6 +173,3 @@
 
 		
 	}
-	
-	
-?>
