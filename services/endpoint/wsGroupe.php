@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -10,6 +10,7 @@
 
 	require_once('application/db/ficheDb.php');
 	require_once('application/db/groupeDb.php');
+	require_once('application/db/pluginDb.php');
 	require_once('application/db/territoireDb.php');
 	require_once('application/db/utilisateurDb.php');
 
@@ -252,7 +253,45 @@
 			return array();
 		}
 		
+		
+		/**
+		 * Récupère la liste des plugins disponibles pour un groupe
+		 * @param int $idGroupe : identifiant du groupe
+		 * @return pluginCollection plugins : collection de pluginModele
+		 * @access root
+		 */
+		protected function _getGroupePlugins($idGroupe)
+		{
+			$this -> restrictAccess('superadmin', 'admin');
+			$oGroupe = groupeDb::getGroupe($idGroupe);
+			$plugins = groupeDb::getGroupePlugins($oGroupe);
+			return array('plugins' => $plugins);
+		}
+		
+		/**
+		 * Active un plugin pour un groupe
+		 * @param string $nomPlugin : identifiant du plugin
+		 * @access root
+		 */
+		protected function _addGroupePlugin($idGroupe, $nomPlugin)
+		{
+			$this -> restrictAccess('root');
+			$oPlugin = pluginDb::getPlugin($nomPlugin);
+			groupeDb::addGroupePlugin($idGroupe, $oPlugin);
+			return array();
+		}
+		
+		/**
+		 * Désactive un plugin pour un groupe
+		 * @param string $nomPlugin : identifiant du plugin
+		 * @access root
+		 */
+		protected function _deleteGroupePlugin($idGroupe, $nomPlugin)
+		{
+			$this -> restrictAccess('root');
+			$oPlugin = pluginDb::getPlugin($nomPlugin);
+			groupeDb::deleteGroupePlugin($idGroupe, $oPlugin);
+			return array();
+		}
+		
 	}
-
-
-?>

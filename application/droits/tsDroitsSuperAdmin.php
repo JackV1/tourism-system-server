@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -81,14 +81,14 @@
 		}
 		
 		
-		public function getDroitFicheChamp(ficheModele $oFiche, champModele $oChamp)
+		/*public function getDroitFicheChamp(ficheModele $oFiche, champModele $oChamp)
 		{
 			$droit = new droitChampModele();
 			$droit -> setVisualisation(true);
 			$droit -> setModification(true);
 			$droit -> setValidation(true);
 			return $droit -> getDroit();
-		}
+		}*/
 		
 		
 		/*public function getDroitFiche(ficheModele $oFiche)
@@ -164,6 +164,3 @@
 		}
 		
 	}
-	
-	
-?>

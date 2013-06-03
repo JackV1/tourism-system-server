@@ -201,14 +201,15 @@
     <message name="getArbreThesaurusRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="cle" type="xsd:string"/>
-		<part name="pop" type="xsd:string"/>
-	</message>
-	<message name="getArbreThesaurusResponse">
-		<part name="status" type="tns:WSstatus"/>
-		<part name="arbre" nillable="true" type="xs:anyType" />
-	</message>
+        <part name="pop" type="xsd:string"/>
+    </message>
+    <message name="getArbreThesaurusResponse">
+        <part name="status" type="tns:WSstatus"/>
+        <part name="arbre" nillable="true" type="xs:anyType"/>
+    </message>
 
-	<portType name="CspPorts">
+
+    <portType name="CspPorts">
 		<operation name="createThesaurus">
 			<input  message="tns:createThesaurusRequest"/>
 			<output message="tns:createThesaurusResponse"/>
@@ -277,13 +278,13 @@
         </operation>
 
 
-
         <operation name="getArbreThesaurus">
-			<input  message="tns:getArbreThesaurusRequest"/>
-			<output message="tns:getArbreThesaurusResponse"/>
-		</operation>
+            <input message="tns:getArbreThesaurusRequest"/>
+            <output message="tns:getArbreThesaurusResponse"/>
+        </operation>
 
-	</portType>
+
+    </portType>
 
 
 	<binding name="wsBinding"  type="typens:CspPorts">
@@ -421,19 +422,18 @@
         </operation>
 
 
+        <operation name="getArbreThesaurus">
+            <soap:operation soapAction="http://www.sit-serveur.dev:82/services/wsdl/thesaurus.wsdl" style="rpc"/>
+            <input>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </input>
+            <output>
+                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </output>
+        </operation>
 
-		<operation name="getArbreThesaurus">
-			<soap:operation soapAction="http://www.sit-serveur.dev:82/services/wsdl/thesaurus.wsdl" style="rpc"/>
-			<input>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</input>
-			<output>
-				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-			</output>
-		</operation>
 
-
-	</binding>
+    </binding>
 
 	<service name="TourismSystemWebServiceThesaurus">
 		<documentation>Webservices thésaurus de Tourism System</documentation>

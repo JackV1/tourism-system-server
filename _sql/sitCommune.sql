@@ -1,12 +1,6 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
-
 INSERT INTO `sitCommune` (`codeInsee`, `codePostal`, `codePays`, `libelle`, `gpsLat`, `gpsLng`) VALUES
 ('01001', '01400', 'FR', 'L'' Abergement-Clémenciat', 46.150002, 4.916670),
 ('01002', '01640', 'FR', 'L'' Abergement-de-Varey', 46.000000, 5.416670),
@@ -39897,7 +39891,3 @@ INSERT INTO `sitCommune` (`codeInsee`, `codePostal`, `codePays`, `libelle`, `gps
 ('CH993', '3374', 'CH', 'Wangenried', 47.217831, 7.658520),
 ('CH995', '4537', 'CH', 'Wiedlisbach', 47.251232, 7.646745),
 ('CH996', '4704', 'CH', 'Wolfisberg', 47.273064, 7.661652);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

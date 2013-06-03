@@ -56,23 +56,33 @@
 		<part name="reponse" type="xs:anyType" nillable="true" />
 	</message>
 
-    <message name="getFichesRequest">
-        <part name="sessionId" type="xsd:string"/>
-    </message>
-    <message name="getFichesResponse">
-        <part name="status" type="tns:WSstatus"/>
-        <part name="fiches" nillable="true" type="xs:anyType"/>
-    </message>
+        <message name="getFichesRequest">
+            <part name="sessionId" type="xsd:string"/>
+        </message>
+        <message name="getFichesResponse">
+            <part name="status" type="tns:WSstatus"/>
+            <part name="fiches" nillable="true" type="xs:anyType"/>
+        </message>
 
-    <message name="getFichesIdsRequest">
-        <part name="sessionId" type="xsd:string"/>
-    </message>
-    <message name="getFichesIdsResponse">
-        <part name="status" type="tns:WSstatus"/>
-        <part name="fiches" nillable="true" type="xs:anyType"/>
-    </message>
+        <message name="listFichesRequest">
+            <part name="sessionId" type="xsd:string"/>
+            <part name="parameters" type="xs:anyType"/>
+        </message>
+        <message name="listFichesResponse">
+            <part name="status" type="tns:WSstatus"/>
+            <part name="fiches" nillable="true" type="xs:anyType"/>
+        </message>
 
-    <message name="rechercheFichesRequest">
+
+        <message name="getFichesIdsRequest">
+            <part name="sessionId" type="xsd:string"/>
+        </message>
+        <message name="getFichesIdsResponse">
+            <part name="status" type="tns:WSstatus"/>
+            <part name="fiches" nillable="true" type="xs:anyType"/>
+        </message>
+
+        <message name="rechercheFichesRequest">
 		<part name="sessionId" type="xsd:string"/>
 		<part name="bordereau" type="xsd:string" nillable="true"/>
 		<part name="filters" type="xs:anyType"/>
@@ -159,50 +169,62 @@
 			<output message="tns:deleteFicheResponse"/>
 		</operation>
 
-        <operation name="getFiches">
-            <input message="tns:getFichesRequest"/>
-            <output message="tns:getFichesResponse"/>
-        </operation>
+                <operation name="getFiches">
+                    <input message="tns:getFichesRequest"/>
+                    <output message="tns:getFichesResponse"/>
+                </operation>
 
-        <operation name="getFichesIds">
-            <input message="tns:getFichesIdsRequest"/>
-            <output message="tns:getFichesIdsResponse"/>
-        </operation>
+                <!--
+                <operation name="getFichesLimit">
+                    <input message="tns:getFichesLimitRequest"/>
+                    <output message="tns:getFichesLimitResponse"/>
+                </operation>
+                -->
 
-        <operation name="rechercheFiches">
-			<input  message="tns:rechercheFichesRequest"/>
-			<output message="tns:rechercheFichesResponse"/>
-		</operation>
+                <operation name="listFiches">
+                    <input message="tns:listFichesRequest"/>
+                    <output message="tns:listFichesResponse"/>
+                </operation>
 
-		<operation name="sauvegardeFiche">
-			<input  message="tns:sauvegardeFicheRequest"/>
-			<output message="tns:sauvegardeFicheResponse"/>
-		</operation>
+                <operation name="getFichesIds">
+                    <input message="tns:getFichesIdsRequest"/>
+                    <output message="tns:getFichesIdsResponse"/>
+                </operation>
 
-		<operation name="setPublicationFiche">
-			<input  message="tns:setPublicationFicheRequest"/>
-			<output message="tns:setPublicationFicheResponse"/>
-		</operation>
+                <operation name="rechercheFiches">
+                        <input  message="tns:rechercheFichesRequest"/>
+                        <output message="tns:rechercheFichesResponse"/>
+                </operation>
 
-		<operation name="getFicheByRefExterne">
-			<input  message="tns:getFicheByRefExterneRequest"/>
-			<output message="tns:getFicheByRefExterneResponse"/>
-		</operation>
+                <operation name="sauvegardeFiche">
+                        <input  message="tns:sauvegardeFicheRequest"/>
+                        <output message="tns:sauvegardeFicheResponse"/>
+                </operation>
 
-		<operation name="getFicheVersions">
-			<input  message="tns:getFicheVersionsRequest"/>
-			<output message="tns:getFicheVersionsResponse"/>
-		</operation>
+                <operation name="setPublicationFiche">
+                        <input  message="tns:setPublicationFicheRequest"/>
+                        <output message="tns:setPublicationFicheResponse"/>
+                </operation>
 
-		<operation name="deleteFicheVersion">
-			<input  message="tns:deleteFicheVersionRequest"/>
-			<output message="tns:deleteFicheVersionResponse"/>
-		</operation>
+                <operation name="getFicheByRefExterne">
+                        <input  message="tns:getFicheByRefExterneRequest"/>
+                        <output message="tns:getFicheByRefExterneResponse"/>
+                </operation>
 
-		<operation name="restoreFicheVersion">
-			<input  message="tns:restoreFicheVersionRequest"/>
-			<output message="tns:restoreFicheVersionResponse"/>
-		</operation>
+                <operation name="getFicheVersions">
+                        <input  message="tns:getFicheVersionsRequest"/>
+                        <output message="tns:getFicheVersionsResponse"/>
+                </operation>
+
+                <operation name="deleteFicheVersion">
+                        <input  message="tns:deleteFicheVersionRequest"/>
+                        <output message="tns:deleteFicheVersionResponse"/>
+                </operation>
+
+                <operation name="restoreFicheVersion">
+                        <input  message="tns:restoreFicheVersionRequest"/>
+                        <output message="tns:restoreFicheVersionResponse"/>
+                </operation>
 
 
 	</portType>
@@ -240,27 +262,52 @@
 			</output>
 		</operation>
 
-        <operation name="getFiches">
-            <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
-            <input>
-                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </input>
-            <output>
-                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </output>
-        </operation>
+                <operation name="getFiches">
+                    <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+                    <input>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </input>
+                    <output>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </output>
+                </operation>
 
-        <operation name="getFichesIds">
-            <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
-            <input>
-                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </input>
-            <output>
-                <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </output>
-        </operation>
 
-        <operation name="rechercheFiches">
+                <!--
+                <operation name="getFichesLimit">
+                    <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+                    <input>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </input>
+                    <output>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </output>
+                </operation>
+                -->
+                
+
+                <operation name="listFiches">
+                    <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+                    <input>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </input>
+                    <output>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </output>
+                </operation>                
+                
+
+                <operation name="getFichesIds">
+                    <soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
+                    <input>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </input>
+                    <output>
+                        <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                    </output>
+                </operation>
+
+                <operation name="rechercheFiches">
 			<soap:operation soapAction="{BASE_URL}services/wsdl/fiche.wsdl" style="rpc"/>
 			<input>
 				<soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>

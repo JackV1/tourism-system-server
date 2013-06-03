@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -41,7 +41,7 @@
 	require_once('application/plugins/tsPlugins.php');
 
 	require_once('application/utils/fonctions.php');
-	require_once('application/utils/libXml.php');
+	require_once('application/utils/tsXml.php');
 
 	require_once('services/endpoint/wsEndpoint.php');
 	require_once('services/endpoint/wsStatus.php');
@@ -49,26 +49,39 @@
 	try
 	{
 		tsConfig::loadConfig('config');
-		
-		$isPlugin = file_exists('plugins/' . $_REQUEST['service'] . '/');
 
-		$endpointPath = $isPlugin ? 'plugins/' . $_REQUEST['service'] . '/' : 'services/endpoint/';
-		require_once($endpointPath . 'ws' . ucfirst($_REQUEST['service']) . '.php');
+		$isPlugin = (!empty($_GET['plugin']) && $_GET['plugin'] != 'ts');
 
-		$wsdlUrl = $isPlugin ? 'plugins/' . $_REQUEST['service'] . '/' : 'services/wsdl/';
-		$server = new SoapServer(tsConfig::get('BASE_URL') . $wsdlUrl . $_REQUEST['service'] . '.wsdl', array(
+		$endpoint = ($isPlugin ? 'plugins/' . $_REQUEST['plugin'] . '/' : 'services/endpoint/') . 'ws' . ucfirst($_REQUEST['service']) . '.php';
+		if (!file_exists($endpoint))
+		{
+			throw new Exception('Service introuvable');
+		}
+		require_once($endpoint);
+
+		$wsdl = ($isPlugin ? 'plugins/' . $_REQUEST['plugin'] . '/' : 'services/wsdl/') . $_REQUEST['service'] . '.wsdl';
+		if (!file_exists($wsdl))
+		{
+			throw new Exception('WSDL introuvable');
+		}
+		$server = new SoapServer(tsConfig::get('BASE_URL') . $wsdl, array(
 			'trace' => 1,
 			'soap_version' => SOAP_1_1
 			//'compression' => ( SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | 9 ),
 			//'content-encoding' => "gzip",
 			//'accept-encoding' => 'gzip,deflate'
 		));
- 		$server -> setclass('ws' . ucfirst($_REQUEST['service']));
+
+		$class = 'ws' . ucfirst($_REQUEST['service']);
+		if (!class_exists($class))
+		{
+			throw new Exception('Classe introuvable');
+		}
+ 		$server -> setclass($class);
+
 		$server -> handle();
 	}
 	catch (Exception $e)
 	{
 		echo $e -> getMessage();
 	}
-
-?>

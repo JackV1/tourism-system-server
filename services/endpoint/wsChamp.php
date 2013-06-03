@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -17,15 +17,15 @@
 	 */
 	final class wsChamp extends wsEndpoint
 	{
-		
+
 		/**
-		 * Création d'un champ Tourinfrance 
+		 * Création d'un champ Tourinfrance
 		 * Accessible aux utilisateurs root
 		 * @param string $identifiant : identifiant non numérique du champ
 		 * @param string $libelle : libellé du champ
 		 * @param string $xpath : requête xpath de sélection dans le format TIF v3
 		 * @param string $liste [optional] : liste TourinFrance à associer au champ (ex: LS_Prestations)
-		 * @param array $bordereaux [optional] : tableau de bordereaux (identifiant 3 caractères) 
+		 * @param array $bordereaux [optional] : tableau de bordereaux (identifiant 3 caractères)
 		 * @return int idChamp [optional] : identifiant numérique du champ sitChamp.idChamp
 		 */
 		protected function _createChamp($identifiant, $libelle, $xpath, $liste = null, $bordereaux = null, $idChampParent = null)
@@ -43,8 +43,8 @@
 			$idChamp = champDb::createChamp($identifiant, $libelle, $xpath, $liste, $bordereaux, $oChampParent);
 			return array('idChamp' => $idChamp);
 		}
-		
-		
+
+
 		/**
 		 * Mise à jour d'un champ Tourinfrance
 		 * Accessible aux utilisateurs root
@@ -63,20 +63,20 @@
 			champDb::updateChamp($oChamp, $identifiant, $libelle, $xpath, $liste, $bordereaux);
 			return array();
 		}
-		
-		
+
+
 		/**
-		 * Retourne la liste des champs Tourinfrance 
+		 * Retourne la liste des champs Tourinfrance
 		 * Accessible aux utilisateurs root, superadmin, admin
 		 * @param string $bordereau [optional] : bordereau pour filtrer les champs
-		 * @return champCollection champs : collection de champModele 
+		 * @return champCollection champs : collection de champModele
 		 */
 		protected function _getChamps($bordereau = null)
 		{
 			$champs = champDb::getChamps($bordereau);
 			return array('champs' => $champs);
 		}
-		
+
 		/**
 		 * Retourne un champ Tourinfrance
 		 * Accessible aux utilisateurs root, superadmin, admin
@@ -88,8 +88,8 @@
 			$champ = champDb::getChamp($idChamp);
 			return array('champ' => $champ);
 		}
-		
-		
+
+
 		/**
 		 * Retourne un champ Tourinfrance
 		 * Accessible aux utilisateurs root, superadmin, admin
@@ -101,8 +101,8 @@
 			$champ = champDb::getChampByIdentifiant($identifiant);
 			return array('champ' => $champ);
 		}
-		
-		
+
+
 		/**
 		 * Suppression d'un champ Tourinfrance
 		 * Accessible aux utilisateurs root
@@ -116,9 +116,6 @@
 			champDb::deleteChamp($oChamp);
 			return array();
 		}
-		
-		
+
+
 	}
-
-
-?>

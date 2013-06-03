@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @version		0.3 alpha-test - 2013-01-25
+ * @version		0.4 alpha-test - 2013-06-03
  * @package		Tourism System Server
  * @copyright	Copyright (C) 2010 Raccourci Interactive
  * @license		Qt Public License; see LICENSE.txt
@@ -112,6 +112,22 @@
 		{
 			return array( 'fiches' => ficheDb::getFiches() );
 		}
+                
+                
+                /**
+                 * Return the list of fiches own by the current user with pagination
+                 * @param int $start
+                 * @param int $limit
+                 * @return fiches : ficheCollection (collection de ficheModele)
+                 * @access root superadmin admin desk manager
+                 */
+		protected function _listFiches($parameters = array())
+		{
+                        $response = ficheDb::listFiches($parameters);
+                        return array('fiches' => $response);
+		}
+
+                
 
 
 		/**
@@ -227,15 +243,15 @@
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche);
 			$this -> checkAccesFiche($oFiche);
 			$droitsFiche = tsDroits::getDroitFiche($oFiche);
-			
+
 			$idFicheVersion = null;
-			
+
 			if( ficheDb::sauvegardeFiche($oFiche, $stdFiche, $droitsFiche, $champsValide, $champsRefuse))
 			{
-				$newVersion = ficheDb::getFicheVersion($idFiche);	
+				$newVersion = ficheDb::getFicheVersion($idFiche);
 				$idFicheVersion = $newVersion['idFicheVersion'];
 			}
-			
+
 			return array('idVersion' => $idFicheVersion);
 		}
 
@@ -298,19 +314,16 @@
 			$this -> restrictAccess('root', 'superadmin', 'admin');
 			$oFiche = ficheDb::getFicheByIdFiche($idFiche, $idFicheVersion);
 			$this -> checkDroitFiche($oFiche, DROIT_MODIFICATION);
-			
+
 			$newIdFicheVersion = null;
-			
+
 			if( ficheDb::createFicheVersion($oFiche -> idFiche, $oFiche -> xml) )
 			{
-				$newVersion = ficheDb::getFicheVersion($idFiche);	
+				$newVersion = ficheDb::getFicheVersion($idFiche);
 				$newIdFicheVersion = $newVersion['idFicheVersion'];
 			}
-			
+
 			return array('idVersion' => $newIdFicheVersion);
 		}
 
 	}
-
-
-?>
